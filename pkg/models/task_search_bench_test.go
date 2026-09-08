@@ -60,6 +60,9 @@ func createBenchmarkData(b *testing.B, needle string) *user.User {
 		if _, err := s.Insert(p); err != nil {
 			b.Fatalf("insert project: %v", err)
 		}
+		if err := insertProjectAncestors(s, p.ID, 0); err != nil {
+			b.Fatalf("insert project ancestors: %v", err)
+		}
 
 		for j := range numberOfTasks {
 			title := f.Lorem().Sentence(6)

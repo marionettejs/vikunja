@@ -288,6 +288,7 @@ func TestSessionMemoStopsAfterWrite(t *testing.T) {
 
 	_, err = s.ID(43).Cols("parent_project_id").Update(&Project{})
 	require.NoError(t, err)
+	require.NoError(t, moveProjectAncestors(s, 43, 0))
 
 	chain, err = GetAllParentProjects(s, 43)
 	require.NoError(t, err)

@@ -107,6 +107,7 @@ func TestDeleteUser(t *testing.T) {
 		}
 		_, err := s.Insert(project)
 		require.NoError(t, err)
+		require.NoError(t, insertProjectAncestors(s, project.ID, 0))
 
 		task := &Task{
 			Title:       "disabled user task",

@@ -2088,6 +2088,7 @@ func TestTaskCollection_ExpandSubtasksPaginatesRoots(t *testing.T) {
 	project := &Project{Title: "pagination-roots", OwnerID: u.ID}
 	_, err := s.Insert(project)
 	require.NoError(t, err)
+	require.NoError(t, insertProjectAncestors(s, project.ID, 0))
 
 	// 40 top-level tasks
 	topLevel := make([]*Task, 0, 40)
@@ -2244,6 +2245,7 @@ func setupSubtaskExpansionFixture(t *testing.T, u *user.User, title string, appl
 	project = &Project{Title: title, OwnerID: u.ID}
 	_, err := s.Insert(project)
 	require.NoError(t, err)
+	require.NoError(t, insertProjectAncestors(s, project.ID, 0))
 
 	parent = &Task{Title: "parent", ProjectID: project.ID, CreatedByID: u.ID, Index: 1}
 	sub = &Task{Title: "sub", ProjectID: project.ID, CreatedByID: u.ID, Index: 2}
@@ -2485,6 +2487,7 @@ func TestTaskCollection_ExpandSubtasksMultiParentCrossScope(t *testing.T) {
 	otherProject := &Project{Title: "multi-parent-out-of-scope", OwnerID: u.ID}
 	_, err := s.Insert(otherProject)
 	require.NoError(t, err)
+	require.NoError(t, insertProjectAncestors(s, otherProject.ID, 0))
 
 	otherParent := &Task{Title: "out of scope parent", ProjectID: otherProject.ID, CreatedByID: u.ID, Index: 1}
 	_, err = s.Insert(otherParent)
