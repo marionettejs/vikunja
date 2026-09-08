@@ -32,7 +32,6 @@ type ProjectAncestor struct {
 	Depth      int64 `xorm:"int not null"`
 }
 
-// TableName is the table name
 func (*ProjectAncestor) TableName() string {
 	return "project_ancestors"
 }
@@ -56,7 +55,6 @@ func getProjectAncestorRows(s *xorm.Session, cond builder.Cond) (rows []*Project
 	return rows, nil
 }
 
-// insertProjectAncestors adds the rows of a newly created project.
 func insertProjectAncestors(s *xorm.Session, projectID, parentID int64) error {
 	rows := []*ProjectAncestor{{ProjectID: projectID, AncestorID: projectID}}
 
@@ -130,7 +128,6 @@ func deleteProjectAncestors(s *xorm.Session, projectID int64) error {
 	return nil
 }
 
-// RebuildProjectAncestors recomputes the whole closure table from the projects table.
 func RebuildProjectAncestors(s *xorm.Session) error {
 	_, err := s.Where(builder.Gt{"project_id": 0}).Delete(&ProjectAncestor{})
 	if err != nil {
