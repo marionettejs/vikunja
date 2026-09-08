@@ -63,6 +63,11 @@ Use --dry-run to preview what would be fixed without making changes.`,
 		}
 
 		if !dryRun {
+			if err := models.RebuildProjectAncestors(s); err != nil {
+				log.Errorf("Failed to rebuild the project ancestors: %s", err)
+				return
+			}
+
 			if err := s.Commit(); err != nil {
 				log.Errorf("Failed to commit changes: %s", err)
 				return

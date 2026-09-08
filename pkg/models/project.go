@@ -993,6 +993,11 @@ func CreateProject(s *xorm.Session, project *Project, auth web.Auth, createBackl
 		}
 	}
 
+	err = insertProjectAncestors(s, project.ID, project.parentID())
+	if err != nil {
+		return err
+	}
+
 	project.Position = calculateDefaultPosition(project.ID, project.Position)
 	_, err = s.Where("id = ?", project.ID).Nullable("parent_project_id").Update(project)
 	if err != nil {
@@ -1174,8 +1179,10 @@ func UpdateProject(s *xorm.Session, project *Project, auth web.Auth, updateProje
 	}
 	// Only touch parent_project_id when it was actually sent, otherwise a
 	// partial update (nil) would silently detach the project to the top level.
+	parentChanged := false
 	if project.ParentProjectID != nil {
 		colsToUpdate = append(colsToUpdate, "parent_project_id")
+		parentChanged = project.parentID() != storedProject.parentID()
 	}
 	if project.Description != "" {
 		colsToUpdate = append(colsToUpdate, "description")
@@ -1210,6 +1217,13 @@ func UpdateProject(s *xorm.Session, project *Project, auth web.Auth, updateProje
 		Update(project)
 	if err != nil {
 		return err
+	}
+
+	if parentChanged {
+		err = moveProjectAncestors(s, project.ID, project.parentID())
+		if err != nil {
+			return err
+		}
 	}
 
 	events.DispatchOnCommit(s, &ProjectUpdatedEvent{
@@ -1461,6 +1475,11 @@ func (p *Project) Delete(s *xorm.Session, a web.Auth) (err error) {
 	}
 
 	_, err = s.Where("project_id = ?", p.ID).Delete(&TeamProject{})
+	if err != nil {
+		return
+	}
+
+	err = deleteProjectAncestors(s, p.ID)
 	if err != nil {
 		return
 	}

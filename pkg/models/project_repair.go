@@ -63,6 +63,12 @@ func RepairOrphanedProjects(s *xorm.Session, dryRun bool) (*RepairOrphanedProjec
 		if err != nil {
 			return result, err
 		}
+
+		err = moveProjectAncestors(s, p.ID, 0)
+		if err != nil {
+			return result, err
+		}
+
 		result.Repaired++
 	}
 
