@@ -1552,23 +1552,14 @@ func ClearProjectBackground(s *xorm.Session, projectID int64) (err error) {
 
 const archiveStateUpdateBatch = 500
 
-// SetArchiveStateForProjectDescendants uses a recursive CTE to find and set the archived status of all descendant projects.
+// SetArchiveStateForProjectDescendants sets the archived status of all descendant projects.
 func SetArchiveStateForProjectDescendants(s *xorm.Session, parentProjectID int64, shouldBeArchived bool) error {
 	var descendantIDs []int64
-	err := s.SQL(
-		`
-WITH RECURSIVE descendant_ids (id) AS (
-    SELECT id
-    FROM projects
-    WHERE parent_project_id = ?
-    UNION ALL
-    SELECT p.id
-    FROM projects p
-    INNER JOIN descendant_ids di ON p.parent_project_id = di.id
-)
-SELECT id FROM descendant_ids`,
-		parentProjectID,
-	).Find(&descendantIDs)
+	err := s.
+		Table(&ProjectAncestor{}).
+		Where(builder.Eq{"ancestor_id": parentProjectID}.And(builder.Gt{"depth": 0})).
+		Cols("project_id").
+		Find(&descendantIDs)
 	if err != nil {
 		log.Errorf("Error finding descendant projects for parent ID %d: %v", parentProjectID, err)
 		return fmt.Errorf("failed to find descendant projects for parent ID %d: %w", parentProjectID, err)

@@ -145,21 +145,12 @@ func accessibleProjectIDsCond(s *xorm.Session, a web.Auth, column string) (build
 func GetAllParentProjects(s *xorm.Session, projectID int64) (map[int64]*Project, error) {
 	chain, err := db.Remember(s, "parent-projects-"+strconv.FormatInt(projectID, 10), func() (map[int64]*Project, error) {
 		loaded := make(map[int64]*Project)
-		err := s.SQL(`WITH RECURSIVE all_projects AS (
-		    SELECT
-		        p.*
-		    FROM
-		        projects p
-		    WHERE
-		        p.id = ?
-		    UNION ALL
-		    SELECT
-		        p.*
-		    FROM
-		        projects p
-		            INNER JOIN all_projects pc ON p.ID = pc.parent_project_id
-		)
-		SELECT DISTINCT * FROM all_projects`, projectID).Find(&loaded)
+		err := s.
+			Table("projects").
+			Select("projects.*").
+			Join("INNER", "project_ancestors", "project_ancestors.ancestor_id = projects.id").
+			Where(builder.Eq{"project_ancestors.project_id": projectID}).
+			Find(&loaded)
 		if err != nil {
 			return nil, err
 		}
