@@ -1,0 +1,35 @@
+frontend/src/helpers/kanbanTransitions.ts
+  s_267e7a791356aa::t_fefc59303ef051 1-152
+frontend/src/stores/kanban.test.ts
+  s_37b3cf4bfea94f::t_1257363cc9bcb3 4-15,33,186-236
+frontend/src/stores/kanban.ts
+  s_267e7a791356aa::t_d8ee7baa196fba 6-14,104-105,108-112,116,118,121,125,129,149
+migration/README.md
+  s_267e7a791356aa::t_ed3113d209ec91 82-106
+migration/architecture.md
+  s_267e7a791356aa::t_ad411dc79cbafa 95-108
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1ed836e07b5311e595048305b96f699819263b8a",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    },
+    "s_37b3cf4bfea94f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "950760a8-8c3f-476c-97bb-21e9934606e1",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
