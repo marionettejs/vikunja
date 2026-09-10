@@ -38,7 +38,7 @@ export async function fetchAvatarBlobUrl(user: Pick<IUser, 'username'>, size = 5
 			pendingRequests.delete(key)
 			throw error
 		})
-	
+
 	pendingRequests.set(key, requestPromise)
 	return await requestPromise
 }
