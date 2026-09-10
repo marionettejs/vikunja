@@ -1,0 +1,23 @@
+frontend/package.json
+  s_267e7a791356aa::t_e891f314910de7 96
+frontend/pnpm-lock.yaml
+  s_267e7a791356aa::t_55de18c49a5a9e 151-153,1832-1839,5062-5070,8927-8932,12245-12251
+frontend/pnpm-workspace.yaml
+  s_267e7a791356aa::t_398f44d585da07 9-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "632b6003e77cde3b114875733f429d41ca98450b",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
