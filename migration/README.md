@@ -26,6 +26,34 @@ evidence. This includes relevant PWA, desktop integration, localization and
 accessibility behavior. Missing coverage does not remove a feature from scope.
 Any proposed scope reduction needs a maintainer decision.
 
+## Screen migration policy
+
+Migrate complete screens or coherent route workflows. Keep temporary Vue
+coexistence at the router/shell boundary; Marionette owns the migrated screen's
+layout, child Views, editing, state coordination and teardown. Avoid per-component
+hosts, projected models, callback bridges and nested Vue widgets. Prepare reusable
+services and Views in reviewable pieces, then activate the complete screen and
+remove its obsolete Vue implementation. The next target is task detail with all
+existing rich-text, permission, licensed and navigation behavior preserved.
+
+PR #5's title bridge is held unmerged as an interoperability experiment. Its
+standalone View and acceptance evidence can be reused without adopting the bridge.
+Record interoperability effort separately from Marionette application development.
+
+## Domain-model preparation
+
+`TaskModel` and its model imports can be bundled for the browser without loading
+Vue, Pinia, the router or Vue components, including with tree-shaking disabled.
+Avatar cache behavior lives in a separate UI helper, while locale metadata and
+browser-language selection live outside the Vue translation runtime. Importing
+the quick-add setting directly also avoids loading the parser and auth store.
+
+This is preparation for complete-screen ownership. The avatar helper still uses
+Vue, and task services/stores, live translations, shared caches and realtime still
+need ownership work. No route has switched implementations in this preparation.
+Gemini Flash Low performed the two extractions; Codex verified preserved behavior
+and corrected the remaining quick-add import discovered by dependency tracing.
+
 ## First integration and acceptance
 
 The temporary Vue host owns one Region and replaces its child when the supplied

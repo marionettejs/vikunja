@@ -48,6 +48,30 @@ During coexistence between Vue and Marionette:
 - **Single State Writer Rule**: For any shared domain entity or query cache, exactly one system acts as the source of truth and state writer at any given time.
 - **Service Persistence Boundary**: Domain persistence and API communication remain coordinated through existing API client services. `@mnjs/data` models and collections manage observable in-memory state and event dispatch; they do not perform implicit HTTP synchronization or database mutations.
 
+The migration unit is a complete screen, with one temporary router/shell mount.
+Do not introduce per-field projections, callback bridges or nested Vue widgets.
+If shared state requires extensive synchronization, move its ownership as a unit
+or enlarge the cutover boundary. Direct service calls alone do not replace the
+existing task store's Kanban/Gantt updates, auth identity invalidation or realtime
+behavior. Prepare neutral dependencies separately, then activate the full screen
+and remove its obsolete Vue path together.
+
+The task-model import graph is now independent of Vue runtime modules:
+
+- `helpers/avatarCache.ts` owns the existing Vue avatar cache, version signal and
+  deferred blob-URL revocation. UI consumers import it directly; `models/user.ts`
+  contains model/display-name behavior and no compatibility reexports.
+- `i18n/locales.ts` contains locale metadata and browser-language selection with
+  no imports. `i18n/index.ts` retains Vue translation setup and live switching.
+- `models/userSettings.ts` imports `PrefixMode` from its defining module, avoiding
+  the quick-add barrel's parser, authentication and UI dependencies.
+
+A standalone browser bundle of `models/task.ts` with tree-shaking disabled has
+24 inputs and no Vue, Pinia, router or single-file component inputs. This establishes
+the model entrypoint's dependency boundary, not framework neutrality of services
+or migration of the application. The source trace and bundle metadata are local
+diagnostic evidence; no inspection code enters production imports.
+
 ## Attachment Monitoring and Region Ownership
 
 - Marionette manages element attachment and lifecycle through `Region` instances and `monitorViewEvents`.
