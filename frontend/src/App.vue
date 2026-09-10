@@ -56,7 +56,8 @@ import ContentLinkShare from '@/components/home/ContentLinkShare.vue'
 import NoAuthWrapper from '@/components/misc/NoAuthWrapper.vue'
 import Ready from '@/components/misc/Ready.vue'
 
-import {DEFAULT_LANGUAGE, setLanguage} from '@/i18n'
+import {setLanguage} from '@/i18n'
+import {DEFAULT_LANGUAGE} from '@/i18n/locales'
 
 import {useAuthStore} from '@/stores/auth'
 import {useBaseStore} from '@/stores/base'

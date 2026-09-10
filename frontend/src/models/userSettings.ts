@@ -1,8 +1,8 @@
 import AbstractModel from './abstractModel'
 
 import type {IFrontendSettings, IUserSettings} from '@/modelTypes/IUserSettings'
-import {getBrowserLanguage} from '@/i18n'
-import {PrefixMode} from '@/modules/quickAddMagic'
+import {getBrowserLanguage} from '@/i18n/locales'
+import {PrefixMode} from '@/modules/quickAddMagic/prefixes'
 import {DEFAULT_PROJECT_VIEW_SETTINGS} from '@/modelTypes/IProjectView'
 import {PRIORITIES} from '@/constants/priorities'
 import {DATE_DISPLAY} from '@/constants/dateDisplay'

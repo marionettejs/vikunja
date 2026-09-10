@@ -18,8 +18,8 @@ vi.mock('@/helpers/fetcher', () => {
 })
 
 // Avoid the avatar request triggered by setUser.
-vi.mock('@/models/user', async (importOriginal) => {
-	const original = await importOriginal<typeof import('@/models/user')>()
+vi.mock('@/helpers/avatarCache', async (importOriginal) => {
+	const original = await importOriginal<typeof import('@/helpers/avatarCache')>()
 	return {
 		...original,
 		fetchAvatarBlobUrl: vi.fn(async () => ''),

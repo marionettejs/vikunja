@@ -1,7 +1,8 @@
 import {describe, it, expect, vi} from 'vitest'
 import {nextTick} from 'vue'
 
-import {fetchAvatarBlobUrl, getDisplayName, invalidateAvatarCache} from './user'
+import {getDisplayName} from './user'
+import {fetchAvatarBlobUrl, invalidateAvatarCache} from '@/helpers/avatarCache'
 import type {IUser} from '@/modelTypes/IUser'
 
 const {getBlobUrl} = vi.hoisted(() => ({getBlobUrl: vi.fn()}))

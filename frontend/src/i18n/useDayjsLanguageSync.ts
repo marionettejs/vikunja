@@ -1,7 +1,8 @@
 import type dayjs from 'dayjs'
 import { computed, ref, watch } from 'vue'
 
-import { i18n, type ISOLanguage, type SupportedLocale } from '@/i18n'
+import { i18n } from '@/i18n'
+import type { ISOLanguage, SupportedLocale } from '@/i18n/locales'
 
 export const DAYJS_LOCALE_MAPPING = {
 	'de-de': 'de',

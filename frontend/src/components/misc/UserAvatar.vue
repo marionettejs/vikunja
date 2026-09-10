@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
 
-import {avatarCacheVersions, fetchAvatarBlobUrl} from '@/models/user'
+import {avatarCacheVersions, fetchAvatarBlobUrl} from '@/helpers/avatarCache'
 import type {IUser} from '@/modelTypes/IUser'
 
 const props = withDefaults(defineProps<{
