@@ -72,6 +72,26 @@ the model entrypoint's dependency boundary, not framework neutrality of services
 or migration of the application. The source trace and bundle metadata are local
 diagnostic evidence; no inspection code enters production imports.
 
+## Task persistence and shared workspace ownership
+
+`helpers/taskPayload.ts` contains the existing task-to-API conversion, including
+nested tasks and emoji reaction keys. `TaskService` delegates conversion while
+retaining request handling, bulk batching and cache invalidation. The discarded
+attachment-conversion loop is removed: it constructed an HTTP service but ignored
+its returned objects. Baseline comparisons preserve actual attachment payloads.
+
+The next ownership boundary must account for the project workspace. Task detail
+can overlay a still-mounted project view; task-store saves update Kanban bucket
+placement and the last-updated task observed by Gantt. Task-link pills separately
+observe cache invalidation and authentication-identity versions. A replacement
+must preserve those consumers under one canonical owner, without dual stores or
+per-widget synchronization bridges.
+
+Current production websocket subscribers handle notifications and timers; source
+inspection did not find generic task-update propagation. Do not assume a realtime
+task synchronization contract exists. This extraction does not introduce a state
+owner, replace websocket subscriptions or activate a Marionette screen.
+
 ## Attachment Monitoring and Region Ownership
 
 - Marionette manages element attachment and lifecycle through `Region` instances and `monitorViewEvents`.

@@ -54,6 +54,31 @@ need ownership work. No route has switched implementations in this preparation.
 Gemini Flash Low performed the two extractions; Codex verified preserved behavior
 and corrected the remaining quick-add import discovered by dependency tracing.
 
+## Task-payload preparation
+
+`helpers/taskPayload.ts` now provides the existing task serialization without
+loading Vue, HTTP services or stores. `TaskService.processModel` delegates to it;
+request dispatch, cache invalidation and state ownership remain with their current
+owners. The helper preserves existing payload behavior, including reminder-object
+mutation. It is not a pure, immutable serializer.
+
+Gemini Flash Low produced the extraction in one bounded run (40,904 input and
+3,281 output tokens reported; 12.43 seconds wrapper elapsed). Codex materialized
+the output, corrected date-to-wire TypeScript annotations after validation found
+nine distinct new diagnostics, and verified the result. This is assisted work,
+not evidence of unaided model performance or a migrated screen.
+
+Local validation: 20 existing task-service tests and the full 1,585-test unit suite
+passed. Eight additional baseline comparisons matched both output and input effects,
+including nested tasks, reminders, attachments and emoji reactions. Four unchanged
+original task browser cases passed through Mage, including description autosave on
+navigation; the frontend build passed. A browser bundle with tree-shaking disabled
+had seven inputs and no Vue or service imports. Typechecking still fails with 816
+distinct diagnostic lines versus 820 at baseline and no new location-normalized
+diagnostic counts. Lint reported zero errors and 15 existing warnings. All 101
+frozen browser-test/support/configuration hashes remained unchanged; the full
+original browser suite remains a PR CI check.
+
 ## First integration and acceptance
 
 The temporary Vue host owns one Region and replaces its child when the supplied

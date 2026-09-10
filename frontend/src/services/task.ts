@@ -1,44 +1,14 @@
 import AbstractService from './abstractService'
 import TaskModel from '@/models/task'
 import type {ITask} from '@/modelTypes/ITask'
-import AttachmentService from './attachment'
 
-import {colorFromHex} from '@/helpers/color/colorFromHex'
-import {SECONDS_A_DAY, SECONDS_A_HOUR, SECONDS_A_WEEK} from '@/constants/date'
-import {objectToSnakeCase} from '@/helpers/case'
 import {apiV2Url, AuthenticatedHTTPFactory} from '@/helpers/fetcher'
 import {invalidateCachedTask} from '@/helpers/taskCache'
-import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
+import {serializeTask} from '@/helpers/taskPayload'
 import {translatedError} from '@/message'
 
 // Mirrors models.MaxTasksPerBulkCreation on the backend.
 const MAX_TASKS_PER_BULK_CREATION = 100
-
-/**
- * Tasks reaching processModel did not necessarily go through the TaskModel
- * constructor - related tasks nested in a task are plain api objects - so
- * repeatAfter is either the parsed object, raw seconds, or missing entirely.
- */
-function repeatAfterToSeconds(repeatAfter: ITask['repeatAfter'] | undefined): number {
-	if (typeof repeatAfter === 'number') {
-		return repeatAfter
-	}
-
-	if (!repeatAfter?.amount) {
-		return 0
-	}
-
-	switch (repeatAfter.type) {
-		case 'hours':
-			return repeatAfter.amount * SECONDS_A_HOUR
-		case 'days':
-			return repeatAfter.amount * SECONDS_A_DAY
-		case 'weeks':
-			return repeatAfter.amount * SECONDS_A_WEEK
-		default:
-			return 0
-	}
-}
 
 export default class TaskService extends AbstractService<ITask> {
 	constructor() {
@@ -80,61 +50,7 @@ export default class TaskService extends AbstractService<ITask> {
 	}
 
 	processModel(updatedModel) {
-		const model = {...updatedModel}
-
-		model.title = model.title?.trim()
-
-		// Ensure that projectId is an int
-		model.projectId = Number(model.projectId)
-
-		// Convert dates into an iso string
-		model.dueDate = toISOStringOrNull(model.dueDate)
-		model.startDate = toISOStringOrNull(model.startDate)
-		model.endDate = toISOStringOrNull(model.endDate)
-		model.doneAt = toISOStringOrNull(model.doneAt)
-		model.deletedAt = toISOStringOrNull(model.deletedAt)
-		model.created = toISOStringOrNull(model.created)
-		model.updated = toISOStringOrNull(model.updated)
-
-		model.reminderDates = null
-		// remove all nulls, these would create empty reminders
-		model.reminders = (model.reminders ?? []).filter(r => r !== null)
-		// Make normal timestamps from js dates
-		if (model.reminders.length > 0) {
-			model.reminders.forEach(r => {
-				r.reminder = toISOStringOrNull(r.reminder)
-			})
-		}
-
-		model.repeatAfter = repeatAfterToSeconds(model.repeatAfter)
-
-		model.hexColor = colorFromHex(model.hexColor ?? '')
-
-		// Do the same for all related tasks. `model` is only a shallow copy, so this
-		// has to build a new object - assigning into relatedTasks would replace the
-		// related tasks of the task we were passed with their api representation.
-		model.relatedTasks = Object.fromEntries(
-			Object.entries<ITask[]>(model.relatedTasks ?? {})
-				.map(([relationKind, tasks]) => [relationKind, tasks.map(t => this.processModel(t))]),
-		)
-
-		// Process all attachments to prevent parsing errors
-		if (model.attachments?.length > 0) {
-			const attachmentService = new AttachmentService()
-			model.attachments.map(a => {
-				return attachmentService.processModel(a)
-			})
-		}
-
-		const transformed = objectToSnakeCase(model)
-
-		// We can't convert emojis to skane case, hence we add them back again
-		transformed.reactions = {}
-		Object.keys(updatedModel.reactions || {}).forEach(reaction => {
-			transformed.reactions[reaction] = updatedModel.reactions[reaction].map(u => objectToSnakeCase(u))
-		})
-
-		return transformed as ITask
+		return serializeTask(updatedModel) as ITask
 	}
 
 	// The v2 endpoint validates strictly against the task schema and rejects the
@@ -195,7 +111,8 @@ export default class TaskService extends AbstractService<ITask> {
 			// and concurrent bulk writes fail under write contention (SQLite).
 			for (const [projectId, indexes] of groups) {
 				const batches: number[][] = []
-				for (let i = 0; i < indexes.length; i += MAX_TASKS_PER_BULK_CREATION) {
+				for (let i = 0; i < indexes.length; i += MAX_TASKS_PER_BULK_CREATION)
+				{
 					batches.push(indexes.slice(i, i + MAX_TASKS_PER_BULK_CREATION))
 				}
 
