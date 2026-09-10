@@ -6,6 +6,10 @@ allowBuilds:
   vue-demi: true
 catalog:
   rollup: 4.63.1
+minimumReleaseAgeExclude:
+  - '@mnjs/radio@5.0.0-beta.2'
+  - '@mnjs/utils@5.0.0-beta.2'
+  - marionette@5.0.0-beta.2
 overrides:
   minimatch: 10.2.6
   rollup: 'catalog:'
