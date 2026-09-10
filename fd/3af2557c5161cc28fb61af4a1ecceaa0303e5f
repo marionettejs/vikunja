@@ -1,0 +1,51 @@
+frontend/src/App.test.ts
+  s_267e7a791356aa::t_868632454de62c 23-24
+frontend/src/App.vue
+  s_267e7a791356aa::t_3dce7040d6ea40 59-60
+frontend/src/components/misc/UserAvatar.test.ts
+  s_267e7a791356aa::t_d30457093d62ae 5,7-8
+frontend/src/components/misc/UserAvatar.vue
+  s_267e7a791356aa::t_7ed15e2512b4c4 20
+frontend/src/helpers/avatarCache.ts
+  s_267e7a791356aa::t_ea92c0e0dd5623 1-75
+frontend/src/i18n/index.ts
+  s_267e7a791356aa::t_01e48943c49cb0 5
+frontend/src/i18n/locales.ts
+  s_267e7a791356aa::t_917c806e5baabf 1-58
+frontend/src/i18n/useDayjsLanguageSync.ts
+  s_267e7a791356aa::t_9594c7fab715ed 4-5
+frontend/src/main.ts
+  s_267e7a791356aa::t_ca8488eab1f30c 18-19
+frontend/src/modelTypes/IUserSettings.ts
+  s_267e7a791356aa::t_b53c1b0837564b 6
+frontend/src/models/user.test.ts
+  s_267e7a791356aa::t_4a5b9afa6acbae 4-5
+frontend/src/models/userSettings.test.ts
+  s_267e7a791356aa::t_c743347548103d 3
+frontend/src/models/userSettings.ts
+  s_267e7a791356aa::t_aea485620caa72 4-5
+frontend/src/stores/auth.ts
+  s_267e7a791356aa::t_b0772f1da6388f 5-6,8-9
+frontend/src/views/user/settings/General.test.ts
+  s_267e7a791356aa::t_afc1083845316c 21-22
+frontend/src/views/user/settings/General.vue
+  s_267e7a791356aa::t_c2a8a8d15ad3ef 323
+frontend/src/views/user/settings/TOTP.test.ts
+  s_267e7a791356aa::t_2607dc9bd6d679 33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fd3af2557c5161cc28fb61af4a1ecceaa0303e5f",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
