@@ -148,6 +148,9 @@ importers:
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
+      marionette:
+        specifier: 5.0.0-beta.2
+        version: 5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
       marked:
         specifier: 18.0.11
         version: 18.0.11
@@ -1825,6 +1828,14 @@ packages:
 
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
+
+  '@mnjs/radio@5.0.0-beta.2':
+    resolution: {integrity: sha512-Nk1uUSpd0g4baV+2FzGTuDmEsoiEy6SixDYU+STHzKfEmBW8mI0Jb1sa1GMqPPuEC2KsSzTmin7TlSMtnTfQKw==}
+    engines: {node: '>=24'}
+
+  '@mnjs/utils@5.0.0-beta.2':
+    resolution: {integrity: sha512-DMoPoB87vu5TUYnB6CnATU15hwuJipFCMTpAAhcS21vWv/QMVB9BaxeaTs5QooaO8YwZcL0zl8zQPFsEfNskuQ==}
+    engines: {node: '>=24'}
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     resolution: {integrity: sha512-oTXEIha4SsuXdTA4Iyskj0kpdx2yVXdhd75c2v3xGrHFfVMsbhTPZU/nMPL4sWKo4pBHm3aucLaqGlF696dTyQ==}
@@ -5047,6 +5058,15 @@ packages:
   map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
+
+  marionette@5.0.0-beta.2:
+    resolution: {integrity: sha512-n+iEn/xAwLpeyuqWrWZpWIiECXfdqEnwKKeCCob1OB4iHeNLds+NtvzQCfjewzggf5BBi9PVCwalpujcQH6Bmw==}
+    engines: {node: '>=24'}
+    peerDependencies:
+      eslint: ^10.0.0
+    peerDependenciesMeta:
+      eslint:
+        optional: true
 
   markdown-it-anchor@9.2.1:
     resolution: {integrity: sha512-p6APiLJDFAW2GEvaavDvhIBn7jrX2jLv77NkBGgNacFTurbORYc4pyYySg/mI6mpR6cHQuAtzKtmqgQr4K8dsQ==}
@@ -8904,6 +8924,12 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.3': {}
 
+  '@mnjs/radio@5.0.0-beta.2':
+    dependencies:
+      '@mnjs/utils': 5.0.0-beta.2
+
+  '@mnjs/utils@5.0.0-beta.2': {}
+
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
 
@@ -12215,6 +12241,13 @@ snapshots:
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
+
+  marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)):
+    dependencies:
+      '@mnjs/radio': 5.0.0-beta.2
+      '@mnjs/utils': 5.0.0-beta.2
+    optionalDependencies:
+      eslint: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
 
   markdown-it-anchor@9.2.1(@types/markdown-it@14.1.2)(markdown-it@15.0.1):
     dependencies:

@@ -93,6 +93,7 @@
     "is-touch-device": "1.0.1",
     "klona": "2.0.6",
     "lowlight": "3.3.0",
+    "marionette": "5.0.0-beta.2",
     "marked": "18.0.11",
     "nanoid": "6.0.1",
     "pinia": "4.0.3",
