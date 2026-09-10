@@ -39,6 +39,7 @@ CollectionView.setStateApi(StateApi)
 
 - **Application Integration**: `frontend/src/marionette/index.ts` exports configured `View` and `CollectionView` base classes.
 - **Production View**: `frontend/src/marionette/views/AboutVersionView.ts` converts the About version display to `lit-html` while preserving its required `lines: string[]` options contract, snapshot API, CSS classes (`p-4`), and paragraph structure.
+- **Editable View**: `frontend/src/marionette/views/TaskTitleView.ts` owns native contenteditable text with `template: false`. Initialization sets its text directly because this mode suppresses render callbacks. Keeping template markers out of the editable root preserves browser selection semantics. `Heading.vue` owns its borrowed projection Model and saves through the existing task store.
 - **Executable Reference**: `frontend/src/marionette/reference.test.ts` provides a test-only reference demonstrating multi-consumer coordination, draft input preservation, collection reordering, and region cleanup.
 - **Acceptance and Docs**: `migration/README.md` and `migration/architecture.md`.
 
@@ -49,6 +50,10 @@ During coexistence between Vue and Marionette:
 - **Service Persistence Boundary**: Domain persistence and API communication remain coordinated through existing API client services. `@mnjs/data` models and collections manage observable in-memory state and event dispatch; they do not perform implicit HTTP synchronization or database mutations.
 
 ## Attachment Monitoring and Region Ownership
+
+Factory identity must follow the entity ID, not the identity of a replaceable
+task object. Heading derives a primitive computed task ID before deriving its
+factory; title, locale and permission updates change the projection in place.
 
 - Marionette manages element attachment and lifecycle through `Region` instances and `monitorViewEvents`.
 - Keep attachment monitoring enabled on the View and its ancestors, and leave

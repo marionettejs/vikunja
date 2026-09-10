@@ -44,8 +44,37 @@ prerequisites from AGENTS.md, run them through Mage:
 mage test:e2e '--config=../migration/acceptance/playwright.config.mts'
 ```
 
-These checks cover the current About integration; they do not establish full-app
+These checks cover the current About and task-title integrations; they do not establish full-app
 migration parity or coverage of every previously untested feature.
+
+## Task-title editing
+
+Marionette now owns the task title's contenteditable heading, keyboard/blur/input
+handling, draft retention and unsaved-navigation listener. A native data Model
+projects the current title, write permission and translated label. The temporary
+Vue Heading still owns surrounding controls, translations and the canonical task
+store save request; this does not complete the task-detail feature migration.
+
+The editor stays mounted when an updated task object has the same ID. This matters
+when a save response arrives while the next draft is being typed: the response
+must not replace the heading, draft, focus or selection. Changing task ID replaces
+the editor. Unmounting releases the Region/View and its subscriptions, then the
+projection Model; late saves cannot update the removed heading's UI.
+
+Validation includes 19 focused unit/integration tests and six supplemental
+browser cases covering desktop/mobile save-and-reload, Escape/empty input,
+failed-save retry, a delayed save response during a newer draft, and read-only
+shares. Locale changes, permission revocation, task replacement and teardown are
+covered by integration tests. Composition-key guards use synthetic events;
+physical IME input and screen-reader interaction have not been manually verified.
+
+This was an assisted agent result. Gemini Flash Low needed corrections for
+`template: false` initialization, native Model/instance typing, Region detach
+ownership, test mocks, asynchronous cleanup and factory identity. Codex supplied
+the relevant public contracts, repaired remaining issues and authored browser
+acceptance. JSON-only code output with mechanical file materialization avoided
+the CLI's earlier file-tool permission failures. These outcomes are case-study
+observations, not a controlled cost or model-quality comparison.
 
 ## Agent development case study
 
