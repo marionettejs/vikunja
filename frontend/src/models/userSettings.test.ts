@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 
-import type {SupportedLocale} from '@/i18n'
+import type {SupportedLocale} from '@/i18n/locales'
 import UserSettingsModel from './userSettings'
 
 describe('UserSettingsModel', () => {

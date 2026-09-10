@@ -320,7 +320,7 @@ import FormInput from '@/components/input/FormInput.vue'
 import FormSelect from '@/components/input/FormSelect.vue'
 import FormCheckbox from '@/components/input/FormCheckbox.vue'
 
-import {SUPPORTED_LOCALES} from '@/i18n'
+import {SUPPORTED_LOCALES} from '@/i18n/locales'
 import {AuthenticatedHTTPFactory} from '@/helpers/fetcher'
 import {formatDisplayDateFormat} from '@/helpers/time/formatDate'
 

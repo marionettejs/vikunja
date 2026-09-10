@@ -15,7 +15,8 @@ import Notifications from '@kyvg/vue3-notification'
 import './registerServiceWorker'
 
 // i18n
-import {getBrowserLanguage, i18n, setLanguage} from './i18n'
+import {i18n, setLanguage} from './i18n'
+import {getBrowserLanguage} from './i18n/locales'
 
 declare global {
 	interface Window {

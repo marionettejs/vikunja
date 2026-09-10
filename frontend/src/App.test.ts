@@ -20,8 +20,8 @@ vi.mock('@/helpers/fetcher', () => {
 	return {AuthenticatedHTTPFactory: httpStub, HTTPFactory: httpStub}
 })
 
-vi.mock('@/models/user', async (importOriginal) => {
-	const original = await importOriginal<typeof import('@/models/user')>()
+vi.mock('@/helpers/avatarCache', async (importOriginal) => {
+	const original = await importOriginal<typeof import('@/helpers/avatarCache')>()
 	return {
 		...original,
 		fetchAvatarBlobUrl: vi.fn(async () => ''),
