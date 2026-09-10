@@ -1,3 +1,13 @@
+# Marionette Experimental Fork of Vikunja
+
+This is the Marionette organization's experimental fork of [Vikunja](https://github.com/go-vikunja/vikunja), an excellent open-source task management application. We are deeply grateful to the Vikunja maintainers and contributors for building such a wonderful project—please visit the [upstream repository](https://github.com/go-vikunja/vikunja) and consider supporting their ongoing work via the [Vikunja support page](https://vikunja.io/support/).
+
+We intend to migrate the full Vue frontend to Marionette 5.0.0-beta.2, preserving real application behavior, with no Vue dependency when migration is complete. It will serve as a substantial real-world example of Marionette and an open case study for learning, evaluating, and improving agent-led development: our prompts, documentation, agent guidance, and verification practices.
+
+Migration has just started; the current application still uses Vue. We do not claim completion, demonstrated parity, or endorsement by upstream. Because this is an experimental migration fork, the upstream documentation, links, attributions, and license section preserved below continue to describe the original project.
+
+---
+
 <img src="https://vikunja.io/images/vikunja-logo.svg" alt="" style="display: block;width: 50%;margin: 0 auto;" width="50%"/>
 
 [![Build Status](https://github.com/go-vikunja/vikunja/actions/workflows/ci.yml/badge.svg)](https://github.com/go-vikunja/vikunja/actions/workflows/ci.yml)
