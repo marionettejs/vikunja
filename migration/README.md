@@ -47,9 +47,23 @@ mage test:e2e '--config=../migration/acceptance/playwright.config.mts'
 These checks cover the current About and task-title integrations; they do not establish full-app
 migration parity or coverage of every previously untested feature.
 
-## Task-title editing
+## Screen migration policy
 
-Marionette now owns the task title's contenteditable heading, keyboard/blur/input
+Migrate complete screens or coherent route workflows. Keep temporary Vue
+coexistence at the router/shell boundary, with Marionette owning everything
+inside the migrated screen. Avoid per-component hosts, state projections and
+callback bridges. Prepare reusable services and Views in reviewable pieces,
+then activate the complete screen and remove its obsolete Vue implementation.
+The next target is the complete task-detail screen, including its rich editor
+and existing interactions. See [ownership boundaries](./architecture.md#coexistence-and-state-writer-boundary).
+
+## Task-title experiment (PR #5, unmerged)
+
+The component-level integration is held from automatic merge following the
+decision to reduce interoperability. Its View and acceptance tests remain useful
+for the full screen; its Vue bridge is not the template for future migration work.
+
+In this experiment, Marionette owns the task title's contenteditable heading, keyboard/blur/input
 handling, draft retention and unsaved-navigation listener. A native data Model
 projects the current title, write permission and translated label. The temporary
 Vue Heading still owns surrounding controls, translations and the canonical task
@@ -89,6 +103,11 @@ prompt, initial result, validation, repair attempts, elapsed time, reported toke
 usage and coordinator or human interventions. Documentation gaps and supplemental
 guidance are recorded separately from tool failures, quota interruptions and
 application defects. Unknown measurements remain unknown.
+
+Record Vue interoperability work separately from Marionette application work.
+Bridge complexity and coordinator corrections must not be presented as the
+effort required to build a standalone Marionette screen. Evaluate the complete
+screen after cutover against the frozen tests and supplemental acceptance.
 
 Working plans and raw run files live in the ignored `plans/` directory. Reviewed
 summaries belong in this directory and PR descriptions. Public records must omit
