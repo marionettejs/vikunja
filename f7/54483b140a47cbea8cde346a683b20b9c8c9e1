@@ -1,0 +1,27 @@
+migration/README.md
+  s_267e7a791356aa::t_048b23dd4c8fd3 6-9,28-48,53-54
+migration/acceptance/.gitignore
+  s_267e7a791356aa::t_67cacc1981260e 1-2
+migration/acceptance/about.spec.ts
+  s_267e7a791356aa::t_d885f719e2db57 1-30
+migration/acceptance/package.json
+  s_267e7a791356aa::t_e1d208e0f0c7de 1-4
+migration/acceptance/playwright.config.mts
+  s_267e7a791356aa::t_75f7a04e47d8f8 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f754483b140a47cbea8cde346a683b20b9c8c9e1",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
