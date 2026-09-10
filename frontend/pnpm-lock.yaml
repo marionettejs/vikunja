@@ -46,6 +46,12 @@ importers:
       '@kyvg/vue3-notification':
         specifier: 3.4.2
         version: 3.4.2(vue@3.5.42(typescript@6.0.3))
+      '@mnjs/adapters':
+        specifier: 5.0.0-beta.2
+        version: 5.0.0-beta.2(lit-html@3.3.3)(marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))
+      '@mnjs/data':
+        specifier: 5.0.0-beta.2
+        version: 5.0.0-beta.2
       '@sentry/vue':
         specifier: 10.73.0
         version: 10.73.0(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(vue@3.5.42(typescript@6.0.3))
@@ -145,6 +151,9 @@ importers:
       klona:
         specifier: 2.0.6
         version: 2.0.6
+      lit-html:
+        specifier: 3.3.3
+        version: 3.3.3
       lowlight:
         specifier: 3.3.0
         version: 3.3.0
@@ -1828,6 +1837,35 @@ packages:
 
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
+
+  '@mnjs/adapters@5.0.0-beta.2':
+    resolution: {integrity: sha512-N7xAEL1l3x2YSfxVA+7gOzt2ltrxYBE8hStZs6kbOW1CRPa2X4mvuDNEZxqXve5M52UR85gr2yzDwXBokB+hPg==}
+    engines: {node: '>=24'}
+    peerDependencies:
+      '@types/backbone': ^1.4.23
+      '@types/jquery': ^4.0.1
+      backbone: ^1.4.0
+      jquery: ^4.0.0
+      lit-html: ^3.3.3
+      marionette: 5.0.0-beta.2
+      morphdom: ^2.7.8
+    peerDependenciesMeta:
+      '@types/backbone':
+        optional: true
+      '@types/jquery':
+        optional: true
+      backbone:
+        optional: true
+      jquery:
+        optional: true
+      lit-html:
+        optional: true
+      morphdom:
+        optional: true
+
+  '@mnjs/data@5.0.0-beta.2':
+    resolution: {integrity: sha512-70pyH9scolIBs4pzTk8CqL4Gsh0WWADMJj0D6rWeHM4/6ttkCFLN5cAhBlX6fyoY9iGb7zmwhkoX+MDHGH/BOQ==}
+    engines: {node: '>=24'}
 
   '@mnjs/radio@5.0.0-beta.2':
     resolution: {integrity: sha512-Nk1uUSpd0g4baV+2FzGTuDmEsoiEy6SixDYU+STHzKfEmBW8mI0Jb1sa1GMqPPuEC2KsSzTmin7TlSMtnTfQKw==}
@@ -5004,6 +5042,9 @@ packages:
 
   linkifyjs@4.3.3:
     resolution: {integrity: sha512-P8aEP5U/D1/IlTY2OeYsErdwh9bGuLE30NcXtKEjgdHcahveQoQwM2yZNsioQHsWFz0P7KKudisbrzCgR0sDHg==}
+
+  lit-html@3.3.3:
+    resolution: {integrity: sha512-el8M6jK2o3RXBnrSHX3ZKrsN8zEV63pSExTO1wYJz7QndGYZ8353e2a5PPX+qHe2aGayfnchQmkAojaWAREOIA==}
 
   local-pkg@1.2.1:
     resolution: {integrity: sha512-++gUqRDEvcnN6Zhqrr+y/CkVEHhlrR96vZn3nZZPYzMcBUyBtTKzB9NadClFIsIVSsu+3i9tfk/erqy9kAmt7Q==}
@@ -8924,6 +8965,16 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.3': {}
 
+  '@mnjs/adapters@5.0.0-beta.2(lit-html@3.3.3)(marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))':
+    dependencies:
+      marionette: 5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
+    optionalDependencies:
+      lit-html: 3.3.3
+
+  '@mnjs/data@5.0.0-beta.2':
+    dependencies:
+      '@mnjs/utils': 5.0.0-beta.2
+
   '@mnjs/radio@5.0.0-beta.2':
     dependencies:
       '@mnjs/utils': 5.0.0-beta.2
@@ -12190,6 +12241,10 @@ snapshots:
       uc.micro: 3.0.0
 
   linkifyjs@4.3.3: {}
+
+  lit-html@3.3.3:
+    dependencies:
+      '@types/trusted-types': 2.0.7
 
   local-pkg@1.2.1:
     dependencies:

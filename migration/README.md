@@ -6,7 +6,8 @@ This is an experimental migration of Vikunja's full frontend to published
 The application still uses Vue for its shell, routing and existing features. The
 About dialog's version-content block now uses a Marionette View hosted by a
 Marionette Region. The surrounding modal, card, buttons and navigation remain Vue;
-this is the first partial integration, not a completed feature migration.
+this is the first partial integration, not a completed feature migration. See
+[Architecture and Foundation](./architecture.md) for the configured stack and adapter contracts.
 
 ## Completion criteria
 
