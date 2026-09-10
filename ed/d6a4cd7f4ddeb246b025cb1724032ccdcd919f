@@ -1,0 +1,25 @@
+frontend/src/marionette/views/TaskTitleView.ts
+  s_267e7a791356aa::t_eb95b19d534844 1-174
+frontend/src/marionette/views/TaskTitleView.test.ts
+  s_267e7a791356aa::t_eb95b19d534844 1-231
+frontend/src/components/tasks/partials/Heading.test.ts
+  s_267e7a791356aa::t_91e0161e3b1cf7 1-344
+frontend/src/components/tasks/partials/Heading.vue
+  s_267e7a791356aa::t_883048c349bb0d 27-30,62,65,72-74,95,111-112,114-117,121-124,127-150,152-153,156,160,163-165,168-169,171,173-176,178-180,184-209,225-226,228-230,232-238,242-245
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "edd6a4cd7f4ddeb246b025cb1724032ccdcd919f",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
