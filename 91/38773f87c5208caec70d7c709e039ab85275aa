@@ -1,0 +1,22 @@
+migration/architecture.md
+  s_267e7a791356aa::t_6529452bda06d2 48-73,77-80
+migration/README.md
+  s_267e7a791356aa::t_6529452bda06d2 50,52-66,107-110
+  s_267e7a791356aa::t_20492de91069c9 111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9138773f87c5208caec70d7c709e039ab85275aa",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
