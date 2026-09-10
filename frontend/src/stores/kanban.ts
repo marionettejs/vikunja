@@ -3,6 +3,15 @@ import {acceptHMRUpdate, defineStore} from 'pinia'
 import {klona} from 'klona/lite'
 
 import {findById, findIndexById} from '@/helpers/utils'
+import {
+	getTaskIndicesById,
+	setTaskInBucketByIndex as setTaskInBucketByIndexInState,
+	setTaskInBucket as setTaskInBucketInState,
+	ensureTaskIsInCorrectBucket as ensureTaskIsInCorrectBucketInState,
+	moveTaskToBucket as moveTaskToBucketInState,
+	addTaskToBucket as addTaskToBucketInState,
+	removeTaskInBucket as removeTaskInBucketInState,
+} from '@/helpers/kanbanTransitions'
 
 import BucketService from '@/services/bucket'
 import TaskCollectionService, {type TaskFilterParams} from '@/services/taskCollection'
@@ -18,19 +27,6 @@ import {useBaseStore} from '@/stores/base'
 import {useProjectStore} from '@/stores/projects'
 
 const TASKS_PER_BUCKET = 25
-
-function getTaskIndicesById(buckets: IBucket[], taskId: ITask['id']) {
-	let taskIndex
-	const bucketIndex = buckets.findIndex(({tasks}) => {
-		taskIndex = findIndexById(tasks, taskId)
-		return taskIndex !== -1
-	})
-
-	return {
-		bucketIndex: bucketIndex !== -1 ? bucketIndex : null,
-		taskIndex: taskIndex !== -1 ? taskIndex : null,
-	}
-}
 
 /**
  * This store is intended to hold the currently active kanban view.
@@ -105,113 +101,32 @@ export const useKanbanStore = defineStore('kanban', () => {
 		taskIndex,
 		task,
 	}: {
-		bucketIndex: number,
-		taskIndex: number,
+		bucketIndex: number
+		taskIndex: number
 		task: ITask
 	}) {
-		const bucket = buckets.value[bucketIndex]
-		bucket.tasks[taskIndex] = task
-		buckets.value[bucketIndex] = bucket
+		setTaskInBucketByIndexInState(buckets.value, {
+			bucketIndex,
+			taskIndex,
+			task,
+		})
 	}
 
 	function setTaskInBucket(task: ITask) {
-		// If this gets invoked without any tasks actually loaded, we can save the hassle of finding the task
-		if (buckets.value.length === 0) {
-			return
-		}
-
-		let found = false
-
-		const findAndUpdate = (b: number) => {
-			for (const [t, taskInBucket] of buckets.value[b].tasks.entries()) {
-				if (taskInBucket.id === task.id) {
-					const bucket = buckets.value[b]
-					bucket.tasks[t] = task
-
-					buckets.value[b] = bucket
-
-					found = true
-					return
-				}
-			}
-		}
-
-		for (let b = 0; b < buckets.value.length; b++) {
-			findAndUpdate(b)
-			if (found) {
-				return
-			}
-		}
+		setTaskInBucketInState(buckets.value, task)
 	}
-	
-	// This function is an exact clone of the logic in the api
-	function getDefaultBucketId(view: IProjectView): IBucket['id'] {
-		if (view.defaultBucketId) {
-			return view.defaultBucketId
-		}
-		
-		return buckets.value[0]?.id
-	}
-	
+
 	function ensureTaskIsInCorrectBucket(task: ITask) {
-		if (buckets.value.length === 0) {
-			return
-		}
-		
-		const {bucketIndex} = getTaskIndicesById(buckets.value, task.id)
-		if (bucketIndex === null) return
-		const currentTaskBucket = buckets.value[bucketIndex]
-		
 		const currentView: IProjectView | undefined = baseStore.currentProject?.views?.find(v => v.id === baseStore.currentProjectViewId)
-		if(typeof currentView === 'undefined') return
-		
-		// If the task is done, make sure it is in the done bucket
-		if (task.done && currentView.doneBucketId !== 0 && currentTaskBucket.id !== currentView.doneBucketId) {
-			moveTaskToBucket(task, currentView.doneBucketId)
-		}
-
-		// If the task is not done but was in the done bucket before, move it to the default bucket
-		if(!task.done && currentView.doneBucketId !== 0 && currentTaskBucket.id === currentView.doneBucketId) {
-			const defaultBucketId = getDefaultBucketId(currentView)
-			moveTaskToBucket(task, defaultBucketId)
-		}
-		
-		setTaskInBucket(task)
+		ensureTaskIsInCorrectBucketInState(buckets.value, task, currentView)
 	}
 	
 	function moveTaskToBucket(task: ITask, bucketId: IBucket['id']) {
-		const {bucketIndex} = getTaskIndicesById(buckets.value, task.id)
-		if (bucketIndex === null) return
-		const currentTaskBucket = buckets.value[bucketIndex]
-		if (typeof currentTaskBucket === 'undefined' || currentTaskBucket.id === bucketId) {
-			return
-		}
-		// The target bucket can belong to a kanban view other than the loaded one (the task detail
-		// view lets users move tasks between buckets of any view). Removing the task here would drop
-		// it from the board with no bucket to put it back into.
-		if (findIndexById(buckets.value, bucketId) === -1) {
-			return
-		}
-		removeTaskInBucket(task)
-		task.bucketId = bucketId
-		addTaskToBucket(task)
+		moveTaskToBucketInState(buckets.value, task, bucketId)
 	}
 
 	function addTaskToBucket(task: ITask) {
-		const bucketIndex = findIndexById(buckets.value, task.bucketId)
-		const oldBucket = buckets.value[bucketIndex]
-		if (typeof oldBucket === 'undefined') {
-			return
-		}
-		const newBucket = {
-			...oldBucket,
-			count: (oldBucket.count || 0) + 1,
-			tasks: [
-				task,
-				...oldBucket.tasks,
-			],
-		}
-		buckets.value[bucketIndex] = newBucket
+		addTaskToBucketInState(buckets.value, task)
 	}
 
 	function addTasksToBucket(tasks: ITask[], bucketId: IBucket['id']) {
@@ -231,23 +146,7 @@ export const useKanbanStore = defineStore('kanban', () => {
 	}
 
 	function removeTaskInBucket(task: ITask) {
-		// If this gets invoked without any tasks actually loaded, we can save the hassle of finding the task
-		if (buckets.value.length === 0) {
-			return
-		}
-
-		const {bucketIndex, taskIndex} = getTaskIndicesById(buckets.value, task.id)
-
-		if (
-			bucketIndex === null ||
-			taskIndex === null ||
-			(buckets.value[bucketIndex]?.tasks[taskIndex]?.id !== task.id)
-		) {
-			return
-		}
-
-		buckets.value[bucketIndex].tasks.splice(taskIndex, 1)
-		buckets.value[bucketIndex].count--
+		removeTaskInBucketInState(buckets.value, task)
 	}
 
 	function setBucketLoading({bucketId, loading}: { bucketId: IBucket['id'], loading: boolean }) {
