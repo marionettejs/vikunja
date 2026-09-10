@@ -1,0 +1,21 @@
+README.md
+  s_267e7a791356aa::t_4eda31b7552b06 9-10
+migration/README.md
+  s_267e7a791356aa::t_d28f3c1450e3d4 1-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e145b16755400611568a2630a208f9b12f07bc4e",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
