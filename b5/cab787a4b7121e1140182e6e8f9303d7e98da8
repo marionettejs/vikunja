@@ -1,0 +1,28 @@
+migration/acceptance/task-title.spec.ts
+  s_267e7a791356aa::t_c4abe451f6e56b 1-86,137-148
+  s_267e7a791356aa::t_58ccf4741a0cd8 87-136
+migration/acceptance/playwright.config.mts
+  s_267e7a791356aa::t_c4abe451f6e56b 8
+migration/README.md
+  s_267e7a791356aa::t_bd907f98a1ac34 47,50-77
+  s_267e7a791356aa::t_6bcd1e12356e6c 78
+migration/architecture.md
+  s_267e7a791356aa::t_bd907f98a1ac34 42,54-56
+  s_267e7a791356aa::t_7e9d3bee2974bd 57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b5cab787a4b7121e1140182e6e8f9303d7e98da8",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
