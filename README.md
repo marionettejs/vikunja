@@ -6,6 +6,8 @@ We intend to migrate the full Vue frontend to Marionette 5.0.0-beta.2, preservin
 
 Migration has just started; the current application still uses Vue. We do not claim completion, demonstrated parity, or endorsement by upstream. Because this is an experimental migration fork, the upstream documentation, links, attributions, and license section preserved below continue to describe the original project.
 
+See the [migration record](migration/README.md) for scope, completion criteria, and how we record agent-led work.
+
 ---
 
 <img src="https://vikunja.io/images/vikunja-logo.svg" alt="" style="display: block;width: 50%;margin: 0 auto;" width="50%"/>
