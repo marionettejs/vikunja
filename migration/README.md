@@ -101,8 +101,14 @@ to the helper. This is preserved baseline debt, not a clean typecheck. No origin
 browser tests were modified. The Mage frontend build passed; 19 of 20 original
 Kanban browser cases passed, including drag, recurring-task relocation and deletion.
 The settings-count case failed after its settings helper requested double-slash
-URLs that returned 404, matching the documented local baseline harness defect.
-Full original browser validation remains a PR CI requirement.
+URLs that returned 404. `magefile.go` supplies `API_URL` with a trailing slash;
+`frontend/tests/support/updateUserSettings.ts` appends `/user` and
+`/user/settings/general`, producing `/api/v1//user` and
+`/api/v1//user/settings/general`. Both requests returned 404 in the full and
+isolated local runs, so the setting was never enabled. The original Vue baseline
+also exhibited this local harness defect. No frozen helper was modified to hide it.
+All six original browser-test shards passed in PR CI at `1ed836e07`, where the
+workflow does not supply Mage's `API_URL` override.
 
 ## First integration and acceptance
 
