@@ -92,6 +92,20 @@ inspection did not find generic task-update propagation. Do not assume a realtim
 task synchronization contract exists. This extraction does not introduce a state
 owner, replace websocket subscriptions or activate a Marionette screen.
 
+## Kanban transition preparation
+
+`helpers/kanbanTransitions.ts` contains the existing bucket lookup, task replacement,
+addition, removal and completion-driven placement algorithms. The current Kanban
+store calls these functions with its owned bucket array and current view; it still
+owns loading, pagination and reactive state. Task saves and Gantt observers retain
+their existing coordination. No native store or screen is activated.
+
+These functions mutate supplied state. Extraction preserves task `bucketId` changes,
+bucket counts, prepend order and existing array/object identity behavior. Missing
+loaded targets leave tasks visible, and reopening a completed task uses the view's
+default bucket or first bucket. A bundle with tree-shaking disabled has two inputs
+(the helper and shared utilities), with no Vue or services.
+
 ## Attachment Monitoring and Region Ownership
 
 - Marionette manages element attachment and lifecycle through `Region` instances and `monitorViewEvents`.

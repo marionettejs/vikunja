@@ -1,7 +1,18 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
 
-const {bucketUpdate} = vi.hoisted(() => ({bucketUpdate: vi.fn()}))
+const {bucketUpdate, baseState} = vi.hoisted(() => ({
+	bucketUpdate: vi.fn(),
+	baseState: {
+		currentProject: {views: [] as {id: number; doneBucketId: number; defaultBucketId: number}[]},
+		currentProjectViewId: 1,
+		setCurrentProject: vi.fn(),
+	},
+}))
+
+beforeEach(() => {
+	baseState.currentProject.views = []
+})
 
 vi.mock('@/services/bucket', () => ({
 	default: class {
@@ -19,10 +30,7 @@ vi.mock('vue-i18n', () => ({
 }))
 
 vi.mock('@/stores/base', () => ({
-	useBaseStore: () => ({
-		currentProject: null,
-		setCurrentProject: vi.fn(),
-	}),
+	useBaseStore: () => baseState,
 }))
 
 vi.mock('@/stores/auth', () => ({
@@ -173,5 +181,56 @@ describe('kanban store: addTaskToBucket', () => {
 
 		expect(kanban.buckets[0].tasks).toEqual([])
 		expect(kanban.buckets).toHaveLength(1)
+	})
+})
+
+
+describe('kanban store: saved task placement', () => {
+	beforeEach(() => {
+		setActivePinia(createPinia())
+		baseState.currentProject.views = [{id: 1, doneBucketId: 2, defaultBucketId: 3}]
+	})
+
+	it.each([
+		{done: true, start: 1, defaultBucketId: 3, target: 2},
+		{done: false, start: 2, defaultBucketId: 3, target: 3},
+		{done: false, start: 2, defaultBucketId: 0, target: 1},
+	])('places a saved task with done=$done in bucket $target', ({done, start, defaultBucketId, target}) => {
+		baseState.currentProject.views[0].defaultBucketId = defaultBucketId
+		const kanban = useKanbanStore()
+		kanban.setBuckets([makeBucket(1, 'First'), makeBucket(2, 'Done'), makeBucket(3, 'Default')])
+		kanban.addTaskToBucket(makeTask(42, start))
+		const saved = {...makeTask(42, start), done, title: 'Saved title'}
+
+		kanban.ensureTaskIsInCorrectBucket(saved)
+
+		expect(saved.bucketId).toBe(target)
+		expect(kanban.buckets.find(b => b.id === target)?.tasks).toEqual([saved])
+		expect(kanban.buckets.find(b => b.id === start)?.tasks).toEqual([])
+		expect(kanban.buckets.map(b => b.count)).toEqual([1, 2, 3].map(id => id === target ? 1 : 0))
+	})
+
+	it('retains the loaded task when its current view is unavailable', () => {
+		baseState.currentProject.views = []
+		const kanban = useKanbanStore()
+		kanban.setBuckets([makeBucket(1, 'First', [makeTask(42, 1)])])
+		const loaded = kanban.buckets[0].tasks[0]
+
+		kanban.ensureTaskIsInCorrectBucket({...makeTask(42, 1), done: true})
+
+		expect(kanban.buckets[0].tasks[0]).toBe(loaded)
+		expect(kanban.buckets[0].count).toBe(1)
+	})
+
+	it('keeps a saved task visible when the done bucket is not loaded', () => {
+		const kanban = useKanbanStore()
+		kanban.setBuckets([makeBucket(1, 'First', [makeTask(42, 1)])])
+		const saved = {...makeTask(42, 1), done: true, title: 'Saved title'}
+
+		kanban.ensureTaskIsInCorrectBucket(saved)
+
+		expect(saved.bucketId).toBe(1)
+		expect(kanban.buckets[0].tasks).toEqual([saved])
+		expect(kanban.buckets[0].count).toBe(1)
 	})
 })

@@ -79,6 +79,37 @@ diagnostic counts. Lint reported zero errors and 15 existing warnings. All 101
 frozen browser-test/support/configuration hashes remained unchanged; the full
 original browser suite remains a PR CI check.
 
+## Kanban transition preparation
+
+The existing Kanban store now delegates bucket-task algorithms to a neutral helper.
+This prepares reusable workspace behavior while keeping one active state owner;
+it does not migrate the board or task-detail screen.
+
+Gemini Flash Low produced the helper and store delegates (20,548 input and 2,082
+output tokens reported). Codex corrected guessed type-import paths and removed
+an added guard that changed behavior. The supplied source bundle had accidentally
+truncated one function; this coordinator error contributed incomplete context and
+is recorded separately from agent performance. Codex also authored five additional
+public-store cases for done/undone placement, default-bucket fallback, missing view
+and missing loaded target.
+
+The existing full suite passed 1,585 tests before those five cases were added;
+the expanded focused task/Kanban suites then passed 26 tests. Twelve baseline
+comparisons matched values, mutations and retained identities. Typechecking still
+has 816 distinct diagnostic lines: two existing diagnostics moved from the store
+to the helper. This is preserved baseline debt, not a clean typecheck. No original
+browser tests were modified. The Mage frontend build passed; 19 of 20 original
+Kanban browser cases passed, including drag, recurring-task relocation and deletion.
+The settings-count case failed after its settings helper requested double-slash
+URLs that returned 404. `magefile.go` supplies `API_URL` with a trailing slash;
+`frontend/tests/support/updateUserSettings.ts` appends `/user` and
+`/user/settings/general`, producing `/api/v1//user` and
+`/api/v1//user/settings/general`. Both requests returned 404 in the full and
+isolated local runs, so the setting was never enabled. The original Vue baseline
+also exhibited this local harness defect. No frozen helper was modified to hide it.
+All six original browser-test shards passed in PR CI at `1ed836e07`, where the
+workflow does not supply Mage's `API_URL` override.
+
 ## First integration and acceptance
 
 The temporary Vue host owns one Region and replaces its child when the supplied
