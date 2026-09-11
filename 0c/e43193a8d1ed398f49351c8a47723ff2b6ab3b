@@ -1,0 +1,23 @@
+frontend/src/marionette/data/TaskRecords.test.ts
+  s_267e7a791356aa::t_097ffa4c01fa15 1-142
+frontend/src/marionette/data/TaskRecords.ts
+  s_267e7a791356aa::t_f600282d3e1bb3 1-59
+migration/README.md
+  s_267e7a791356aa::t_7d5147f606b393 113-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0ce43193a8d1ed398f49351c8a47723ff2b6ab3b",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
