@@ -1,5 +1,6 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect, expectTypeOf} from 'vitest'
 import {normalizeTaskResponse} from './normalizeTaskResponse'
+import type {TaskAttributes} from './TaskRecords'
 
 describe('normalizeTaskResponse', () => {
 	it('returns exactly {id: 42} with absent fields for {id: 42}', () => {
@@ -113,5 +114,13 @@ describe('normalizeTaskResponse', () => {
 		const snapshot = JSON.stringify(raw)
 		normalizeTaskResponse(raw)
 		expect(JSON.stringify(raw)).toBe(snapshot)
+	})
+})
+
+describe('TaskAttributes date contract', () => {
+	it('declares created and updated as nullable, and the five optional dates too', () => {
+		expectTypeOf<TaskAttributes['created']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['updated']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['dueDate']>().toEqualTypeOf<Date | null>()
 	})
 })
