@@ -147,6 +147,26 @@ describe('stabilizePatch', () => {
 		expect(result.dueDate).toBe(patchDate)
 	})
 
+	it('does not treat two different Maps as equal', () => {
+		const patchMap = new Map([['a', 1]])
+		const result = stabilizePatch(
+			{reactions: new Map([['b', 2]])},
+			{id: 1, reactions: patchMap as unknown as TaskPatch['reactions']},
+		)
+
+		expect(result.reactions).toBe(patchMap)
+	})
+
+	it('reuses the previous Set when both hold the same members', () => {
+		const previousSet = new Set([1, 2])
+		const result = stabilizePatch(
+			{reactions: previousSet},
+			{id: 1, reactions: new Set([1, 2]) as unknown as TaskPatch['reactions']},
+		)
+
+		expect(result.reactions).toBe(previousSet)
+	})
+
 	describe('composed with TaskRecords', () => {
 		it('re-ingesting an unchanged response emits no change event', () => {
 			const records = new TaskRecords()

@@ -1,54 +1,9 @@
+// The es6 entrypoint, already used by useRouteFilters, handles Map, Set and typed
+// arrays. The default entrypoint compares them by own enumerable keys, which makes
+// any two Maps look equal and would suppress a real change.
+import equal from 'fast-deep-equal/es6'
+
 import type {TaskPatch} from './TaskRecords'
-
-function isPlainObject(val: unknown): val is Record<string, unknown> {
-	return typeof val === 'object' && val !== null && !Array.isArray(val) && !(val instanceof Date)
-}
-
-function deepEquals(a: unknown, b: unknown): boolean {
-	if (Object.is(a, b)) {
-		return true
-	}
-	if (a === null || a === undefined || b === null || b === undefined) {
-		return false
-	}
-	if (a instanceof Date || b instanceof Date) {
-		if (a instanceof Date && b instanceof Date) {
-			return a.getTime() === b.getTime()
-		}
-		return false
-	}
-	if (Array.isArray(a) || Array.isArray(b)) {
-		if (Array.isArray(a) && Array.isArray(b)) {
-			if (a.length !== b.length) {
-				return false
-			}
-			for (let i = 0; i < a.length; i++) {
-				if (!deepEquals(a[i], b[i])) {
-					return false
-				}
-			}
-			return true
-		}
-		return false
-	}
-	if (isPlainObject(a) && isPlainObject(b)) {
-		const aKeys = Object.keys(a)
-		const bKeys = Object.keys(b)
-		if (aKeys.length !== bKeys.length) {
-			return false
-		}
-		for (const key of aKeys) {
-			if (!Object.prototype.hasOwnProperty.call(b, key)) {
-				return false
-			}
-			if (!deepEquals(a[key], b[key])) {
-				return false
-			}
-		}
-		return true
-	}
-	return false
-}
 
 // Object.is is how Model.set decides an attribute changed, so a freshly built but
 // unchanged value would report a change that did not happen. Swapping in the
@@ -65,7 +20,7 @@ export function stabilizePatch(previous: Record<string, unknown> | undefined, pa
 		}
 
 		const previousValue = previous[key]
-		if (deepEquals(previousValue, result[key])) {
+		if (equal(previousValue, result[key])) {
 			result[key] = previousValue
 		}
 	}
