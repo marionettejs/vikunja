@@ -4,10 +4,23 @@ import type {IFile} from '@/modelTypes/IFile'
 import type {TaskPatch} from './TaskRecords'
 import {camelCase} from 'change-case'
 import {parseDateOrNull} from '@/helpers/parseDateOrNull'
-import {normalizeUser} from './normalizeUser'
+import {normalizeUser, type UserPatch} from './normalizeUser'
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+// IFile and IAttachment declare created as a non-nullable Date, but the API sends
+// a zero-time year for "never" and parseDateOrNull reports that as null. Saying
+// Partial<IFile> or Partial<IAttachment> would hide it behind the cast.
+export type FilePatch = Partial<Omit<IFile, 'created'>> & {
+	created?: Date | null
+}
+
+export type AttachmentPatch = Partial<Omit<IAttachment, 'created' | 'createdBy' | 'file'>> & {
+	created?: Date | null
+	createdBy?: UserPatch
+	file?: FilePatch
 }
 
 export function normalizeReminder(raw: Record<string, unknown>): Partial<ITaskReminder> {
@@ -27,12 +40,9 @@ export function normalizeReminder(raw: Record<string, unknown>): Partial<ITaskRe
 	return result as Partial<ITaskReminder>
 }
 
-export function normalizeFile(raw: Record<string, unknown>): Partial<IFile> {
+export function normalizeFile(raw: Record<string, unknown>): FilePatch {
 	const result: Record<string, unknown> = {}
 	for (const key of Object.keys(raw)) {
-		if (!Object.prototype.hasOwnProperty.call(raw, key)) {
-			continue
-		}
 		const camelKey = camelCase(key)
 		const value = raw[key]
 		if (camelKey === 'created') {
@@ -41,10 +51,10 @@ export function normalizeFile(raw: Record<string, unknown>): Partial<IFile> {
 			result[camelKey] = value
 		}
 	}
-	return result as Partial<IFile>
+	return result as FilePatch
 }
 
-export function normalizeAttachment(raw: Record<string, unknown>): Partial<IAttachment> {
+export function normalizeAttachment(raw: Record<string, unknown>): AttachmentPatch {
 	const result: Record<string, unknown> = {}
 	for (const key of Object.keys(raw)) {
 		if (!Object.prototype.hasOwnProperty.call(raw, key)) {
@@ -70,7 +80,7 @@ export function normalizeAttachment(raw: Record<string, unknown>): Partial<IAtta
 			result[camelKey] = value
 		}
 	}
-	return result as Partial<IAttachment>
+	return result as AttachmentPatch
 }
 
 export function normalizeTaskNested(patch: TaskPatch): TaskPatch {
