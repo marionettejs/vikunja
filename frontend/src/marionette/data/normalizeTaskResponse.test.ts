@@ -79,6 +79,28 @@ describe('normalizeTaskResponse', () => {
 		expect(() => normalizeTaskResponse({id: NaN})).toThrow('Field id must be a finite number')
 	})
 
+	it('rejects ids that coerce to zero', () => {
+		expect(() => normalizeTaskResponse({id: null})).toThrow('Field id must be a finite number')
+		expect(() => normalizeTaskResponse({id: ''})).toThrow('Field id must be a finite number')
+		expect(() => normalizeTaskResponse({id: '   '})).toThrow('Field id must be a finite number')
+		expect(() => normalizeTaskResponse({id: false})).toThrow('Field id must be a finite number')
+		expect(() => normalizeTaskResponse({id: []})).toThrow('Field id must be a finite number')
+	})
+
+	it('accepts a numeric string id', () => {
+		expect(normalizeTaskResponse({id: '42'}).id).toBe(42)
+	})
+
+	it('preserves an explicitly null project_id instead of coercing it to zero', () => {
+		const result = normalizeTaskResponse({id: 1, project_id: null})
+		expect('projectId' in result).toBe(true)
+		expect(result.projectId).toBeNull()
+	})
+
+	it('converts a present numeric project_id', () => {
+		expect(normalizeTaskResponse({id: 1, project_id: '7'}).projectId).toBe(7)
+	})
+
 	it('does not mutate raw input', () => {
 		const raw = {id: 42, title: ' test ', labels: [{id: 1}]}
 		const snapshot = JSON.stringify(raw)

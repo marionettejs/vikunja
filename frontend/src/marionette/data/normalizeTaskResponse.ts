@@ -16,7 +16,12 @@ export function normalizeTaskResponse(raw: Record<string, unknown>): TaskPatch {
 		throw new Error('Missing required field: id')
 	}
 
-	const idNum = Number(camel.id)
+	// Number(null), Number('') and Number(false) are all 0, so coercing first would
+	// accept a malformed response and key it under task 0.
+	const rawId = camel.id
+	const idIsNumeric = typeof rawId === 'number'
+		|| (typeof rawId === 'string' && rawId.trim() !== '')
+	const idNum = idIsNumeric ? Number(rawId) : Number.NaN
 	if (!Number.isFinite(idNum)) {
 		throw new Error('Field id must be a finite number')
 	}
@@ -31,7 +36,11 @@ export function normalizeTaskResponse(raw: Record<string, unknown>): TaskPatch {
 				result.id = idNum
 				break
 			case 'projectId':
-				result.projectId = Number(value)
+				// An explicit null is what the response sent; coercing it to 0 would
+				// invent a value this normalizer exists to preserve.
+				result.projectId = value === null || value === undefined
+					? value
+					: Number(value)
 				break
 			case 'title':
 				result.title = typeof value === 'string' ? value.trim() : value
