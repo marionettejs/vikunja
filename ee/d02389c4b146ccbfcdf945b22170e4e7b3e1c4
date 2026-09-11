@@ -1,0 +1,21 @@
+frontend/src/marionette/data/TaskRecords.ts
+  s_a9d55413d2bdb1::t_f4b491b8d2924e 4-11
+frontend/src/marionette/data/normalizeTaskResponse.test.ts
+  s_a9d55413d2bdb1::t_65cde888b07f4f 104-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eed02389c4b146ccbfcdf945b22170e4e7b3e1c4",
+  "prompts": {},
+  "sessions": {
+    "s_a9d55413d2bdb1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "688150b2-a601-44ea-b346-6fa1e798d64a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
