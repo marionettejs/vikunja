@@ -121,6 +121,10 @@ describe('TaskAttributes date contract', () => {
 	it('declares created and updated as nullable, and the five optional dates too', () => {
 		expectTypeOf<TaskAttributes['created']>().toEqualTypeOf<Date | null>()
 		expectTypeOf<TaskAttributes['updated']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['doneAt']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['deletedAt']>().toEqualTypeOf<Date | null>()
 		expectTypeOf<TaskAttributes['dueDate']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['startDate']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['endDate']>().toEqualTypeOf<Date | null>()
 	})
 })
