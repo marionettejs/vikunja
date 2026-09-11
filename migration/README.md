@@ -110,6 +110,35 @@ also exhibited this local harness defect. No frozen helper was modified to hide 
 All six original browser-test shards passed in PR CI at `1ed836e07`, where the
 workflow does not supply Mage's `API_URL` override.
 
+## Native record preparation
+
+`marionette/data/TaskRecords.ts` owns one native `@mnjs/data` Model per persisted
+task ID. It is not instantiated by any application route. Future native list and
+detail consumers can borrow the same record through multiple Collections while
+keeping drafts and view-specific membership/order separate.
+
+Inputs must already be normalized patches that preserve which fields were supplied.
+Omitted fields retain their values; explicit null/undefined and nested references
+follow native Model semantics. This owner does not parse HTTP responses, fill defaults,
+deep-clone values or serialize requests. Borrowers must not mutate records or nested
+values, change their IDs or destroy them. The owner destroys removed records and all
+remaining records at teardown; subsequent writes are rejected. Borrower Collections
+remain caller-owned.
+
+Before activation, transport must preserve response-field presence and detach request
+inputs where serialization mutates reminders. Passing parsed tasks through the old
+`TaskModel` constructor is not a cloning operation: a verified one-hour recurrence
+became `minutes: NaN` on reparsing. No partial native screen or parallel Vue store is
+activated by this preparation.
+
+Gemini Flash Low produced the owner and seven tests. Codex corrected named type
+imports and invalid date/attachment fixtures, removed unnecessary casts, and
+strengthened explicit-undefined and multi-record teardown assertions. The full
+suite passed 1,597 tests across 116 files; lint had zero errors and 15 existing
+warnings. Typechecking retains 816 baseline diagnostics with none added. Browser
+flows were not rerun because this module has no application consumer yet; these
+results prove its tested data contracts, not a migrated user workflow.
+
 ## First integration and acceptance
 
 The temporary Vue host owns one Region and replaces its child when the supplied
