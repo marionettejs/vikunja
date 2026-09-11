@@ -101,6 +101,13 @@ describe('normalizeTaskResponse', () => {
 		expect(normalizeTaskResponse({id: 1, project_id: '7'}).projectId).toBe(7)
 	})
 
+	it('reports a zero-time created as null, which the attribute type allows', () => {
+		const result = normalizeTaskResponse({id: 1, created: '0001-01-01T00:00:00Z', updated: ''})
+
+		expect(result.created).toBeNull()
+		expect(result.updated).toBeNull()
+	})
+
 	it('does not mutate raw input', () => {
 		const raw = {id: 42, title: ' test ', labels: [{id: 1}]}
 		const snapshot = JSON.stringify(raw)
