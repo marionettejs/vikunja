@@ -17,10 +17,12 @@ export type FilePatch = Partial<Omit<IFile, 'created'>> & {
 	created?: Date | null
 }
 
+// createdBy and file are nullable because the normalizer preserves an explicit
+// null from the response rather than inventing an empty object for it.
 export type AttachmentPatch = Partial<Omit<IAttachment, 'created' | 'createdBy' | 'file'>> & {
 	created?: Date | null
-	createdBy?: UserPatch
-	file?: FilePatch
+	createdBy?: UserPatch | null
+	file?: FilePatch | null
 }
 
 export function normalizeReminder(raw: Record<string, unknown>): Partial<ITaskReminder> {

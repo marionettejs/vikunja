@@ -1,10 +1,13 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect, expectTypeOf} from 'vitest'
 import {
 	normalizeReminder,
 	normalizeFile,
 	normalizeAttachment,
 	normalizeTaskNested,
+	type FilePatch,
+	type AttachmentPatch,
 } from './normalizeTaskNested'
+import type {UserPatch} from './normalizeUser'
 import type {TaskPatch} from './TaskRecords'
 import type {ITaskReminder} from '@/modelTypes/ITaskReminder'
 import type {IAttachment} from '@/modelTypes/IAttachment'
@@ -146,5 +149,14 @@ describe('normalizeTaskNested', () => {
 		const after = JSON.stringify(patch)
 		expect(before).toBe(after)
 		expect(result).not.toBe(patch)
+	})
+})
+
+describe('patch type contracts', () => {
+	it('declares the nullable fields the normalizers actually produce', () => {
+		expectTypeOf<FilePatch['created']>().toEqualTypeOf<Date | null | undefined>()
+		expectTypeOf<AttachmentPatch['created']>().toEqualTypeOf<Date | null | undefined>()
+		expectTypeOf<AttachmentPatch['createdBy']>().toEqualTypeOf<UserPatch | null | undefined>()
+		expectTypeOf<AttachmentPatch['file']>().toEqualTypeOf<FilePatch | null | undefined>()
 	})
 })
