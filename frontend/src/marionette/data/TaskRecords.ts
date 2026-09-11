@@ -1,10 +1,9 @@
-import { Model } from '@mnjs/data'
-import type { ITask } from '@/modelTypes/ITask'
-import type { IRelationKind } from '@/types/IRelationKind'
-import type { IUser } from '@/modelTypes/IUser'
+import {Model} from '@mnjs/data'
+import type {ITask} from '@/modelTypes/ITask'
+import type {IRelationKind} from '@/types/IRelationKind'
+import type {IUser} from '@/modelTypes/IUser'
 
-// ITask declares created/updated as Date, but zero-time is normalized to null.
-// The API schema also declares these collection fields nullable while scalars are not.
+// Zero-time dates normalize to null. The generated schema declares six collections nullable while no scalar is. For reactions and relatedTasks, only map values are nullable, not the maps.
 export type TaskAttributes = Omit<
 	{ [K in keyof ITask]: ITask[K] },
 	'created' | 'updated' | 'assignees' | 'attachments' | 'buckets' | 'comments' | 'labels' | 'reminders' | 'reactions' | 'relatedTasks'
@@ -17,8 +16,8 @@ export type TaskAttributes = Omit<
 	comments: ITask['comments'] | null
 	labels: ITask['labels'] | null
 	reminders: ITask['reminders'] | null
-	reactions: { [reaction: string]: IUser[] | null } | null
-	relatedTasks: Partial<Record<IRelationKind, ITask[] | null>> | null
+	reactions: { [reaction: string]: IUser[] | null }
+	relatedTasks: Partial<Record<IRelationKind, ITask[] | null>>
 }
 export type TaskRecord = Model<TaskAttributes>
 export type TaskPatch = Partial<TaskAttributes> & { id: number }
@@ -34,6 +33,7 @@ export class TaskRecords {
 
 		return this._records.get(id)
 	}
+
 	upsert(patch: TaskPatch): TaskRecord {
 		if (this._destroyed) {
 			throw new Error('Cannot upsert into destroyed TaskRecords')

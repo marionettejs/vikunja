@@ -1,11 +1,13 @@
-import { describe, it, expectTypeOf } from 'vitest'
-import type { TaskAttributes } from './TaskRecords'
-import type { Label } from '@/client/generated'
-import type { IUser } from '@/modelTypes/IUser'
-import type { IAttachment } from '@/modelTypes/IAttachment'
-import type { IBucket } from '@/modelTypes/IBucket'
-import type { ITaskComment } from '@/modelTypes/ITaskComment'
-import type { ITaskReminder } from '@/modelTypes/ITaskReminder'
+import {describe, it, expectTypeOf} from 'vitest'
+import type {TaskAttributes} from './TaskRecords'
+import type {Label} from '@/client/generated'
+import type {IUser} from '@/modelTypes/IUser'
+import type {IAttachment} from '@/modelTypes/IAttachment'
+import type {IBucket} from '@/modelTypes/IBucket'
+import type {ITaskComment} from '@/modelTypes/ITaskComment'
+import type {ITaskReminder} from '@/modelTypes/ITaskReminder'
+import type {IRelationKind} from '@/types/IRelationKind'
+import type {ITask} from '@/modelTypes/ITask'
 
 describe('TaskAttributes', () => {
 	it('TaskAttributes[\'labels\'] is Label[] | null', () => {
@@ -21,6 +23,11 @@ describe('TaskAttributes', () => {
 		expectTypeOf<TaskAttributes['buckets']>().toEqualTypeOf<IBucket[] | null>()
 		expectTypeOf<TaskAttributes['comments']>().toEqualTypeOf<ITaskComment[] | null>()
 		expectTypeOf<TaskAttributes['reminders']>().toEqualTypeOf<ITaskReminder[] | null>()
+	})
+
+	it('TaskAttributes map fields are non-nullable maps with nullable values', () => {
+		expectTypeOf<TaskAttributes['reactions']>().toEqualTypeOf<{[reaction: string]: IUser[] | null}>()
+		expectTypeOf<TaskAttributes['relatedTasks']>().toEqualTypeOf<Partial<Record<IRelationKind, ITask[] | null>>>()
 	})
 
 	it('TaskAttributes[\'created\'] and updated are Date | null', () => {
