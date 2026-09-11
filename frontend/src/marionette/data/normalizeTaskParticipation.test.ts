@@ -15,7 +15,7 @@ describe('normalizeReactions', () => {
 	it('preserves emoji keys untouched and normalizes user values', () => {
 		const result = normalizeReactions({'👍': [{is_local_user: true}]})
 		expect(Object.keys(result)).toEqual(['👍'])
-		expect(result['👍'][0].isLocalUser).toBe(true)
+		expect(result['👍']?.[0].isLocalUser).toBe(true)
 	})
 
 	it('does not camelCase multi-word emoji-adjacent keys', () => {
@@ -29,10 +29,16 @@ describe('normalizeReactions', () => {
 		expect(result['👍']).toBeNull()
 	})
 
+	it('keeps a null reaction list as null', () => {
+		const result = normalizeReactions({'👍': null, '🎉': [{is_local_user: true}]})
+		expect(result['👍']).toBeNull()
+		expect(result['🎉']?.[0].isLocalUser).toBe(true)
+	})
+
 	it('copies non-object array elements verbatim', () => {
 		const result = normalizeReactions({'👍': [null, {is_local_user: true}]})
-		expect(result['👍'][0]).toBeNull()
-		expect(result['👍'][1].isLocalUser).toBe(true)
+		expect(result['👍']?.[0]).toBeNull()
+		expect(result['👍']?.[1].isLocalUser).toBe(true)
 	})
 
 	it('yields an empty object for empty input', () => {
@@ -88,7 +94,7 @@ describe('normalizeComment', () => {
 		const result = normalizeComment({reactions: {'👍': [{is_local_user: true}]}})
 		expect(result.reactions).not.toBeNull()
 		expect(Object.keys(result.reactions!)).toEqual(['👍'])
-		expect(result.reactions!['👍'][0].isLocalUser).toBe(true)
+		expect(result.reactions!['👍']?.[0].isLocalUser).toBe(true)
 	})
 
 	it('converts empty string created and null updated to null', () => {
@@ -160,11 +166,25 @@ describe('normalizeTaskParticipation', () => {
 })
 
 describe('patch type contracts', () => {
-	it('asserts SubscriptionPatch and CommentPatch type contracts', () => {
+	it('SubscriptionPatch', () => {
 		expectTypeOf<SubscriptionPatch['user']>().toEqualTypeOf<UserPatch | null | undefined>()
 		expectTypeOf<SubscriptionPatch['created']>().toEqualTypeOf<Date | null | undefined>()
+		expectTypeOf<SubscriptionPatch['id']>().toEqualTypeOf<number | undefined>()
+		expectTypeOf<SubscriptionPatch['entity']>().toEqualTypeOf<string | undefined>()
+		expectTypeOf<SubscriptionPatch['entityId']>().toEqualTypeOf<number | undefined>()
+	})
+
+	it('CommentPatch', () => {
 		expectTypeOf<CommentPatch['author']>().toEqualTypeOf<UserPatch | null | undefined>()
 		expectTypeOf<CommentPatch['reactions']>().toEqualTypeOf<ReactionsPatch | null | undefined>()
 		expectTypeOf<CommentPatch['created']>().toEqualTypeOf<Date | null | undefined>()
+		expectTypeOf<CommentPatch['updated']>().toEqualTypeOf<Date | null | undefined>()
+		expectTypeOf<CommentPatch['id']>().toEqualTypeOf<number | undefined>()
+		expectTypeOf<CommentPatch['taskId']>().toEqualTypeOf<number | undefined>()
+		expectTypeOf<CommentPatch['comment']>().toEqualTypeOf<string | undefined>()
+	})
+
+	it('ReactionsPatch values are nullable, the map is not', () => {
+		expectTypeOf<ReactionsPatch[string]>().toEqualTypeOf<UserPatch[] | null>()
 	})
 })
