@@ -39,14 +39,38 @@ CollectionView.setStateApi(StateApi)
 
 - **Application Integration**: `frontend/src/marionette/index.ts` exports configured `View` and `CollectionView` base classes.
 - **Production View**: `frontend/src/marionette/views/AboutVersionView.ts` converts the About version display to `lit-html` while preserving its required `lines: string[]` options contract, snapshot API, CSS classes (`p-4`), and paragraph structure.
+- **Editable View**: `frontend/src/marionette/views/TaskTitleView.ts` owns native contenteditable text with `template: false`. Initialization sets its text directly because this mode suppresses render callbacks. Keeping template markers out of the editable root preserves browser selection semantics. `Heading.vue` owns its borrowed projection Model and saves through the existing task store.
 - **Executable Reference**: `frontend/src/marionette/reference.test.ts` provides a test-only reference demonstrating multi-consumer coordination, draft input preservation, collection reordering, and region cleanup.
 - **Acceptance and Docs**: `migration/README.md` and `migration/architecture.md`.
 
 ## Coexistence and State Writer Boundary
 
-During coexistence between Vue and Marionette:
-- **Single State Writer Rule**: For any shared domain entity or query cache, exactly one system acts as the source of truth and state writer at any given time.
-- **Service Persistence Boundary**: Domain persistence and API communication remain coordinated through existing API client services. `@mnjs/data` models and collections manage observable in-memory state and event dispatch; they do not perform implicit HTTP synchronization or database mutations.
+The migration unit is a complete screen or coherent route workflow. Marionette
+owns its layout, child Views, editing, state coordination and teardown. The
+remaining Vue router/shell may mount that screen through one narrow temporary
+boundary. Do not add per-field or per-component hosts, model projections or
+callback bridges, or embed Vue widgets inside a screen claimed as migrated.
+
+The About integration and PR #5 title bridge are initial experiments, not patterns
+to repeat. PR #5 is held from automatic merge as a component-level integration;
+its reusable title View and acceptance tests inform the complete task-detail
+screen. Remove each experimental bridge when its containing screen migrates,
+and remove the route host when Marionette owns the router/shell.
+
+For each shared entity/cache, choose exactly one canonical state writer. Reuse
+existing service/domain code only after tracing its imports: several current
+model and service modules transitively depend on Vue. Extract neutral behavior
+without duplicating stores. If shared state requires extensive synchronization,
+move its ownership as a unit or enlarge the cutover boundary. Native data models
+provide observable state, not implicit HTTP synchronization.
+
+Prepare services, layouts, child Views and acceptance in reviewable PRs or commits
+without activating partial screens. Activate the complete replacement together
+and remove its obsolete Vue path. Temporary preparation remains explicitly
+incomplete; do not add permanent fallback routes or dual implementations.
+Preserve rich text, permissions, licensed features, translations, route history
+and all original test contracts. A difficult feature expands the work required;
+it does not justify a reduced replacement.
 
 The migration unit is a complete screen, with one temporary router/shell mount.
 Do not introduce per-field projections, callback bridges or nested Vue widgets.
@@ -107,6 +131,11 @@ default bucket or first bucket. A bundle with tree-shaking disabled has two inpu
 (the helper and shared utilities), with no Vue or services.
 
 ## Attachment Monitoring and Region Ownership
+
+The title experiment required stable factory identity across replacement task
+objects. This is recorded interoperability cost; it does not justify adding
+similar projection machinery to each field. Within Marionette screens, stable
+layout ownership and model updates must preserve editable child identity.
 
 - Marionette manages element attachment and lifecycle through `Region` instances and `monitorViewEvents`.
 - Keep attachment monitoring enabled on the View and its ancestors, and leave
