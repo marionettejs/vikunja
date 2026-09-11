@@ -1,7 +1,14 @@
 import { Model } from '@mnjs/data'
 import type {ITask} from '@/modelTypes/ITask'
 
-export type TaskAttributes = { [K in keyof ITask]: ITask[K] }
+// ITask declares created and updated as non-nullable Date, but the API sends a
+// zero-time year for "never" and normalizeTaskResponse reports that as null
+// through parseDateOrNull. A record really can hold null there, so the attribute
+// namespace says so rather than letting a cast hide it.
+export type TaskAttributes = Omit<{ [K in keyof ITask]: ITask[K] }, 'created' | 'updated'> & {
+	created: Date | null
+	updated: Date | null
+}
 export type TaskRecord = Model<TaskAttributes>
 export type TaskPatch = Partial<TaskAttributes> & { id: number }
 

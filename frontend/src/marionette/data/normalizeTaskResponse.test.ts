@@ -1,5 +1,6 @@
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect, expectTypeOf} from 'vitest'
 import {normalizeTaskResponse} from './normalizeTaskResponse'
+import type {TaskAttributes} from './TaskRecords'
 
 describe('normalizeTaskResponse', () => {
 	it('returns exactly {id: 42} with absent fields for {id: 42}', () => {
@@ -101,10 +102,29 @@ describe('normalizeTaskResponse', () => {
 		expect(normalizeTaskResponse({id: 1, project_id: '7'}).projectId).toBe(7)
 	})
 
+	it('reports a zero-time created as null, which the attribute type allows', () => {
+		const result = normalizeTaskResponse({id: 1, created: '0001-01-01T00:00:00Z', updated: ''})
+
+		expect(result.created).toBeNull()
+		expect(result.updated).toBeNull()
+	})
+
 	it('does not mutate raw input', () => {
 		const raw = {id: 42, title: ' test ', labels: [{id: 1}]}
 		const snapshot = JSON.stringify(raw)
 		normalizeTaskResponse(raw)
 		expect(JSON.stringify(raw)).toBe(snapshot)
+	})
+})
+
+describe('TaskAttributes date contract', () => {
+	it('declares created and updated as nullable, and the five optional dates too', () => {
+		expectTypeOf<TaskAttributes['created']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['updated']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['doneAt']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['deletedAt']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['dueDate']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['startDate']>().toEqualTypeOf<Date | null>()
+		expectTypeOf<TaskAttributes['endDate']>().toEqualTypeOf<Date | null>()
 	})
 })
