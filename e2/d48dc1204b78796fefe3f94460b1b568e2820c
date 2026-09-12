@@ -1,0 +1,22 @@
+frontend/src/views/teams/TeamsListHost.test.ts
+  s_e4fe7fd5d6a6e7::t_7c7107758ec1b4 44,79-95
+  s_e4fe7fd5d6a6e7::t_20599a314add38 96
+frontend/src/views/teams/TeamsListHost.vue
+  s_e4fe7fd5d6a6e7::t_7c7107758ec1b4 62,65-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e2d48dc1204b78796fefe3f94460b1b568e2820c",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
