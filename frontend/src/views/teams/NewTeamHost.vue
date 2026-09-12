@@ -84,7 +84,16 @@ function renderViews() {
 				return
 			}
 			try {
-				await router.push({name: 'teams.edit', params: {id: createdId}})
+				const failure = await router.push({name: 'teams.edit', params: {id: createdId}})
+				if (failure) {
+					if (!isMounted) {
+						return
+					}
+					success({message: i18n.global.t('team.create.success')})
+					error(failure)
+					modalView?.setDismissible(true)
+					return
+				}
 				success({message: i18n.global.t('team.create.success')})
 			} catch (e) {
 				if (!isMounted) {
