@@ -82,13 +82,14 @@ function renderViews() {
 				return
 			}
 
-			isSubmitting.value = false
 			if (!isMounted || createdId === undefined) {
+				isSubmitting.value = false
 				return
 			}
 			try {
 				const failure = await router.push({name: 'teams.edit', params: {id: createdId}})
 				if (failure) {
+					isSubmitting.value = false
 					if (!isMounted) {
 						return
 					}
@@ -99,6 +100,7 @@ function renderViews() {
 				}
 				success({message: i18n.global.t('team.create.success')})
 			} catch (e) {
+				isSubmitting.value = false
 				if (!isMounted) {
 					return
 				}

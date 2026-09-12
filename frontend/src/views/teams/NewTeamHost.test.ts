@@ -1,5 +1,5 @@
-import {describe, it, expect, vi, beforeEach} from 'vitest'
-import {mount, flushPromises} from '@vue/test-utils'
+import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
+import {mount, flushPromises, VueWrapper} from '@vue/test-utils'
 import {i18n} from '@/i18n'
 import NewTeamHost from './NewTeamHost.vue'
 
@@ -26,12 +26,12 @@ vi.mock('@/services/team', () => {
 })
 
 vi.mock('@/message', () => ({
-	error: mockError,
-	success: mockSuccess,
+		error: mockError,
+		success: mockSuccess,
 }))
 
 vi.mock('vue-router', () => ({
-	useRouter: () => ({
+		useRouter: () => ({
 		push: mockPush,
 		back: mockBack,
 	}),
@@ -50,7 +50,7 @@ vi.mock('@/i18n', async () => {
 })
 
 vi.mock('@/stores/config', () => ({
-	useConfigStore: () => ({
+	useConfigStore: () => ({ 
 		publicTeamsEnabled: true,
 	}),
 }))
@@ -91,6 +91,8 @@ vi.mock('@/marionette/views/NewTeamFormView', () => {
 })
 
 describe('NewTeamHost', () => {
+	let wrapper: VueWrapper | null = null
+
 	beforeEach(() => {
 		mockCreate.mockReset()
 		mockError.mockReset()
@@ -102,11 +104,18 @@ describe('NewTeamHost', () => {
 		i18n.global.locale.value = 'en'
 	})
 
+	afterEach(() => {
+		if (wrapper) {
+			wrapper.unmount()
+			wrapper = null
+		}
+	})
+
 	it('A successful create followed by a successful navigation reports success once and pushes to teams.edit with the new id', async () => {
 		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
 		mockPush.mockResolvedValueOnce(undefined)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const form = mockFormInstances[mockFormInstances.length - 1]
@@ -125,7 +134,7 @@ describe('NewTeamHost', () => {
 		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
 		mockPush.mockRejectedValueOnce(navError)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const modal = mockModalInstances[mockModalInstances.length - 1]
@@ -145,7 +154,7 @@ describe('NewTeamHost', () => {
 		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
 		mockPush.mockResolvedValueOnce(navFailure)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const modal = mockModalInstances[mockModalInstances.length - 1]
@@ -164,7 +173,7 @@ describe('NewTeamHost', () => {
 		const createError = new Error('Create failed')
 		mockCreate.mockRejectedValueOnce(createError)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const modal = mockModalInstances[mockModalInstances.length - 1]
@@ -187,13 +196,14 @@ describe('NewTeamHost', () => {
 		})
 		mockCreate.mockReturnValueOnce(pendingCreate)
 
-		const wrapper = mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const form = mockFormInstances[mockFormInstances.length - 1]
 		const submitPromise = form.options.onSubmit({name: 'Test Team', isPublic: false})
 
 		wrapper.unmount()
+		wrapper = null
 
 		resolveCreate({id: 42, name: 'Test Team'})
 		await submitPromise
@@ -209,7 +219,7 @@ describe('NewTeamHost', () => {
 		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
 		mockPush.mockRejectedValueOnce(navError)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const initialCount = mockModalInstances.length
@@ -232,7 +242,7 @@ describe('NewTeamHost', () => {
 		const createError = new Error('Create failed')
 		mockCreate.mockRejectedValueOnce(createError)
 
-		mount(NewTeamHost)
+		wrapper = mount(NewTeamHost)
 		await flushPromises()
 
 		const initialCount = mockModalInstances.length
@@ -249,5 +259,36 @@ describe('NewTeamHost', () => {
 		expect(rebuiltModal.setDismissible).not.toHaveBeenCalledWith(false)
 		expect(rebuiltForm.setDisabled).not.toHaveBeenCalledWith(true)
 		expect(rebuiltModal.options.primaryDisabled).toBe(false)
+	})
+
+	it('A locale change WHILE navigation is still pending rebuilds the views and the rebuilt modal is NOT dismissible', async () => {
+		let resolvePush!: (value: any) => void
+		const pendingPush = new Promise((resolve) => {
+			resolvePush = resolve
+		})
+		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
+		mockPush.mockReturnValueOnce(pendingPush)
+
+		wrapper = mount(NewTeamHost)
+		await flushPromises()
+
+		const initialCount = mockModalInstances.length
+		const form = mockFormInstances[mockFormInstances.length - 1]
+		const submitPromise = form.options.onSubmit({name: 'Test Team', isPublic: false})
+		await flushPromises()
+
+		i18n.global.locale.value = 'de-DE'
+		await flushPromises()
+
+		expect(mockModalInstances.length).toBeGreaterThan(initialCount)
+		const rebuiltModal = mockModalInstances[mockModalInstances.length - 1]
+		const rebuiltForm = mockFormInstances[mockFormInstances.length - 1]
+		expect(rebuiltModal.setDismissible).toHaveBeenCalledWith(false)
+		expect(rebuiltForm.setDisabled).toHaveBeenCalledWith(true)
+		expect(rebuiltModal.options.primaryDisabled).toBe(true)
+
+		resolvePush(undefined)
+		await submitPromise
+		await flushPromises()
 	})
 })
