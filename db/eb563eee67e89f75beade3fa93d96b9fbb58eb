@@ -1,0 +1,26 @@
+frontend/src/marionette/views/TeamsListView.test.ts
+  s_e4fe7fd5d6a6e7::t_85d6d52feb5406 1-152
+frontend/src/views/teams/TeamsListHost.vue
+  s_e4fe7fd5d6a6e7::t_9bdfe2e05b7bd0 1-88
+frontend/src/marionette/views/TeamsListView.ts
+  s_e4fe7fd5d6a6e7::t_85d6d52feb5406 1-38,40-51,53-68
+  s_e4fe7fd5d6a6e7::t_8521b37ef1c76a 39,52
+frontend/src/router/index.ts
+  s_e4fe7fd5d6a6e7::t_46622f224da4c8 389
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dbeb563eee67e89f75beade3fa93d96b9fbb58eb",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
