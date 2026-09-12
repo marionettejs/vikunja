@@ -23,6 +23,15 @@ export const ModalCardView = View.extend({
 		body: '.card-content',
 	},
 
+	setPrimaryDisabled(disabled: boolean) {
+		const opts = this.options as ModalCardViewOptions
+		opts.primaryDisabled = Boolean(disabled)
+		const primaryBtn = this.el.querySelector('.card-footer [data-role="primary"]') as HTMLButtonElement | null
+		if (primaryBtn) {
+			primaryBtn.disabled = Boolean(disabled)
+		}
+	},
+
 	template(data: {title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean}) {
 		return html`
 			<div class='card'>
@@ -126,4 +135,6 @@ export const ModalCardView = View.extend({
 			this.el.parentNode.removeChild(this.el)
 		}
 	},
-}) as new (options: ModalCardViewOptions) => ViewInstance
+}) as new (options: ModalCardViewOptions) => ViewInstance & {
+	setPrimaryDisabled: (disabled: boolean) => void
+}
