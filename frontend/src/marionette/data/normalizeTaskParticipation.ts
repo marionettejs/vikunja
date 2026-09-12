@@ -17,7 +17,9 @@ export type CommentPatch = Partial<Omit<ITaskComment, 'author' | 'reactions' | '
 	updated?: Date | null
 }
 
-export type ReactionsPatch = {[reaction: string]: UserPatch[]}
+// The generated API schema declares individual reaction lists nullable while the map itself is not;
+// normalizeReactions passes such a null through unchanged.
+export type ReactionsPatch = {[reaction: string]: UserPatch[] | null}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value)
