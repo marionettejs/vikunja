@@ -22,6 +22,11 @@ const TeamsListView = View.extend({
 		if (!anchor) {
 			return
 		}
+		if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return
+		if (event.defaultPrevented) return
+		if (event.button !== void 0 && event.button !== 0) return
+		const target = anchor.getAttribute('target')
+		if (target && /\b_blank\b/i.test(target)) return
 		const href = anchor.getAttribute('href')
 		if (!href) {
 			return

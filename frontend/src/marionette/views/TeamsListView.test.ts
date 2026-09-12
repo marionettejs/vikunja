@@ -149,4 +149,52 @@ describe('TeamsListView', () => {
 		expect(navigate).toHaveBeenCalledWith('/teams/99/edit')
 		expect(event.defaultPrevented).toBe(true)
 	})
+
+	it('leaves a modified click to the browser so a link can open in a new tab', () => {
+		const modifiers = ['metaKey', 'ctrlKey', 'shiftKey', 'altKey'] as const
+		for (const modifier of modifiers) {
+			const navigate = vi.fn()
+			const el = renderView({
+				teams: [{id: 1, name: 'Team One'}],
+				labels: defaultLabels,
+				navigate,
+			})
+			const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
+			const event = new MouseEvent('click', {bubbles: true, cancelable: true, [modifier]: true})
+			anchor.dispatchEvent(event)
+
+			expect(navigate).not.toHaveBeenCalled()
+			expect(event.defaultPrevented).toBe(false)
+		}
+	})
+
+	it('leaves a non-primary button click to the browser', () => {
+		const navigate = vi.fn()
+		const el = renderView({
+			teams: [{id: 1, name: 'Team One'}],
+			labels: defaultLabels,
+			navigate,
+		})
+		const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
+		const event = new MouseEvent('click', {bubbles: true, cancelable: true, button: 1})
+		anchor.dispatchEvent(event)
+
+		expect(navigate).not.toHaveBeenCalled()
+		expect(event.defaultPrevented).toBe(false)
+	})
+
+	it('leaves an already prevented click alone', () => {
+		const navigate = vi.fn()
+		const el = renderView({
+			teams: [{id: 1, name: 'Team One'}],
+			labels: defaultLabels,
+			navigate,
+		})
+		const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
+		const event = new MouseEvent('click', {bubbles: true, cancelable: true})
+		event.preventDefault()
+		anchor.dispatchEvent(event)
+
+		expect(navigate).not.toHaveBeenCalled()
+	})
 })

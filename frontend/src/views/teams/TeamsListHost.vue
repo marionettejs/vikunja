@@ -2,6 +2,7 @@
 import {ref, onMounted, onBeforeUnmount} from 'vue'
 import {useRouter} from 'vue-router'
 import {i18n} from '@/i18n'
+import {error} from '@/message'
 import TeamService from '@/services/team'
 import TeamsListView from '@/marionette/views/TeamsListView'
 
@@ -32,8 +33,8 @@ onMounted(async () => {
 		})
 		view.render()
 		container.value.appendChild(view.el)
-	} catch {
-		// Silently catch error and leave container empty
+	} catch (e) {
+		error(e)
 	} finally {
 		isLoading.value = false
 	}
