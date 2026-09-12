@@ -399,7 +399,7 @@ const router = createRouter({
 		{
 			path: '/teams/:id/edit',
 			name: 'teams.edit',
-			component: () => import('@/views/teams/EditTeam.vue'),
+			component: () => import('@/views/teams/EditTeamHost.vue'),
 		},
 		{
 			path: '/labels',
