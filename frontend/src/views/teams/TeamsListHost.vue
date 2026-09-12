@@ -33,6 +33,7 @@ function renderView() {
 			create: i18n.global.t('team.create.title'),
 			noTeams: i18n.global.t('team.noTeams'),
 		},
+		hrefFor: (path: string) => router.resolve(path).href,
 		navigate: (path: string) => {
 			router.push(path)
 		},

@@ -35,6 +35,7 @@ vi.mock('@/message', () => ({
 vi.mock('vue-router', () => ({
 	useRouter: () => ({
 		push: mockPush,
+		resolve: (path: string) => ({href: `/vikunja${path}`}),
 	}),
 }))
 
@@ -66,13 +67,13 @@ describe('TeamsListHost', () => {
 
 		await flushPromises()
 
-		expect(wrapper.find('a[href="/teams/new"]').text()).toContain('en:team.create.title')
+		expect(wrapper.find('a[href="/vikunja/teams/new"]').text()).toContain('en:team.create.title')
 		expect(document.title.startsWith('en:team.title')).toBe(true)
 
 		i18n.global.locale.value = 'de-DE'
 		await nextTick()
 
-		expect(wrapper.find('a[href="/teams/new"]').text()).toContain('de-DE:team.create.title')
+		expect(wrapper.find('a[href="/vikunja/teams/new"]').text()).toContain('de-DE:team.create.title')
 		expect(document.title.startsWith('de-DE:team.title')).toBe(true)
 		expect(wrapper.findAll('ul.teams')).toHaveLength(1)
 	})
@@ -93,5 +94,21 @@ describe('TeamsListHost', () => {
 		await flushPromises()
 
 		expect(mockError).not.toHaveBeenCalled()
+	})
+
+	it('gives the view router-resolved hrefs while navigation stays unbased', async () => {
+		mockGetAll.mockResolvedValueOnce([{id: 1, name: 'Team One'}])
+
+		const wrapper = mount(TeamsListHost)
+
+		await flushPromises()
+
+		const createAnchor = wrapper.find('a[data-path="/teams/new"]')
+		expect(createAnchor.attributes('href')).toBe('/vikunja/teams/new')
+		expect(createAnchor.attributes('data-path')).toBe('/teams/new')
+
+		const teamAnchor = wrapper.find('a[data-path="/teams/1/edit"]')
+		expect(teamAnchor.attributes('href')).toBe('/vikunja/teams/1/edit')
+		expect(teamAnchor.attributes('data-path')).toBe('/teams/1/edit')
 	})
 })

@@ -26,11 +26,14 @@ const defaultLabels = {
 	noTeams: 'No teams here.',
 }
 
+const defaultHrefFor = (path: string) => path
+
 describe('TeamsListView', () => {
 	it('renders the create link as an anchor with the button class pointing at the new team path', () => {
 		const el = renderView({
 			teams: [],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate: vi.fn(),
 		})
 
@@ -55,6 +58,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams,
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate: vi.fn(),
 		})
 
@@ -80,6 +84,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [{id: 42, name: evilName}],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate: vi.fn(),
 		})
 
@@ -91,6 +96,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate: vi.fn(),
 		})
 
@@ -109,6 +115,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [{id: 1, name: 'Team One'}],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate: vi.fn(),
 		})
 
@@ -121,6 +128,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate,
 		})
 
@@ -138,6 +146,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [{id: 99, name: 'Design'}],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate,
 		})
 
@@ -155,9 +164,10 @@ describe('TeamsListView', () => {
 		for (const modifier of modifiers) {
 			const navigate = vi.fn()
 			const el = renderView({
-				teams: [{id: 1, name: 'Team One'}],
-				labels: defaultLabels,
-				navigate,
+			teams: [{id: 1, name: 'Team One'}],
+			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
+			navigate,
 			})
 			const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
 			const event = new MouseEvent('click', {bubbles: true, cancelable: true, [modifier]: true})
@@ -173,6 +183,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [{id: 1, name: 'Team One'}],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate,
 		})
 		const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
@@ -188,6 +199,7 @@ describe('TeamsListView', () => {
 		const el = renderView({
 			teams: [{id: 1, name: 'Team One'}],
 			labels: defaultLabels,
+			hrefFor: defaultHrefFor,
 			navigate,
 		})
 		const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
@@ -196,5 +208,68 @@ describe('TeamsListView', () => {
 		anchor.dispatchEvent(event)
 
 		expect(navigate).not.toHaveBeenCalled()
+	})
+
+	it('applies the application base to every link href', () => {
+		const hrefFor = (path: string) => `/vikunja${path}`
+		const teams = [
+			{id: 1, name: 'Alpha'},
+			{id: 2, name: 'Beta'},
+		]
+		const el = renderView({
+			teams,
+			labels: defaultLabels,
+			hrefFor,
+			navigate: vi.fn(),
+		})
+
+		const createAnchor = el.querySelector('a.button.is-pulled-end')
+		expect(createAnchor?.getAttribute('href')).toBe('/vikunja/teams/new')
+		expect(createAnchor?.getAttribute('data-path')).toBe('/teams/new')
+
+		const teamAnchors = el.querySelectorAll('ul.teams li a')
+		expect(teamAnchors.length).toBe(2)
+		teamAnchors.forEach((anchor, index) => {
+			const team = teams[index]
+			expect(anchor.getAttribute('href')).toBe(`/vikunja/teams/${team.id}/edit`)
+			expect(anchor.getAttribute('data-path')).toBe(`/teams/${team.id}/edit`)
+		})
+
+		const emptyEl = renderView({
+			teams: [],
+			labels: defaultLabels,
+			hrefFor,
+			navigate: vi.fn(),
+		})
+		const emptyCreateAnchor = emptyEl.querySelector('p.has-text-centered.has-text-grey.is-italic a')
+		expect(emptyCreateAnchor?.getAttribute('href')).toBe('/vikunja/teams/new')
+		expect(emptyCreateAnchor?.getAttribute('data-path')).toBe('/teams/new')
+	})
+
+	it('navigates to the unbased path so the router does not apply the base twice', () => {
+		const hrefFor = (path: string) => `/vikunja${path}`
+		const navigate = vi.fn()
+		const el = renderView({
+			teams: [{id: 1, name: 'Alpha'}],
+			labels: defaultLabels,
+			hrefFor,
+			navigate,
+		})
+
+		const teamAnchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
+		const teamEvent = new MouseEvent('click', {bubbles: true, cancelable: true})
+		teamAnchor.dispatchEvent(teamEvent)
+
+		expect(navigate).toHaveBeenCalledTimes(1)
+		expect(navigate).toHaveBeenCalledWith('/teams/1/edit')
+		expect(navigate).not.toHaveBeenCalledWith('/vikunja/teams/1/edit')
+
+		const createAnchor = el.querySelector('a.button.is-pulled-end') as HTMLAnchorElement
+		const createEvent = new MouseEvent('click', {bubbles: true, cancelable: true})
+		createAnchor.dispatchEvent(createEvent)
+
+		expect(navigate).toHaveBeenCalledTimes(2)
+		expect(navigate).toHaveBeenLastCalledWith('/teams/new')
+		expect(navigate).not.toHaveBeenCalledWith('/vikunja/teams/new')
 	})
 })

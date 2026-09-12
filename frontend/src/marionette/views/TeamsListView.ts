@@ -5,6 +5,7 @@ import {View} from '../index'
 export interface TeamsListOptions {
 	teams: ReadonlyArray<{id: number, name: string}>
 	labels: {title: string, create: string, noTeams: string}
+	hrefFor: (path: string) => string
 	navigate: (path: string) => void
 }
 
@@ -27,18 +28,18 @@ const TeamsListView = View.extend({
 		if (event.button !== void 0 && event.button !== 0) return
 		const target = anchor.getAttribute('target')
 		if (target && /\b_blank\b/i.test(target)) return
-		const href = anchor.getAttribute('href')
-		if (!href) {
+		const path = anchor.getAttribute('data-path')
+		if (!path) {
 			return
 		}
 		event.preventDefault()
 		const opts = this.options as TeamsListOptions
-		opts.navigate(href)
+		opts.navigate(path)
 	},
 
 	template(data: TemplateData) {
 		return html`
-			<a class="button is-pulled-end" href="/teams/new">${data.labels.create}</a>
+			<a class="button is-pulled-end" href="${data.hrefFor('/teams/new')}" data-path="/teams/new">${data.labels.create}</a>
 			<h1>${data.labels.title}</h1>
 			${data.teams.length > 0
 			? html`
@@ -47,7 +48,7 @@ const TeamsListView = View.extend({
 							<div>
 								<ul class="teams">
 									${data.teams.map(team => html`
-										<li><a href="/teams/${team.id}/edit"><p>${team.name}</p></a></li>
+										<li><a href="${data.hrefFor(`/teams/${team.id}/edit`)}" data-path="/teams/${team.id}/edit"><p>${team.name}</p></a></li>
 									`)}
 								</ul>
 							</div>
@@ -55,7 +56,7 @@ const TeamsListView = View.extend({
 					</div>
 				`
 			: html`
-					<p class="has-text-centered has-text-grey is-italic">${data.labels.noTeams} <a href="/teams/new">${data.labels.create}.</a></p>
+					<p class="has-text-centered has-text-grey is-italic">${data.labels.noTeams} <a href="${data.hrefFor('/teams/new')}" data-path="/teams/new">${data.labels.create}.</a></p>
 				`}
 		`
 	},
@@ -65,6 +66,7 @@ const TeamsListView = View.extend({
 		return {
 			teams: opts.teams,
 			labels: opts.labels,
+			hrefFor: opts.hrefFor,
 			navigate: opts.navigate,
 		}
 	},
