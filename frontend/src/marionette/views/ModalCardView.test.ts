@@ -4,6 +4,11 @@ import type {ViewInstance} from 'marionette'
 import {View} from '../index'
 import {ModalCardView, type ModalCardViewOptions} from './ModalCardView'
 
+type ModalCardViewInstance = ViewInstance & {
+	setPrimaryDisabled: (disabled: boolean) => void
+	setDismissible: (dismissible: boolean) => void
+}
+
 describe('ModalCardView', () => {
 	let views: ViewInstance[] = []
 
@@ -17,7 +22,7 @@ describe('ModalCardView', () => {
 			onClose: vi.fn(),
 			...overrides,
 		}
-		const view = new ModalCardView(options)
+		const view = new ModalCardView(options) as ModalCardViewInstance
 		views.push(view)
 		view.render()
 		return {view, options}
@@ -176,5 +181,61 @@ describe('ModalCardView', () => {
 		}).not.toThrow()
 
 		expect(document.body.contains(view.el)).toBe(false)
+	})
+
+	it('resolves aria-labelledby to the title element and assigns distinct ids to multiple instances', () => {
+		const {view: view1} = createView({title: 'Modal One'})
+		const {view: view2} = createView({title: 'Modal Two'})
+
+		const labelledby1 = view1.el.getAttribute('aria-labelledby')
+		const labelledby2 = view2.el.getAttribute('aria-labelledby')
+
+		expect(labelledby1).toBeTruthy()
+		expect(labelledby2).toBeTruthy()
+		expect(labelledby1).not.toBe(labelledby2)
+
+		const titleEl1 = view1.el.querySelector(`#${labelledby1}`)
+		const titleEl2 = view2.el.querySelector(`#${labelledby2}`)
+
+		expect(titleEl1).not.toBeNull()
+		expect(titleEl1?.textContent?.trim()).toBe('Modal One')
+		expect(titleEl2).not.toBeNull()
+		expect(titleEl2?.textContent?.trim()).toBe('Modal Two')
+	})
+
+	it('leaves onClose uncalled when dismissal is disabled and restores all four routes when re-enabled', () => {
+		const {view, options} = createView()
+		view.setDismissible(false)
+
+		const cancelEvent = new Event('cancel', {cancelable: true})
+		view.el.dispatchEvent(cancelEvent)
+		expect(options.onClose).not.toHaveBeenCalled()
+
+		const backdropEvent = new MouseEvent('mousedown', {bubbles: true})
+		view.el.dispatchEvent(backdropEvent)
+		expect(options.onClose).not.toHaveBeenCalled()
+
+		const closeBtn = view.el.querySelector('[data-role="close"]') as HTMLElement
+		closeBtn.click()
+		expect(options.onClose).not.toHaveBeenCalled()
+
+		const cancelBtn = view.el.querySelector('.card-footer [data-role="cancel"]') as HTMLElement
+		cancelBtn.click()
+		expect(options.onClose).not.toHaveBeenCalled()
+
+		view.setDismissible(true)
+
+		const reCancelEvent = new Event('cancel', {cancelable: true})
+		view.el.dispatchEvent(reCancelEvent)
+		expect(options.onClose).toHaveBeenCalledTimes(1)
+
+		view.el.dispatchEvent(backdropEvent)
+		expect(options.onClose).toHaveBeenCalledTimes(2)
+
+		closeBtn.click()
+		expect(options.onClose).toHaveBeenCalledTimes(3)
+
+		cancelBtn.click()
+		expect(options.onClose).toHaveBeenCalledTimes(4)
 	})
 })

@@ -5,6 +5,8 @@ import {NewTeamFormView, type NewTeamFormOptions} from './NewTeamFormView'
 type FormViewInstance = ViewInstance & {
 	submit: () => void
 	isValid: () => boolean
+	setDisabled: (disabled: boolean) => void
+	getValues: () => {name: string, isPublic: boolean}
 }
 
 describe('NewTeamFormView', () => {
@@ -46,7 +48,7 @@ describe('NewTeamFormView', () => {
 		const {view} = createView()
 		const input = view.el.querySelector('input.input') as HTMLInputElement
 
-	expect(input).not.toBeNull()
+		expect(input).not.toBeNull()
 		expect(input.classList.contains('input')).toBe(true)
 		expect(input.getAttribute('placeholder')).toBe(defaultLabels.namePlaceholder)
 		expect(document.activeElement).toBe(input)
@@ -57,7 +59,7 @@ describe('NewTeamFormView', () => {
 		const {view} = createView({onValidityChange})
 		const input = view.el.querySelector('input.input') as HTMLInputElement
 
-	expect(onValidityChange).toHaveBeenCalledWith(false)
+		expect(onValidityChange).toHaveBeenCalledWith(false)
 
 		input.value = '   '
 		input.dispatchEvent(new Event('input', {bubbles: true}))
@@ -148,5 +150,78 @@ describe('NewTeamFormView', () => {
 		view.submit()
 
 		expect(options.onSubmit).toHaveBeenCalledWith({name: 'Marketing', isPublic: true})
+	})
+
+	it('marks input invalid and associates description with error element only while error shows', () => {
+		const {view} = createView()
+		const input = view.el.querySelector('#team-name') as HTMLInputElement
+
+		expect(input.hasAttribute('aria-invalid')).toBe(false)
+		expect(input.hasAttribute('aria-describedby')).toBe(false)
+
+		view.submit()
+
+		expect(input.getAttribute('aria-invalid')).toBe('true')
+		const describedBy = input.getAttribute('aria-describedby')
+		expect(describedBy).toBeTruthy()
+
+		const errorEl = view.el.querySelector(`#${describedBy}`)
+		expect(errorEl).not.toBeNull()
+		expect(errorEl?.textContent).toContain(defaultLabels.nameRequired)
+
+		input.value = 'Valid Name'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		expect(input.hasAttribute('aria-invalid')).toBe(false)
+		expect(input.hasAttribute('aria-describedby')).toBe(false)
+		expect(view.el.querySelector(`#${describedBy}`)).toBeNull()
+	})
+
+	it('disables and re-enables name input and public checkbox when toggling disabled state', () => {
+		const {view} = createView({showPublicOption: true})
+		const nameInput = view.el.querySelector('#team-name') as HTMLInputElement
+		const checkbox = view.el.querySelector('input[type="checkbox"]') as HTMLInputElement
+
+		expect(nameInput.disabled).toBe(false)
+		expect(checkbox.disabled).toBe(false)
+
+		view.setDisabled(true)
+		expect(nameInput.disabled).toBe(true)
+		expect(checkbox.disabled).toBe(true)
+
+		view.setDisabled(false)
+		expect(nameInput.disabled).toBe(false)
+		expect(checkbox.disabled).toBe(false)
+	})
+
+	it('initializes with initial values, reports valid immediately, and returns updated values from getValues', () => {
+		const onValidityChange = vi.fn()
+		const {view} = createView({
+			showPublicOption: true,
+			initialName: 'Platform Engineering',
+			initialIsPublic: true,
+			onValidityChange,
+		})
+
+		const nameInput = view.el.querySelector('#team-name') as HTMLInputElement
+		const checkbox = view.el.querySelector('input[type="checkbox"]') as HTMLInputElement
+
+		expect(nameInput.value).toBe('Platform Engineering')
+		expect(checkbox.checked).toBe(true)
+		expect(onValidityChange).toHaveBeenCalledWith(true)
+		expect(view.isValid()).toBe(true)
+
+		expect(view.getValues()).toEqual({
+			name: 'Platform Engineering',
+			isPublic: true,
+		})
+
+		checkbox.checked = false
+		checkbox.dispatchEvent(new Event('change', {bubbles: true}))
+
+		expect(view.getValues()).toEqual({
+			name: 'Platform Engineering',
+			isPublic: false,
+		})
 	})
 })

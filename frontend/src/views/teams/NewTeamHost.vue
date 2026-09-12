@@ -27,6 +27,8 @@ function updateDocumentTitle() {
 }
 
 function renderViews() {
+	const initialValues = formView?.getValues()
+
 	if (modalView) {
 		modalView.destroy()
 		modalView = null
@@ -44,6 +46,8 @@ function renderViews() {
 			isPublicDescription: i18n.global.t('team.attributes.isPublicDescription'),
 		},
 		showPublicOption: configStore.publicTeamsEnabled,
+		initialName: initialValues?.name,
+		initialIsPublic: initialValues?.isPublic,
 		onValidityChange: (isValid: boolean) => {
 			modalView?.setPrimaryDisabled(!isValid || isSubmitting.value)
 		},
@@ -53,26 +57,38 @@ function renderViews() {
 			}
 			isSubmitting.value = true
 			modalView?.setPrimaryDisabled(true)
+			modalView?.setDismissible(false)
+			formView?.setDisabled(true)
 
+			let createdId: number | undefined
 			try {
 				const model = reactive(new TeamModel({
 					name: values.name,
 					isPublic: values.isPublic,
 				}))
 				const created = await teamService.create(model)
-				if (!isMounted) {
-					return
-				}
-				await router.push({name: 'teams.edit', params: {id: created.id}})
-				success({message: i18n.global.t('team.create.success')})
+				createdId = created.id
 			} catch (e) {
 				if (!isMounted) {
 					return
 				}
 				error(e)
-				modalView?.setPrimaryDisabled(false)
-			} finally {
+				modalView?.setDismissible(true)
+				formView?.setDisabled(false)
+				modalView?.setPrimaryDisabled(!formView?.isValid())
 				isSubmitting.value = false
+				return
+			}
+
+			if (!isMounted || createdId === undefined) {
+				return
+			}
+			try {
+				await router.push({name: 'teams.edit', params: {id: createdId}})
+				success({message: i18n.global.t('team.create.success')})
+			} catch {
+				// A failed navigation must not read as a creation failure, and must not
+				// re-enable creation: the team already exists.
 			}
 		},
 	})
@@ -82,7 +98,7 @@ function renderViews() {
 		primaryLabel: i18n.global.t('misc.create'),
 		cancelLabel: i18n.global.t('misc.cancel'),
 		closeLabel: i18n.global.t('misc.closeDialog'),
-		primaryDisabled: true,
+		primaryDisabled: !formView.isValid(),
 		onPrimary: () => {
 			formView?.submit()
 		},

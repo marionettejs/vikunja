@@ -2,6 +2,8 @@ import {html} from 'lit-html'
 import type {ViewInstance} from 'marionette'
 import {View} from '../index'
 
+let nextModalId = 0
+
 export interface ModalCardViewOptions {
 	title: string
 	primaryLabel: string
@@ -18,6 +20,8 @@ export const ModalCardView = View.extend({
 	_previousActiveElement: null as HTMLElement | null,
 	_previousOverflow: '',
 	_restored: false,
+	_titleId: '',
+	_dismissible: true,
 
 	regions: {
 		body: '.card-content',
@@ -32,11 +36,15 @@ export const ModalCardView = View.extend({
 		}
 	},
 
-	template(data: {title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean}) {
+	setDismissible(dismissible: boolean) {
+		this._dismissible = Boolean(dismissible)
+	},
+
+	template(data: {titleId: string, title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean}) {
 		return html`
 			<div class='card'>
 				<header class='card-header'>
-					<p class='card-header-title'>${data.title}</p>
+					<p class='card-header-title' id='${data.titleId}'>${data.title}</p>
 					<button class='card-header-icon' aria-label='${data.closeLabel}' data-role='close'>
 						<span class='icon'>&times;</span>
 					</button>
@@ -53,6 +61,7 @@ export const ModalCardView = View.extend({
 	templateContext() {
 		const opts = this.options as ModalCardViewOptions
 		return {
+			titleId: this._titleId,
 			title: opts.title,
 			primaryLabel: opts.primaryLabel,
 			cancelLabel: opts.cancelLabel,
@@ -64,12 +73,16 @@ export const ModalCardView = View.extend({
 	events: {
 		'cancel': 'onNativeCancel',
 		'mousedown': 'onMouseDown',
-		'click [data-role="close"]': 'dismiss',
-		'click [data-role="cancel"]': 'dismiss',
+		'click [data-role="close"]': 'onCloseClick',
+		'click [data-role="cancel"]': 'onCancelClick',
 		'click [data-role="primary"]': 'onPrimaryClick',
 	},
 
 	initialize() {
+		nextModalId += 1
+		this._titleId = `modal-card-title-${nextModalId}`
+		this.el.setAttribute('aria-labelledby', this._titleId)
+
 		this._previousActiveElement = document.activeElement as HTMLElement | null
 		this._previousOverflow = document.body.style.overflow
 		document.body.style.overflow = 'hidden'
@@ -85,13 +98,33 @@ export const ModalCardView = View.extend({
 
 	onNativeCancel(event: Event) {
 		event.preventDefault()
+		if (!this._dismissible) {
+			return
+		}
 		this.dismiss()
 	},
 
 	onMouseDown(event: MouseEvent) {
 		if (event.target === this.el) {
+			if (!this._dismissible) {
+				return
+			}
 			this.dismiss()
 		}
+	},
+
+	onCloseClick() {
+		if (!this._dismissible) {
+			return
+		}
+		this.dismiss()
+	},
+
+	onCancelClick() {
+		if (!this._dismissible) {
+			return
+		}
+		this.dismiss()
 	},
 
 	onPrimaryClick() {
@@ -137,4 +170,5 @@ export const ModalCardView = View.extend({
 	},
 }) as new (options: ModalCardViewOptions) => ViewInstance & {
 	setPrimaryDisabled: (disabled: boolean) => void
+	setDismissible: (dismissible: boolean) => void
 }

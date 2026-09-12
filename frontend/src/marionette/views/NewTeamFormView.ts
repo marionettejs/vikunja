@@ -1,6 +1,8 @@
-import {html} from 'lit-html'
+import {html, nothing} from 'lit-html'
 import type {ViewInstance} from 'marionette'
 import {View} from '../index'
+
+let nextFormId = 0
 
 export interface NewTeamFormLabels {
 	name: string
@@ -15,6 +17,8 @@ export interface NewTeamFormOptions {
 	showPublicOption: boolean
 	onValidityChange: (isValid: boolean) => void
 	onSubmit: (values: {name: string, isPublic: boolean}) => void
+	initialName?: string
+	initialIsPublic?: boolean
 }
 
 interface TemplateData {
@@ -23,18 +27,53 @@ interface TemplateData {
 	showPublicOption: boolean
 	isPublic: boolean
 	error: string | null
+	errorId: string
+	disabled: boolean
 }
 
 export const NewTeamFormView = View.extend({
 	_name: '',
 	_isPublic: false,
 	_showError: false,
+	_disabled: false,
+	_errorId: '',
 
 	events: {
 		'submit form': (e: Event) => e.preventDefault(),
 		'input #team-name': 'onNameInput',
 		'keydown #team-name': 'onNameKeydown',
 		'change input[type="checkbox"]': 'onPublicChange',
+	},
+
+	initialize() {
+		nextFormId += 1
+		this._errorId = `new-team-error-${nextFormId}`
+		const opts = this.options as NewTeamFormOptions
+		if (opts.initialName !== undefined) {
+			this._name = opts.initialName
+		}
+		if (opts.initialIsPublic !== undefined) {
+			this._isPublic = opts.initialIsPublic
+		}
+	},
+
+	setDisabled(disabled: boolean) {
+		this._disabled = Boolean(disabled)
+		const nameInput = this.el.querySelector('#team-name') as HTMLInputElement | null
+		if (nameInput) {
+			nameInput.disabled = this._disabled
+		}
+		const checkbox = this.el.querySelector('input[type="checkbox"]') as HTMLInputElement | null
+		if (checkbox) {
+			checkbox.disabled = this._disabled
+		}
+	},
+
+	getValues(): {name: string, isPublic: boolean} {
+		return {
+			name: this._name,
+			isPublic: this._isPublic,
+		}
 	},
 
 	template(data: TemplateData) {
@@ -48,8 +87,11 @@ export const NewTeamFormView = View.extend({
 						type='text'
 						.value=${data.name}
 						placeholder=${data.labels.namePlaceholder}
+						?disabled=${data.disabled}
+						aria-invalid=${data.error ? 'true' : nothing}
+						aria-describedby=${data.error ? data.errorId : nothing}
 					/>
-					${data.error ? html`<p class='help is-danger error'>${data.error}</p>` : ''}
+					${data.error ? html`<p id='${data.errorId}' class='help is-danger error'>${data.error}</p>` : ''}
 				</div>
 				${data.showPublicOption ? html`
 					<div class='form-field'>
@@ -58,6 +100,7 @@ export const NewTeamFormView = View.extend({
 							<input
 								type='checkbox'
 								.checked=${data.isPublic}
+								?disabled=${data.disabled}
 							/>
 							${data.labels.isPublicDescription}
 						</label>
@@ -77,6 +120,8 @@ export const NewTeamFormView = View.extend({
 			showPublicOption: Boolean(opts.showPublicOption),
 			isPublic: this._isPublic,
 			error,
+			errorId: this._errorId,
+			disabled: this._disabled,
 		}
 	},
 
@@ -134,4 +179,6 @@ export const NewTeamFormView = View.extend({
 }) as new (options: NewTeamFormOptions) => ViewInstance & {
 	submit: () => void
 	isValid: () => boolean
+	setDisabled: (disabled: boolean) => void
+	getValues: () => {name: string, isPublic: boolean}
 }
