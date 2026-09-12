@@ -152,12 +152,13 @@ function showModal(options: {
 			options.onClose?.()
 		},
 	})
-	if (options.bodyLines && options.bodyLines.length > 0) {
-		const bodyView = new ConfirmTextView({lines: options.bodyLines})
-		modal.showChildView('body', bodyView)
-	}
 	activeModal = modal
 	renderModal(modal)
+	// showChildView after rendering: a second render would clear the regions and
+	// destroy the body view with it.
+	if (options.bodyLines && options.bodyLines.length > 0) {
+		modal.showChildView('body', new ConfirmTextView({lines: options.bodyLines}))
+	}
 }
 
 function renderModal(modal: InstanceType<typeof ModalCardView>): void {
@@ -483,10 +484,14 @@ function rebuildViews(): void {
 	renderViews()
 }
 
+let loadGeneration = 0
+
 async function loadTeam(id: number): Promise<void> {
+	loadGeneration += 1
+	const generation = loadGeneration
 	try {
 		const team = await teamService.get({id} as ITeam)
-		if (!isMounted) {
+		if (!isMounted || generation !== loadGeneration) {
 			return
 		}
 		currentTeam.value = team
@@ -494,7 +499,7 @@ async function loadTeam(id: number): Promise<void> {
 		await nextTick()
 		renderViews()
 	} catch (e) {
-		if (isMounted) {
+		if (isMounted && generation === loadGeneration) {
 			error(e)
 		}
 	}
