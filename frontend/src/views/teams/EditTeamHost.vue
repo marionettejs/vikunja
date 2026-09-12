@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Extensions} from '@tiptap/core'
-import {ref, onMounted, onUnmounted, watch} from 'vue'
+import {ref, nextTick, onMounted, onUnmounted, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import type {ITeam} from '@/modelTypes/ITeam'
 import type {ITeamMember} from '@/modelTypes/ITeamMember'
@@ -40,7 +40,7 @@ let searchView: InstanceType<typeof UserSearchView> | null = null
 let activeModal: InstanceType<typeof ModalCardView> | null = null
 
 let isMounted = false
-let currentTeam: ITeam | null = null
+const currentTeam = ref<ITeam | null>(null)
 let selectedUserToAdd: UserSearchOption | null = null
 
 let savedDraftName: string | null = null
@@ -160,15 +160,15 @@ function renderModal(modal: InstanceType<typeof ModalCardView>): void {
 }
 
 async function handleSave(values: {name: string, isPublic: boolean}): Promise<void> {
-	if (!currentTeam) {
+	if (!currentTeam.value) {
 		return
 	}
-	const description = editorView ? editorView.getContent() : (currentTeam.description ?? '')
+	const description = editorView ? editorView.getContent() : (currentTeam.value.description ?? '')
 	formView?.setDisabled(true)
 	editorView?.setEditable(false)
 	try {
 		const updated = await teamService.update({
-			...currentTeam,
+			...currentTeam.value,
 			name: values.name,
 			isPublic: values.isPublic,
 			description,
@@ -176,7 +176,7 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 		if (!isMounted) {
 			return
 		}
-		currentTeam = updated
+		currentTeam.value = updated
 		savedDraftName = null
 		savedDraftIsPublic = null
 		savedDraftDescription = null
@@ -202,11 +202,11 @@ function confirmDeleteTeam(): void {
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
 		onPrimary: async () => {
-			if (!currentTeam) {
+			if (!currentTeam.value) {
 				return
 			}
 			try {
-				await teamService.delete(currentTeam)
+				await teamService.delete(currentTeam.value)
 				if (!isMounted) {
 					return
 				}
@@ -228,17 +228,17 @@ function confirmRemoveMember(member: {id: number, username: string, name: string
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
 		onPrimary: async () => {
-			if (!currentTeam) {
+			if (!currentTeam.value) {
 				return
 			}
-			const targetMember = (currentTeam.members || []).find((m: ITeamMember) => m.username === member.username || m.id === member.id)
+			const targetMember = (currentTeam.value.members || []).find((m: ITeamMember) => m.username === member.username || m.id === member.id)
 			if (!targetMember) {
 				return
 			}
 			try {
 				await teamMemberService.delete({
 					...targetMember,
-					teamId: currentTeam.id,
+					teamId: currentTeam.value.id,
 				})
 				if (!isMounted) {
 					return
@@ -262,17 +262,17 @@ function confirmLeaveTeam(): void {
 		closeLabel: t('misc.closeDialog'),
 		onPrimary: async () => {
 			const currentUser = authStore.info
-			if (!currentTeam || !currentUser) {
+			if (!currentTeam.value || !currentUser) {
 				return
 			}
-			const myMember = (currentTeam.members || []).find((m: ITeamMember) => m.username === currentUser.username || m.id === currentUser.id)
+			const myMember = (currentTeam.value.members || []).find((m: ITeamMember) => m.username === currentUser.username || m.id === currentUser.id)
 			if (!myMember) {
 				return
 			}
 			try {
 				await teamMemberService.delete({
 					...myMember,
-					teamId: currentTeam.id,
+					teamId: currentTeam.value.id,
 				})
 				if (!isMounted) {
 					return
@@ -289,10 +289,10 @@ function confirmLeaveTeam(): void {
 }
 
 async function handleToggleAdmin(member: {id: number, username: string, admin: boolean}): Promise<void> {
-	if (!currentTeam) {
+	if (!currentTeam.value) {
 		return
 	}
-	const targetMember = (currentTeam.members || []).find((m: ITeamMember) => m.username === member.username || m.id === member.id)
+	const targetMember = (currentTeam.value.members || []).find((m: ITeamMember) => m.username === member.username || m.id === member.id)
 	if (!targetMember) {
 		return
 	}
@@ -300,7 +300,7 @@ async function handleToggleAdmin(member: {id: number, username: string, admin: b
 	try {
 		await teamMemberService.update({
 			...targetMember,
-			teamId: currentTeam.id,
+			teamId: currentTeam.value.id,
 			admin: newAdmin,
 		})
 		if (!isMounted) {
@@ -340,13 +340,13 @@ async function handleAddMember(): Promise<void> {
 		error(t('team.edit.mustSelectUser'))
 		return
 	}
-	if (!currentTeam) {
+	if (!currentTeam.value) {
 		return
 	}
 	try {
 		await teamMemberService.create({
 			...selectedUserToAdd,
-			teamId: currentTeam.id,
+			teamId: currentTeam.value.id,
 		})
 		if (!isMounted) {
 			return
@@ -363,31 +363,32 @@ async function handleAddMember(): Promise<void> {
 }
 
 async function reloadTeam(): Promise<void> {
-	if (!currentTeam) {
+	if (!currentTeam.value) {
 		return
 	}
-	const team = await teamService.get(currentTeam)
+	const team = await teamService.get(currentTeam.value)
 	if (!isMounted) {
 		return
 	}
-	currentTeam = team
+	currentTeam.value = team
+	await nextTick()
 	rebuildViews()
 }
 
 function renderViews(): void {
-	if (!currentTeam) {
+	if (!currentTeam.value) {
 		return
 	}
 	destroyViews()
 
 	const currentUserId = authStore.info?.id ?? 0
-	const canManage = isAdmin(currentTeam)
-	const canEdit = canEditTeam(currentTeam)
+	const canManage = isAdmin(currentTeam.value)
+	const canEdit = canEditTeam(currentTeam.value)
 
 	if (canEdit && formRegion.value) {
-		const initialName = savedDraftName ?? currentTeam.name ?? ''
-		const initialIsPublic = savedDraftIsPublic ?? !!currentTeam.isPublic
-		const initialDescription = savedDraftDescription ?? currentTeam.description ?? ''
+		const initialName = savedDraftName ?? currentTeam.value.name ?? ''
+		const initialIsPublic = savedDraftIsPublic ?? !!currentTeam.value.isPublic
+		const initialDescription = savedDraftDescription ?? currentTeam.value.description ?? ''
 
 		formView = new TeamEditFormView({
 			initialName,
@@ -449,13 +450,13 @@ function renderViews(): void {
 
 	if (membersRegion.value) {
 		membersView = new TeamMembersView({
-			members: currentTeam.members || [],
+			members: currentTeam.value.members || [],
 			currentUserId,
 			canManage,
 			labels: {
 				admin: t('team.attributes.admin'),
 				member: t('team.attributes.member'),
-				you: t('team.attributes.member'),
+				you: 'You',
 				makeAdmin: t('team.edit.makeAdmin'),
 				makeMember: t('team.edit.makeMember'),
 				remove: t('misc.delete'),
@@ -474,8 +475,8 @@ function rebuildViews(): void {
 }
 
 watch(() => i18n.global.locale, () => {
-	if (currentTeam) {
-		document.title = `${t('team.edit.title', {name: currentTeam.name})} | Vikunja`
+	if (currentTeam.value) {
+		document.title = `${t('team.edit.title', {name: currentTeam.value.name})} | Vikunja`
 		rebuildViews()
 	}
 })
@@ -488,8 +489,9 @@ onMounted(async () => {
 		if (!isMounted) {
 			return
 		}
-		currentTeam = team
+		currentTeam.value = team
 		document.title = `${t('team.edit.title', {name: team.name})} | Vikunja`
+		await nextTick()
 		renderViews()
 	} catch (e) {
 		if (isMounted) {
