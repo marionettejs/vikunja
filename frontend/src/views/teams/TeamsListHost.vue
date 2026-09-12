@@ -59,10 +59,12 @@ onMounted(async () => {
 		if (isUnmounted || !container.value) {
 			return
 		}
-		retainedTeams = result.map(t => ({id: t.id!, name: t.name}))
+		retainedTeams = result.map(t => ({id: t.id, name: t.name}))
 		renderView()
 	} catch (e) {
-		error(e)
+		if (!isUnmounted) {
+			error(e)
+		}
 	} finally {
 		isLoading.value = false
 	}

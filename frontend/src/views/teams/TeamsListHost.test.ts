@@ -41,6 +41,7 @@ vi.mock('vue-router', () => ({
 describe('TeamsListHost', () => {
 	beforeEach(() => {
 		mockGetAll.mockReset()
+		mockError.mockReset()
 		i18n.global.locale.value = 'en'
 	})
 
@@ -74,5 +75,23 @@ describe('TeamsListHost', () => {
 		expect(wrapper.find('a[href="/teams/new"]').text()).toContain('de-DE:team.create.title')
 		expect(document.title.startsWith('de-DE:team.title')).toBe(true)
 		expect(wrapper.findAll('ul.teams')).toHaveLength(1)
+	})
+
+	it('does not report an error when the load fails after the host has unmounted', async () => {
+		let rejectPromise!: (reason?: any) => void
+		const pendingPromise = new Promise((_, reject) => {
+			rejectPromise = reject
+		})
+		mockGetAll.mockReturnValueOnce(pendingPromise)
+
+		const wrapper = mount(TeamsListHost)
+		await flushPromises()
+
+		wrapper.unmount()
+
+		rejectPromise(new Error('Failed after unmount'))
+		await flushPromises()
+
+		expect(mockError).not.toHaveBeenCalled()
 	})
 })
