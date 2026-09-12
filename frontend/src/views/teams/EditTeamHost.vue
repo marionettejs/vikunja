@@ -585,3 +585,35 @@ onUnmounted(() => {
 		<div ref="modalRegion" />
 	</div>
 </template>
+
+<style lang="scss">
+// The Marionette search control renders outside Vue, so scoped styles never reach it.
+// These mirror the dropdown rows the replaced multiselect produced.
+.team-edit-host {
+	.search-results {
+		position: absolute;
+		z-index: 100;
+		max-height: 20rem;
+		overflow-y: auto;
+		background: var(--white);
+		border-radius: $radius;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.search-result-item {
+		display: block;
+		width: 100%;
+		padding: 0.5rem 1rem;
+		text-align: start;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		color: var(--text);
+
+		&:hover,
+		&:focus {
+			background: var(--grey-100);
+		}
+	}
+}
+</style>

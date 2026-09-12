@@ -82,6 +82,7 @@ export const UserSearchView = View.extend({
 		const opts = this.options as UserSearchViewOptions
 		const value = (event.target as HTMLInputElement).value
 		this._query = value
+		this._generation += 1
 
 		if (this._selected !== null) {
 			this._selected = null
@@ -96,7 +97,6 @@ export const UserSearchView = View.extend({
 		const delay = opts.searchDelay ?? 200
 		this._timer = setTimeout(() => {
 			this._timer = null
-			this._generation += 1
 			if (this._query === '') {
 				this._results = []
 				this.render()
@@ -143,6 +143,7 @@ export const UserSearchView = View.extend({
 	},
 
 	clearSelection() {
+		this._generation += 1
 		if (this._timer !== null) {
 			clearTimeout(this._timer)
 			this._timer = null
