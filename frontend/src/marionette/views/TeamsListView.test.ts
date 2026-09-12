@@ -164,10 +164,10 @@ describe('TeamsListView', () => {
 		for (const modifier of modifiers) {
 			const navigate = vi.fn()
 			const el = renderView({
-			teams: [{id: 1, name: 'Team One'}],
-			labels: defaultLabels,
-			hrefFor: defaultHrefFor,
-			navigate,
+				teams: [{id: 1, name: 'Team One'}],
+				labels: defaultLabels,
+				hrefFor: defaultHrefFor,
+				navigate,
 			})
 			const anchor = el.querySelector('ul.teams li a') as HTMLAnchorElement
 			const event = new MouseEvent('click', {bubbles: true, cancelable: true, [modifier]: true})
