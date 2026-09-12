@@ -86,19 +86,27 @@ function renderViews() {
 			try {
 				await router.push({name: 'teams.edit', params: {id: createdId}})
 				success({message: i18n.global.t('team.create.success')})
-			} catch {
-				// A failed navigation must not read as a creation failure, and must not
-				// re-enable creation: the team already exists.
+			} catch (e) {
+				if (!isMounted) {
+					return
+				}
+				success({message: i18n.global.t('team.create.success')})
+				error(e)
+				modalView?.setDismissible(true)
 			}
 		},
 	})
+
+	if (isSubmitting.value) {
+		formView.setDisabled(true)
+	}
 
 	modalView = new ModalCardView({
 		title: i18n.global.t('team.create.title'),
 		primaryLabel: i18n.global.t('misc.create'),
 		cancelLabel: i18n.global.t('misc.cancel'),
 		closeLabel: i18n.global.t('misc.closeDialog'),
-		primaryDisabled: !formView.isValid(),
+		primaryDisabled: !formView.isValid() || isSubmitting.value,
 		onPrimary: () => {
 			formView?.submit()
 		},
@@ -106,6 +114,10 @@ function renderViews() {
 			router.back()
 		},
 	})
+
+	if (isSubmitting.value) {
+		modalView.setDismissible(false)
+	}
 
 	modalView.showChildView('body', formView)
 }
