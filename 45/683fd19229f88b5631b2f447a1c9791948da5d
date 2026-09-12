@@ -1,0 +1,33 @@
+frontend/src/marionette/views/TeamEditFormView.test.ts
+  s_e4fe7fd5d6a6e7::t_9e70accf1b5b65 167,177-230
+  s_e4fe7fd5d6a6e7::t_649a3cc6318d17 231
+frontend/src/marionette/views/ConfirmTextView.test.ts
+  s_e4fe7fd5d6a6e7::t_261b226cdeb3fd 1-39
+frontend/src/marionette/views/UserSearchView.test.ts
+  s_e4fe7fd5d6a6e7::t_9e70accf1b5b65 129-146,165-219,238-253
+frontend/src/marionette/views/TeamEditFormView.ts
+  s_e4fe7fd5d6a6e7::t_9e70accf1b5b65 5-6,30,46,63-64,67,83-84,86,129,132,161,182
+frontend/src/marionette/views/UserSearchView.ts
+  s_e4fe7fd5d6a6e7::t_1b0bbd411f5b6e 88
+  s_e4fe7fd5d6a6e7::t_9e70accf1b5b65 14,19,22,39,58-62,64,86-87,89-90,99,104-108,129-132,141-144,146-149,152
+frontend/src/marionette/views/ConfirmTextView.ts
+  s_e4fe7fd5d6a6e7::t_261b226cdeb3fd 1-28
+frontend/src/views/teams/EditTeamHost.vue
+  s_e4fe7fd5d6a6e7::t_261b226cdeb3fd 22,133,155-158,210,237,271,327,329,339,486,501-523
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "45683fd19229f88b5631b2f447a1c9791948da5d",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
