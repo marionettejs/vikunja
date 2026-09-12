@@ -126,6 +126,24 @@ describe('UserSearchView', () => {
 		expect(secondChild.textContent?.trim()).toBe('bob_user')
 	})
 
+	it('each result is a button element', () => {
+		const view = createView()
+		const users: ReadonlyArray<UserSearchOption> = [
+			{id: 1, username: 'alice', name: 'Alice'},
+			{id: 2, username: 'bob', name: 'Bob'},
+		]
+		view.setResults(users)
+
+		const resultsEl = view.el.querySelector('.search-results')
+		expect(resultsEl).not.toBeNull()
+		const items = resultsEl?.querySelectorAll('.search-result-item')
+		expect(items?.length).toBe(2)
+		for (const item of items ?? []) {
+			expect(item.tagName.toLowerCase()).toBe('button')
+			expect(item.getAttribute('type')).toBe('button')
+		}
+	})
+
 	it('clicking a result reports it, makes getSelected return it, and removes .search-results', () => {
 		const onSelect = vi.fn()
 		const view = createView({onSelect})
@@ -142,6 +160,61 @@ describe('UserSearchView', () => {
 		expect(onSelect).toHaveBeenCalledWith(user)
 		expect(view.getSelected()).toEqual(user)
 		expect(view.el.querySelector('.search-results')).toBeNull()
+	})
+
+	it('results delivered for a superseded query do NOT replace newer results', () => {
+		const onSearch = vi.fn()
+		const view = createView({onSearch, searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		const gen1 = view.getGeneration()
+
+		input.value = 'alice'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		const gen2 = view.getGeneration()
+
+		expect(gen2).toBeGreaterThan(gen1)
+
+		const newerResults: ReadonlyArray<UserSearchOption> = [
+			{id: 1, username: 'alice', name: 'Alice'},
+		]
+		const olderResults: ReadonlyArray<UserSearchOption> = [
+			{id: 2, username: 'alex', name: 'Alex'},
+		]
+
+		view.setResults(newerResults, gen2)
+		expect(view.el.textContent).toContain('Alice')
+		expect(view.el.textContent).not.toContain('Alex')
+
+		view.setResults(olderResults, gen1)
+		expect(view.el.textContent).toContain('Alice')
+		expect(view.el.textContent).not.toContain('Alex')
+	})
+
+	it('typing after a selection clears the selection and reports null', () => {
+		const onSelect = vi.fn()
+		const view = createView({onSelect})
+		const user: UserSearchOption = {id: 1, username: 'alice', name: 'Alice'}
+		view.setResults([user])
+
+		const resultItem = view.el.querySelector('.search-results > *') as HTMLElement
+		resultItem.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		expect(view.getSelected()).toEqual(user)
+		expect(onSelect).toHaveBeenCalledWith(user)
+
+		onSelect.mockClear()
+
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+		input.value = 'bob'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		expect(view.getSelected()).toBeNull()
+		expect(onSelect).toHaveBeenCalledTimes(1)
+		expect(onSelect).toHaveBeenCalledWith(null)
 	})
 
 	it('clearSelection reports null and leaves nothing selected', () => {
@@ -161,5 +234,21 @@ describe('UserSearchView', () => {
 		expect(view.getSelected()).toBeNull()
 		expect(onSelect).toHaveBeenCalledTimes(1)
 		expect(onSelect).toHaveBeenCalledWith(null)
+	})
+
+	it('clearSelection empties the input\'s displayed value', () => {
+		const view = createView()
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+		input.value = 'alice'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		const user: UserSearchOption = {id: 1, username: 'alice', name: 'Alice'}
+		view.setResults([user])
+		const resultItem = view.el.querySelector('.search-results > *') as HTMLElement
+		resultItem.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		view.clearSelection()
+
+		expect(input.value).toBe('')
 	})
 })

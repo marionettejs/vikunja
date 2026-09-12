@@ -2,6 +2,8 @@ import {html, nothing} from 'lit-html'
 import type {ViewInstance} from 'marionette'
 import {View} from '../index'
 
+let nextFormId = 0
+
 export interface TeamEditFormOptions {
 	initialName: string
 	initialIsPublic: boolean
@@ -25,6 +27,7 @@ interface TemplateData {
 	isPublic: boolean
 	showPublicOption: boolean
 	error: string | null
+	errorId: string
 	disabled: boolean
 	labels: TeamEditFormOptions['labels']
 }
@@ -40,6 +43,7 @@ export const TeamEditFormView = View.extend({
 	_name: '',
 	_isPublic: false,
 	_error: null as string | null,
+	_errorId: '',
 	_disabled: false,
 	_initialized: false,
 
@@ -56,9 +60,11 @@ export const TeamEditFormView = View.extend({
 
 	initialize() {
 		if (!this._initialized) {
+			nextFormId += 1
+			this._errorId = `team-edit-error-${nextFormId}`
 			const opts = this.options as TeamEditFormOptions
 			this._name = opts.initialName
-			this._isPublic = opts.showPublicOption ? opts.initialIsPublic : false
+			this._isPublic = opts.initialIsPublic
 			this._initialized = true
 		}
 	},
@@ -74,8 +80,10 @@ export const TeamEditFormView = View.extend({
 					placeholder=${data.labels.namePlaceholder}
 					.value=${data.name}
 					?disabled=${data.disabled}
+					aria-invalid=${data.error ? 'true' : nothing}
+					aria-describedby=${data.error ? data.errorId : nothing}
 				>
-				${data.error ? html`<div class='error-message'>${data.error}</div>` : nothing}
+				${data.error ? html`<div id=${data.errorId} class='error-message'>${data.error}</div>` : nothing}
 			</div>
 
 			${data.showPublicOption ? html`
@@ -118,9 +126,10 @@ export const TeamEditFormView = View.extend({
 		const opts = this.options as TeamEditFormOptions
 		return {
 			name: this._name,
-			isPublic: opts.showPublicOption ? this._isPublic : false,
+			isPublic: opts.showPublicOption ? this._isPublic : opts.initialIsPublic,
 			showPublicOption: opts.showPublicOption,
 			error: this._error,
+			errorId: this._errorId,
 			disabled: this._disabled,
 			labels: opts.labels,
 		}
@@ -149,7 +158,7 @@ export const TeamEditFormView = View.extend({
 		this.render()
 		opts.onSave({
 			name: trimmed,
-			isPublic: opts.showPublicOption ? this._isPublic : false,
+			isPublic: opts.showPublicOption ? this._isPublic : opts.initialIsPublic,
 		})
 	},
 
@@ -170,7 +179,7 @@ export const TeamEditFormView = View.extend({
 		const opts = this.options as TeamEditFormOptions
 		return {
 			name: this._name,
-			isPublic: opts.showPublicOption ? this._isPublic : false,
+			isPublic: opts.showPublicOption ? this._isPublic : opts.initialIsPublic,
 		}
 	},
 }) as new (options: TeamEditFormOptions) => TeamEditFormViewInstance

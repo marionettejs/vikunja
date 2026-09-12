@@ -19,6 +19,7 @@ import {RichTextEditorView} from '@/marionette/views/RichTextEditorView'
 import {TeamMembersView} from '@/marionette/views/TeamMembersView'
 import {UserSearchView, type UserSearchOption} from '@/marionette/views/UserSearchView'
 import {ModalCardView} from '@/marionette/views/ModalCardView'
+import {ConfirmTextView} from '@/marionette/views/ConfirmTextView'
 
 const route = useRoute()
 const router = useRouter()
@@ -129,6 +130,7 @@ function showModal(options: {
 	primaryLabel: string
 	cancelLabel: string
 	closeLabel: string
+	bodyLines?: ReadonlyArray<string>
 	onPrimary: () => void
 	onClose?: () => void
 }): void {
@@ -150,6 +152,10 @@ function showModal(options: {
 			options.onClose?.()
 		},
 	})
+	if (options.bodyLines && options.bodyLines.length > 0) {
+		const bodyView = new ConfirmTextView({lines: options.bodyLines})
+		modal.showChildView('body', bodyView)
+	}
 	activeModal = modal
 	renderModal(modal)
 }
@@ -201,6 +207,7 @@ function confirmDeleteTeam(): void {
 		primaryLabel: t('misc.delete'),
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
+		bodyLines: [t('team.edit.delete.text1'), t('team.edit.delete.text2')],
 		onPrimary: async () => {
 			if (!currentTeam.value) {
 				return
@@ -227,6 +234,7 @@ function confirmRemoveMember(member: {id: number, username: string, name: string
 		primaryLabel: t('misc.delete'),
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
+		bodyLines: [t('team.edit.deleteUser.text1'), t('team.edit.deleteUser.text2')],
 		onPrimary: async () => {
 			if (!currentTeam.value) {
 				return
@@ -260,6 +268,7 @@ function confirmLeaveTeam(): void {
 		primaryLabel: t('misc.delete'),
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
+		bodyLines: [t('team.edit.leave.text1'), t('team.edit.leave.text2')],
 		onPrimary: async () => {
 			const currentUser = authStore.info
 			if (!currentTeam.value || !currentUser) {
@@ -315,9 +324,9 @@ async function handleToggleAdmin(member: {id: number, username: string, admin: b
 	}
 }
 
-async function handleSearch(query: string): Promise<void> {
+async function handleSearch(query: string, generation?: number): Promise<void> {
 	if (!query || !query.trim()) {
-		searchView?.setResults([])
+		searchView?.setResults([], generation)
 		return
 	}
 	try {
@@ -327,7 +336,7 @@ async function handleSearch(query: string): Promise<void> {
 		}
 		const currentUserId = authStore.info?.id
 		const filtered = (users || []).filter((u: IUser) => u.id !== currentUserId)
-		searchView?.setResults(filtered)
+		searchView?.setResults(filtered, generation)
 	} catch (e) {
 		if (isMounted) {
 			error(e)
@@ -474,16 +483,7 @@ function rebuildViews(): void {
 	renderViews()
 }
 
-watch(() => i18n.global.locale, () => {
-	if (currentTeam.value) {
-		document.title = `${t('team.edit.title', {name: currentTeam.value.name})} | Vikunja`
-		rebuildViews()
-	}
-})
-
-onMounted(async () => {
-	isMounted = true
-	const id = Number(route.params.id)
+async function loadTeam(id: number): Promise<void> {
 	try {
 		const team = await teamService.get({id} as ITeam)
 		if (!isMounted) {
@@ -498,6 +498,29 @@ onMounted(async () => {
 			error(e)
 		}
 	}
+}
+
+watch(() => i18n.global.locale.value, () => {
+	if (currentTeam.value) {
+		document.title = `${t('team.edit.title', {name: currentTeam.value.name})} | Vikunja`
+		rebuildViews()
+	}
+})
+
+watch(() => route.params.id, (newId) => {
+	if (!newId || !isMounted) {
+		return
+	}
+	savedDraftName = null
+	savedDraftIsPublic = null
+	savedDraftDescription = null
+	loadTeam(Number(newId))
+})
+
+onMounted(async () => {
+	isMounted = true
+	const id = Number(route.params.id)
+	await loadTeam(id)
 })
 
 onUnmounted(() => {

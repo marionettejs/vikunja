@@ -164,7 +164,7 @@ describe('TeamEditFormView', () => {
 	it('renders no public checkbox and getValues reports false when showPublicOption is false', () => {
 		const view = createView({
 			initialName: 'Secret Team',
-			initialIsPublic: true,
+			initialIsPublic: false,
 			showPublicOption: false,
 		})
 		view.render()
@@ -172,6 +172,61 @@ describe('TeamEditFormView', () => {
 
 		expect(view.el.querySelector('.public-checkbox')).toBeNull()
 		expect(view.getValues()).toEqual({name: 'Secret Team', isPublic: false})
+	})
+
+	it('with the public option hidden, an instance built with initialIsPublic: true reports true on save, and one built with false reports false', () => {
+		const onSaveTrue = vi.fn()
+		const viewTrue = createView({
+			initialName: 'Public Hidden',
+			initialIsPublic: true,
+			showPublicOption: false,
+			onSave: onSaveTrue,
+		})
+		viewTrue.render()
+		document.body.appendChild(viewTrue.el)
+
+		const saveBtnTrue = viewTrue.el.querySelector<HTMLButtonElement>('.save-button')
+		saveBtnTrue?.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		expect(onSaveTrue).toHaveBeenCalledTimes(1)
+		expect(onSaveTrue).toHaveBeenCalledWith({name: 'Public Hidden', isPublic: true})
+
+		const onSaveFalse = vi.fn()
+		const viewFalse = createView({
+			initialName: 'Private Hidden',
+			initialIsPublic: false,
+			showPublicOption: false,
+			onSave: onSaveFalse,
+		})
+		viewFalse.render()
+		document.body.appendChild(viewFalse.el)
+
+		const saveBtnFalse = viewFalse.el.querySelector<HTMLButtonElement>('.save-button')
+		saveBtnFalse?.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		expect(onSaveFalse).toHaveBeenCalledTimes(1)
+		expect(onSaveFalse).toHaveBeenCalledWith({name: 'Private Hidden', isPublic: false})
+	})
+
+	it('while the error shows, the input is marked invalid and described by the element holding the error text; before any save attempt neither attribute is present', () => {
+		const view = createView({initialName: ''})
+		view.render()
+		document.body.appendChild(view.el)
+
+		const input = view.el.querySelector<HTMLInputElement>('#teamtext')!
+		expect(input.hasAttribute('aria-invalid')).toBe(false)
+		expect(input.hasAttribute('aria-describedby')).toBe(false)
+
+		const saveBtn = view.el.querySelector<HTMLButtonElement>('.save-button')
+		saveBtn?.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		expect(input.getAttribute('aria-invalid')).toBe('true')
+		const describedBy = input.getAttribute('aria-describedby')
+		expect(describedBy).toBeTruthy()
+
+		const errorEl = view.el.querySelector(`#${describedBy}`)
+		expect(errorEl).not.toBeNull()
+		expect(errorEl?.textContent).toContain(defaultLabels.nameRequired)
 	})
 
 	it('setDisabled(true) disables inputs and controls, and setDisabled(false) restores them', () => {

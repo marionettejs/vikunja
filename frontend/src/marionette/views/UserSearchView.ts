@@ -11,14 +11,15 @@ export interface UserSearchOption {
 export interface UserSearchViewOptions {
 	placeholder: string
 	searchDelay?: number
-	onSearch: (query: string) => void
+	onSearch: (query: string, generation?: number) => void
 	onSelect: (user: UserSearchOption | null) => void
 }
 
 export interface UserSearchViewInstance extends ViewInstance {
-	setResults(users: ReadonlyArray<UserSearchOption>): void
+	setResults(users: ReadonlyArray<UserSearchOption>, generation?: number): void
 	getSelected(): UserSearchOption | null
 	clearSelection(): void
+	getGeneration(): number
 }
 
 interface TemplateData {
@@ -35,6 +36,7 @@ export const UserSearchView = View.extend({
 	_results: [] as ReadonlyArray<UserSearchOption>,
 	_selected: null as UserSearchOption | null,
 	_timer: null as ReturnType<typeof setTimeout> | null,
+	_generation: 0,
 
 	events: {
 		'input .input-wrapper input': 'onInput',
@@ -53,9 +55,13 @@ export const UserSearchView = View.extend({
 			${data.results.length > 0 ? html`
 				<div class='search-results'>
 					${data.results.map(user => html`
-						<div class='search-result-item' data-id=${user.id}>
+						<button
+							type='button'
+							class='search-result-item'
+							data-id=${user.id}
+						>
 							${user.name !== '' ? user.name : user.username}
-						</div>
+						</button>
 					`)}
 				</div>
 			` : ''}
@@ -77,6 +83,11 @@ export const UserSearchView = View.extend({
 		const value = (event.target as HTMLInputElement).value
 		this._query = value
 
+		if (this._selected !== null) {
+			this._selected = null
+			opts.onSelect(null)
+		}
+
 		if (this._timer !== null) {
 			clearTimeout(this._timer)
 			this._timer = null
@@ -85,11 +96,16 @@ export const UserSearchView = View.extend({
 		const delay = opts.searchDelay ?? 200
 		this._timer = setTimeout(() => {
 			this._timer = null
+			this._generation += 1
 			if (this._query === '') {
 				this._results = []
 				this.render()
 			}
-			opts.onSearch(this._query)
+			if (opts.onSearch.length > 1) {
+				opts.onSearch(this._query, this._generation)
+			} else {
+				opts.onSearch(this._query)
+			}
 		}, delay)
 	},
 
@@ -110,7 +126,10 @@ export const UserSearchView = View.extend({
 		}
 	},
 
-	setResults(users: ReadonlyArray<UserSearchOption>) {
+	setResults(users: ReadonlyArray<UserSearchOption>, generation?: number) {
+		if (generation !== undefined && generation !== this._generation) {
+			return
+		}
 		this._results = users
 		this.render()
 	},
@@ -119,9 +138,18 @@ export const UserSearchView = View.extend({
 		return this._selected
 	},
 
+	getGeneration(): number {
+		return this._generation
+	},
+
 	clearSelection() {
+		if (this._timer !== null) {
+			clearTimeout(this._timer)
+			this._timer = null
+		}
 		const opts = this.options as UserSearchViewOptions
 		this._selected = null
+		this._query = ''
 		this.render()
 		opts.onSelect(null)
 	},
