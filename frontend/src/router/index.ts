@@ -386,7 +386,7 @@ const router = createRouter({
 		{
 			path: '/teams',
 			name: 'teams.index',
-			component: () => import('@/views/teams/ListTeams.vue'),
+			component: () => import('@/views/teams/TeamsListHost.vue'),
 		},
 		{
 			path: '/teams/new',
