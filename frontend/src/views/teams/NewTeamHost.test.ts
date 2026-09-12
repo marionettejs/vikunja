@@ -1,5 +1,6 @@
 import {describe, it, expect, vi, beforeEach} from 'vitest'
 import {mount, flushPromises} from '@vue/test-utils'
+import {i18n} from '@/i18n'
 import NewTeamHost from './NewTeamHost.vue'
 
 const {mockCreate, mockError, mockSuccess, mockPush, mockBack, mockModalInstances, mockFormInstances} = vi.hoisted(() => {
@@ -36,14 +37,17 @@ vi.mock('vue-router', () => ({
 	}),
 }))
 
-vi.mock('@/i18n', () => ({
-	i18n: {
-		global: {
-			t: (key: string) => key,
-			locale: {value: 'en'},
+vi.mock('@/i18n', async () => {
+	const {ref} = await import('vue')
+	return {
+		i18n: {
+			global: {
+				t: (key: string) => key,
+				locale: ref('en'),
+			},
 		},
-	},
-}))
+	}
+})
 
 vi.mock('@/stores/config', () => ({
 	useConfigStore: () => ({
@@ -95,6 +99,7 @@ describe('NewTeamHost', () => {
 		mockBack.mockReset()
 		mockModalInstances.length = 0
 		mockFormInstances.length = 0
+		i18n.global.locale.value = 'en'
 	})
 
 	it('A successful create followed by a successful navigation reports success once and pushes to teams.edit with the new id', async () => {
@@ -197,5 +202,52 @@ describe('NewTeamHost', () => {
 		expect(mockSuccess).not.toHaveBeenCalled()
 		expect(mockError).not.toHaveBeenCalled()
 		expect(mockPush).not.toHaveBeenCalled()
+	})
+
+	it('After a create succeeds and navigation REJECTS, a locale change rebuilds the views and the modal is still dismissible', async () => {
+		const navError = new Error('Navigation failed')
+		mockCreate.mockResolvedValueOnce({id: 42, name: 'Test Team'})
+		mockPush.mockRejectedValueOnce(navError)
+
+		mount(NewTeamHost)
+		await flushPromises()
+
+		const initialCount = mockModalInstances.length
+		const form = mockFormInstances[mockFormInstances.length - 1]
+		await form.options.onSubmit({name: 'Test Team', isPublic: false})
+		await flushPromises()
+
+		i18n.global.locale.value = 'de-DE'
+		await flushPromises()
+
+		expect(mockModalInstances.length).toBeGreaterThan(initialCount)
+		const rebuiltModal = mockModalInstances[mockModalInstances.length - 1]
+		const rebuiltForm = mockFormInstances[mockFormInstances.length - 1]
+		expect(rebuiltModal.setDismissible).not.toHaveBeenCalledWith(false)
+		expect(rebuiltForm.setDisabled).toHaveBeenCalledWith(true)
+		expect(rebuiltModal.options.primaryDisabled).toBe(true)
+	})
+
+	it('After a create FAILS, a locale change rebuilds the views and the modal is dismissible and the form enabled', async () => {
+		const createError = new Error('Create failed')
+		mockCreate.mockRejectedValueOnce(createError)
+
+		mount(NewTeamHost)
+		await flushPromises()
+
+		const initialCount = mockModalInstances.length
+		const form = mockFormInstances[mockFormInstances.length - 1]
+		await form.options.onSubmit({name: 'Test Team', isPublic: false})
+		await flushPromises()
+
+		i18n.global.locale.value = 'de-DE'
+		await flushPromises()
+
+		expect(mockModalInstances.length).toBeGreaterThan(initialCount)
+		const rebuiltModal = mockModalInstances[mockModalInstances.length - 1]
+		const rebuiltForm = mockFormInstances[mockFormInstances.length - 1]
+		expect(rebuiltModal.setDismissible).not.toHaveBeenCalledWith(false)
+		expect(rebuiltForm.setDisabled).not.toHaveBeenCalledWith(true)
+		expect(rebuiltModal.options.primaryDisabled).toBe(false)
 	})
 })

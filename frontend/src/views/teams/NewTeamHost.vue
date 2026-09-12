@@ -21,6 +21,7 @@ let modalView: InstanceType<typeof ModalCardView> | null = null
 let formView: InstanceType<typeof NewTeamFormView> | null = null
 let isMounted = true
 const isSubmitting = ref(false)
+const isCreated = ref(false)
 
 function updateDocumentTitle() {
 	document.title = `${i18n.global.t('team.create.title')} | Vikunja`
@@ -49,10 +50,10 @@ function renderViews() {
 		initialName: initialValues?.name,
 		initialIsPublic: initialValues?.isPublic,
 		onValidityChange: (isValid: boolean) => {
-			modalView?.setPrimaryDisabled(!isValid || isSubmitting.value)
+			modalView?.setPrimaryDisabled(!isValid || isSubmitting.value || isCreated.value)
 		},
 		onSubmit: async (values: {name: string, isPublic: boolean}) => {
-			if (isSubmitting.value) {
+			if (isSubmitting.value || isCreated.value) {
 				return
 			}
 			isSubmitting.value = true
@@ -68,7 +69,9 @@ function renderViews() {
 				}))
 				const created = await teamService.create(model)
 				createdId = created.id
+				isCreated.value = true
 			} catch (e) {
+				isSubmitting.value = false
 				if (!isMounted) {
 					return
 				}
@@ -76,10 +79,10 @@ function renderViews() {
 				modalView?.setDismissible(true)
 				formView?.setDisabled(false)
 				modalView?.setPrimaryDisabled(!formView?.isValid())
-				isSubmitting.value = false
 				return
 			}
 
+			isSubmitting.value = false
 			if (!isMounted || createdId === undefined) {
 				return
 			}
@@ -106,7 +109,7 @@ function renderViews() {
 		},
 	})
 
-	if (isSubmitting.value) {
+	if (isSubmitting.value || isCreated.value) {
 		formView.setDisabled(true)
 	}
 
@@ -115,7 +118,7 @@ function renderViews() {
 		primaryLabel: i18n.global.t('misc.create'),
 		cancelLabel: i18n.global.t('misc.cancel'),
 		closeLabel: i18n.global.t('misc.closeDialog'),
-		primaryDisabled: !formView.isValid() || isSubmitting.value,
+		primaryDisabled: !formView.isValid() || isSubmitting.value || isCreated.value,
 		onPrimary: () => {
 			formView?.submit()
 		},
