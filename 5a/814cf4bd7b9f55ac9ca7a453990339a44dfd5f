@@ -1,0 +1,22 @@
+frontend/src/marionette/views/TeamEditFormView.ts
+  s_e4fe7fd5d6a6e7::t_765f2d241e2413 1-176
+frontend/src/marionette/views/TeamEditFormView.test.ts
+  s_e4fe7fd5d6a6e7::t_765f2d241e2413 1,3-215,217-246
+  s_e4fe7fd5d6a6e7::t_1e7133831f55a5 2,216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5a814cf4bd7b9f55ac9ca7a453990339a44dfd5f",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
