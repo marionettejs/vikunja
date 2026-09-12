@@ -391,7 +391,7 @@ const router = createRouter({
 		{
 			path: '/teams/new',
 			name: 'teams.create',
-			component: () =>  import('@/views/teams/NewTeam.vue'),
+			component: () =>  import('@/views/teams/NewTeamHost.vue'),
 			meta: {
 				showAsModal: true,
 			},
