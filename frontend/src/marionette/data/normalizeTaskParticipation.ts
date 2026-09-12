@@ -122,6 +122,12 @@ export function normalizeTaskParticipation(patch: TaskPatch): TaskPatch {
 			} else {
 				result[key] = value
 			}
+		} else if (key === 'reactions') {
+			if (isRecord(value)) {
+				result[key] = normalizeReactions(value)
+			} else {
+				result[key] = value
+			}
 		} else {
 			result[key] = value
 		}
