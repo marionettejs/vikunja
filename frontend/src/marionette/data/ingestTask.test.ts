@@ -26,7 +26,7 @@ describe('ingestTask', () => {
 			attachments: [{id: 3, created_by: {id: 7, username: 'ada'}, file: {id: 4, name: 'spec.pdf'}}],
 			subscription: {entity: 'task', entity_id: 1},
 			comments: [{id: 11, comment: 'first', author: {id: 7, name: 'Ada Lovelace'}}],
-			reactions: {thumbs_up: [{id: 7, username: 'ada'}]},
+			reactions: {thumbs_up: [{id: 7, username: 'ada', is_local_user: true}]},
 			...overrides,
 		}
 	}
@@ -44,6 +44,7 @@ describe('ingestTask', () => {
 		const reactions = record.get('reactions') as Record<string, unknown>
 		expect(reactions).toHaveProperty('thumbs_up')
 		expect(reactions).not.toHaveProperty('thumbsUp')
+		expect(record.get('reactions')?.thumbs_up?.[0].isLocalUser).toBe(true)
 	})
 
 	it('is silent when an unchanged re-fetch arrives as a freshly parsed payload', () => {
@@ -75,6 +76,7 @@ describe('ingestTask', () => {
 		ingestTask(records, buildRaw({title: 'Changed title'}))
 
 		expect(onChange).toHaveBeenCalledTimes(1)
+		expect(Object.keys(record.changed)).toEqual(['title'])
 		expect(record.get('title')).toBe('Changed title')
 		expect(record.get('assignees')).toBe(assignees)
 	})
@@ -100,7 +102,7 @@ describe('ingestTask', () => {
 
 		expect(first).toBe(second)
 		expect(first).toBe(records.get(1))
-	})
+		})
 
 	it('preserves fields omitted by a partial list response', () => {
 		const record = ingestTask(records, buildRaw())
