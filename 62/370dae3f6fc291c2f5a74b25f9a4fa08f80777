@@ -1,0 +1,25 @@
+frontend/src/marionette/views/NewTeamFormView.test.ts
+  s_e4fe7fd5d6a6e7::t_0ab248e7cc3089 1-48,50-59,61-62,64-66,68-87,89-100,102-112,114-127,129-143,145-146,148-152
+  s_e4fe7fd5d6a6e7::t_7ce58e2a76a186 49,60,63,67,88,101,113,128,144,147
+frontend/src/marionette/views/ModalCardView.ts
+  s_e4fe7fd5d6a6e7::t_0ab248e7cc3089 26-34,138-140
+frontend/src/marionette/views/NewTeamFormView.ts
+  s_e4fe7fd5d6a6e7::t_a9d6cd46193049 33-39,42
+  s_e4fe7fd5d6a6e7::t_0ab248e7cc3089 1-32,40-41,43-137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "62370dae3f6fc291c2f5a74b25f9a4fa08f80777",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
