@@ -1,0 +1,22 @@
+frontend/src/router/index.ts
+  s_e4fe7fd5d6a6e7::t_23093c10b386b2 394
+frontend/src/views/teams/NewTeamHost.vue
+  s_e4fe7fd5d6a6e7::t_efbbf40366cae3 6,20-21,58,60-61
+  s_e4fe7fd5d6a6e7::t_64c745cb640b58 1-5,7-19,22-57,59,62-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eed42a556d5b42630f922d99feb68c5e26aeec03",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
