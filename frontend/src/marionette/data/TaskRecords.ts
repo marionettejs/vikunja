@@ -1,13 +1,23 @@
-import { Model } from '@mnjs/data'
+import {Model} from '@mnjs/data'
 import type {ITask} from '@/modelTypes/ITask'
+import type {IRelationKind} from '@/types/IRelationKind'
+import type {IUser} from '@/modelTypes/IUser'
 
-// ITask declares created and updated as non-nullable Date, but the API sends a
-// zero-time year for "never" and normalizeTaskResponse reports that as null
-// through parseDateOrNull. A record really can hold null there, so the attribute
-// namespace says so rather than letting a cast hide it.
-export type TaskAttributes = Omit<{ [K in keyof ITask]: ITask[K] }, 'created' | 'updated'> & {
+// Zero-time dates normalize to null. The generated schema declares six collections nullable while no scalar is. For reactions and relatedTasks, only map values are nullable, not the maps.
+export type TaskAttributes = Omit<
+	{ [K in keyof ITask]: ITask[K] },
+	'created' | 'updated' | 'assignees' | 'attachments' | 'buckets' | 'comments' | 'labels' | 'reminders' | 'reactions' | 'relatedTasks'
+> & {
 	created: Date | null
 	updated: Date | null
+	assignees: ITask['assignees'] | null
+	attachments: ITask['attachments'] | null
+	buckets: ITask['buckets'] | null
+	comments: ITask['comments'] | null
+	labels: ITask['labels'] | null
+	reminders: ITask['reminders'] | null
+	reactions: { [reaction: string]: IUser[] | null }
+	relatedTasks: Partial<Record<IRelationKind, ITask[] | null>>
 }
 export type TaskRecord = Model<TaskAttributes>
 export type TaskPatch = Partial<TaskAttributes> & { id: number }
