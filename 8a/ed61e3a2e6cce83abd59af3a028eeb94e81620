@@ -1,0 +1,23 @@
+frontend/src/marionette/views/TeamEditFormView.test.ts
+  s_e4fe7fd5d6a6e7::t_1e7133831f55a5 2,216
+  s_e4fe7fd5d6a6e7::t_765f2d241e2413 1,3-215,217-246
+frontend/src/marionette/views/TeamEditFormView.ts
+  s_e4fe7fd5d6a6e7::t_765f2d241e2413 1-136,138-155,157-176
+  s_e4fe7fd5d6a6e7::t_fd1a7476b6db8d 137,156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8aed61e3a2e6cce83abd59af3a028eeb94e81620",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
