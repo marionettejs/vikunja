@@ -1,5 +1,5 @@
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
-import {mount, flushPromises, VueWrapper} from '@vue/test-utils'
+import {mount, flushPromises, type VueWrapper} from '@vue/test-utils'
 import {i18n} from '@/i18n'
 import NewTeamHost from './NewTeamHost.vue'
 
