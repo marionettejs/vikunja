@@ -1,0 +1,24 @@
+frontend/src/marionette/views/ModalCardView.ts
+  s_e4fe7fd5d6a6e7::t_493a9f0e299c35 45,47-51,89-90,93,97,99
+  s_e4fe7fd5d6a6e7::t_b0995e6f52ad1e 1-17,22,24-44,46,52-88,91-92,94-96,98,100-128
+  s_e4fe7fd5d6a6e7::t_0ae0528798d966 18-21
+  s_e4fe7fd5d6a6e7::t_bbba029be1a43e 23,129
+frontend/src/marionette/views/ModalCardView.test.ts
+  s_e4fe7fd5d6a6e7::t_b0995e6f52ad1e 1-180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ca37ab21a06a1c833ee017124d008ce4c5e46ad0",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
