@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, onBeforeUnmount} from 'vue'
+import {ref, watch, onMounted, onBeforeUnmount} from 'vue'
 import {useRouter} from 'vue-router'
 import {i18n} from '@/i18n'
 import {error} from '@/message'
@@ -11,28 +11,56 @@ const container = ref<HTMLElement | null>(null)
 const isLoading = ref(true)
 let view: InstanceType<typeof TeamsListView> | null = null
 let isUnmounted = false
+let retainedTeams: Array<{id: number, name: string}> = []
+
+function updateDocumentTitle() {
+	document.title = `${i18n.global.t('team.title')} | Vikunja`
+}
+
+function renderView() {
+	if (!container.value) {
+		return
+	}
+	updateDocumentTitle()
+	if (view) {
+		view.destroy()
+		view = null
+	}
+	view = new TeamsListView({
+		teams: retainedTeams,
+		labels: {
+			title: i18n.global.t('team.title'),
+			create: i18n.global.t('team.create.title'),
+			noTeams: i18n.global.t('team.noTeams'),
+		},
+		navigate: (path: string) => {
+			router.push(path)
+		},
+	})
+	view.render()
+	container.value.replaceChildren(view.el)
+}
+
+watch(
+	() => i18n.global.locale.value,
+	() => {
+		updateDocumentTitle()
+		if (view) {
+			renderView()
+		}
+	},
+)
 
 onMounted(async () => {
-	document.title = `${i18n.global.t('team.title')} | Vikunja`
+	updateDocumentTitle()
 	try {
 		const service = new TeamService()
 		const result = await service.getAll()
 		if (isUnmounted || !container.value) {
 			return
 		}
-		view = new TeamsListView({
-			teams: result.map(t => ({id: t.id, name: t.name})),
-			labels: {
-				title: i18n.global.t('team.title'),
-				create: i18n.global.t('team.create.title'),
-				noTeams: i18n.global.t('team.noTeams'),
-			},
-			navigate: (path: string) => {
-				router.push(path)
-			},
-		})
-		view.render()
-		container.value.appendChild(view.el)
+		retainedTeams = result.map(t => ({id: t.id!, name: t.name}))
+		renderView()
 	} catch (e) {
 		error(e)
 	} finally {
