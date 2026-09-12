@@ -50,7 +50,7 @@ vi.mock('@/i18n', async () => {
 })
 
 vi.mock('@/stores/config', () => ({
-	useConfigStore: () => ({ 
+	useConfigStore: () => ({
 		publicTeamsEnabled: true,
 	}),
 }))
