@@ -395,24 +395,25 @@ async function handleAddMember(): Promise<void> {
 let loadGeneration = 0
 
 async function reloadTeam(): Promise<void> {
-	if (!currentTeam.value) {
+	const team = currentTeam.value
+	if (!team) {
 		return
 	}
-	loadGeneration += 1
 	const generation = loadGeneration
-	let team: ITeam
+	const teamId = team.id
+	let updatedTeam: ITeam
 	try {
-		team = await teamService.get(currentTeam.value)
+		updatedTeam = await teamService.get(team)
 	} catch (e) {
-		if (generation === loadGeneration) {
+		if (generation === loadGeneration && currentTeam.value?.id === teamId) {
 			throw e
 		}
 		return
 	}
-	if (!isMounted || generation !== loadGeneration) {
+	if (!isMounted || generation !== loadGeneration || currentTeam.value?.id !== teamId) {
 		return
 	}
-	currentTeam.value = team
+	currentTeam.value = updatedTeam
 	await nextTick()
 	rebuildViews()
 }

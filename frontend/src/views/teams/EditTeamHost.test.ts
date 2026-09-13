@@ -29,6 +29,13 @@ const {mockError, mockSuccess, mockPush, mockBack} = vi.hoisted(() => ({
 	mockBack: vi.fn(),
 }))
 
+const {routeParams} = vi.hoisted(() => {
+	const {reactive} = require('vue')
+	return {
+		routeParams: reactive({id: '42'}),
+	}
+})
+
 vi.mock('@/services/team', () => ({
 	default: class {
 		get(model: any) {
@@ -75,9 +82,7 @@ vi.mock('@/message', () => ({
 
 vi.mock('vue-router', () => ({
 	useRoute: () => ({
-		params: {
-			id: '42',
-		},
+		params: routeParams,
 	}),
 	useRouter: () => ({
 		push: mockPush,
@@ -90,7 +95,12 @@ vi.mock('@/i18n', async () => {
 	return {
 		i18n: {
 			global: {
-				t: (key: string) => key,
+				t: (key: string, args?: Record<string, any>) => {
+					if (args?.name) {
+						return `${key}:${args.name}`
+					}
+					return key
+				},
 				locale: ref('en'),
 			},
 		},
@@ -124,6 +134,7 @@ describe('EditTeamHost', () => {
 
 	beforeEach(() => {
 		capturedOptions = null
+		routeParams.id = '42'
 		mockGetTeam.mockReset()
 		mockUpdateTeam.mockReset()
 		mockDeleteTeam.mockReset()
@@ -215,5 +226,104 @@ describe('EditTeamHost', () => {
 		wrapper = null
 
 		expect(document.body.querySelector('.editor-bubble')).toBeNull()
+	})
+
+	it('a member refresh in flight does not replace the team the route navigated to', async () => {
+		const deferreds: Record<number, {resolve: (team: any) => void, reject: (err: any) => void}> = {}
+
+		mockGetTeam.mockImplementation((model: {id: number}) => {
+			return new Promise((resolve, reject) => {
+				deferreds[model.id] = {resolve, reject}
+			})
+		})
+
+		const team42 = {
+			id: 42,
+			name: 'Team 42',
+			description: '<p>Team 42 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+				{
+					id: 2,
+					username: 'otheruser',
+					name: 'Other User',
+					admin: false,
+				},
+			],
+		}
+
+		const team99 = {
+			id: 99,
+			name: 'Team 99',
+			description: '<p>Team 99 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+			],
+		}
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		// Settle team 42 initial load
+		expect(deferreds[42]).toBeDefined()
+		deferreds[42].resolve(team42)
+		await flushPromises()
+
+		// Form view has team 42
+		const inputBefore = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(inputBefore.element.value).toBe('Team 42')
+		expect(document.title).toContain('Team 42')
+
+		// Start navigation to team 99
+		routeParams.id = '99'
+		await flushPromises()
+		expect(deferreds[99]).toBeDefined()
+
+		// Trigger member mutation refresh on team 42
+		mockUpdateMember.mockResolvedValue({})
+		const toggleAdminBtn = document.body.querySelector<HTMLButtonElement>('button.toggle-admin')
+		expect(toggleAdminBtn).not.toBeNull()
+		toggleAdminBtn!.click()
+		await flushPromises()
+
+		// Settle team 99 first
+		deferreds[99].resolve(team99)
+		await flushPromises()
+
+		expect(document.title).toContain('Team 99')
+		const inputAfterNav = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(inputAfterNav.element.value).toBe('Team 99')
+
+		// Now settle the member reload for team 42
+		deferreds[42].resolve({
+			...team42,
+			name: 'Team 42 Reloaded',
+		})
+		await flushPromises()
+
+		// Assert team 99 is still on screen and document title remains Team 99
+		const inputFinal = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(inputFinal.element.value).toBe('Team 99')
+		expect(document.title).toContain('Team 99')
 	})
 })
