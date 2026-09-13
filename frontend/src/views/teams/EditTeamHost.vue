@@ -682,7 +682,7 @@ onUnmounted(() => {
 		inline-size: 100%;
 		box-sizing: border-box;
 		z-index: 100;
-		max-height: 20rem;
+		max-block-size: 20rem;
 		overflow-y: auto;
 		background: var(--white);
 		border-radius: $radius;
@@ -691,7 +691,7 @@ onUnmounted(() => {
 
 	.search-result-item {
 		display: block;
-		width: 100%;
+		inline-size: 100%;
 		box-sizing: border-box;
 		font-family: inherit;
 		font-size: 1rem;
