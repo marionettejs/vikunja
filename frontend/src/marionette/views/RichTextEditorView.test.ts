@@ -139,4 +139,24 @@ describe('RichTextEditorView', () => {
 
 		expect(onChange).toHaveBeenCalledWith('<p>Changed content</p>')
 	})
+
+	it('getEditor returns the live editor whose view dom is the rendered element', () => {
+		const view = createView()
+		view.render()
+		document.body.appendChild(view.el)
+
+		expect(view.getEditor()).toBeDefined()
+		expect(view.el.contains(view.getEditor()!.view.dom)).toBe(true)
+	})
+
+	it('getEditor returns undefined before render and after destroy', () => {
+		const view = createView()
+		expect(view.getEditor()).toBeUndefined()
+
+		view.render()
+		expect(view.getEditor()).toBeDefined()
+
+		view.destroy()
+		expect(view.getEditor()).toBeUndefined()
+	})
 })

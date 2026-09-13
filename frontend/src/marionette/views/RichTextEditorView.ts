@@ -21,6 +21,7 @@ interface TemplateData {
 export interface RichTextEditorViewInstance extends ViewInstance {
 	getContent(): string
 	setEditable(editable: boolean): void
+	getEditor(): Editor | undefined
 }
 
 export const RichTextEditorView = View.extend({
@@ -91,5 +92,9 @@ export const RichTextEditorView = View.extend({
 		if (this._editor) {
 			this._editor.setEditable(editable)
 		}
+	},
+
+	getEditor(): Editor | undefined {
+		return this._editor ?? undefined
 	},
 }) as new (options: RichTextEditorViewOptions) => RichTextEditorViewInstance

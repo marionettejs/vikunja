@@ -440,7 +440,7 @@ function renderViews(): void {
 			placeholder: t('team.attributes.descriptionPlaceholder'),
 			contentHasChanged: contentHasChangedRef,
 			bubbleSave: () => {},
-			getEditor: () => undefined,
+			getEditor: () => editorView?.getEditor(),
 			uploadCallback: undefined,
 			uploadAndInsertFiles: () => {},
 		})
