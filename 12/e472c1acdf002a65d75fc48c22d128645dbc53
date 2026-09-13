@@ -1,0 +1,19 @@
+frontend/src/views/teams/EditTeamHost.vue
+  s_e4fe7fd5d6a6e7::t_76c6fb44943b83 699-752
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "12e472c1acdf002a65d75fc48c22d128645dbc53",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "unknown"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
