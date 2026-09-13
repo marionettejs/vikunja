@@ -60,6 +60,9 @@ export const RichTextEditorView = View.extend({
 			extensions: opts.extensions,
 			content: opts.content,
 			editable: opts.editable,
+			parseOptions: {
+				preserveWhitespace: true,
+			},
 			onUpdate: ({editor}) => {
 				opts.onChange(editor.getHTML())
 			},

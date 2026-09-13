@@ -116,4 +116,19 @@ describe('RichTextEditorView', () => {
 			view.destroy()
 		}).not.toThrow()
 	})
+
+	it('onChange is called when the content changes', () => {
+		const onChange = vi.fn()
+		const view = createView({
+			content: '<p>Initial content</p>',
+			onChange,
+		})
+		view.render()
+		document.body.appendChild(view.el)
+
+		const editor = (view as unknown as {_editor: {commands: {setContent: (c: string) => void}}})._editor
+		editor.commands.setContent('<p>Changed content</p>')
+
+		expect(onChange).toHaveBeenCalledWith('<p>Changed content</p>')
+	})
 })

@@ -73,7 +73,7 @@ describe('UserSearchView', () => {
 
 		vi.advanceTimersByTime(1)
 		expect(onSearch).toHaveBeenCalledTimes(1)
-		expect(onSearch).toHaveBeenCalledWith('ali')
+		expect(onSearch).toHaveBeenCalledWith('ali', expect.any(Number))
 	})
 
 	it('clearing the input to empty calls onSearch with empty string and clears .search-results from the DOM', () => {
@@ -90,7 +90,7 @@ describe('UserSearchView', () => {
 
 		vi.advanceTimersByTime(200)
 		expect(onSearch).toHaveBeenCalledTimes(1)
-		expect(onSearch).toHaveBeenCalledWith('')
+		expect(onSearch).toHaveBeenCalledWith('', expect.any(Number))
 		expect(view.el.querySelector('.search-results')).toBeNull()
 	})
 
@@ -250,5 +250,76 @@ describe('UserSearchView', () => {
 		view.clearSelection()
 
 		expect(input.value).toBe('')
+	})
+
+	it('ignores results for a query that was superseded before the next search fired', () => {
+		const onSearch = vi.fn()
+		const view = createView({onSearch, searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		expect(onSearch).toHaveBeenCalledTimes(1)
+		const gen = onSearch.mock.calls[0][1]
+
+		input.value = 'bob'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		const users: ReadonlyArray<UserSearchOption> = [
+			{id: 1, username: 'alice', name: 'Alice'},
+			{id: 2, username: 'alex', name: 'Alex'},
+		]
+		view.setResults(users, gen)
+
+		expect(view.el.querySelector('.search-results')).toBeNull()
+	})
+
+	it('accepts results issued for the current query', () => {
+		const onSearch = vi.fn()
+		const view = createView({onSearch, searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		expect(onSearch).toHaveBeenCalledTimes(1)
+		const gen = onSearch.mock.calls[0][1]
+
+		const users: ReadonlyArray<UserSearchOption> = [
+			{id: 1, username: 'alice', name: 'Alice'},
+			{id: 2, username: 'alex', name: 'Alex'},
+		]
+		view.setResults(users, gen)
+
+		const resultsEl = view.el.querySelector('.search-results')
+		expect(resultsEl).not.toBeNull()
+		expect(resultsEl?.children.length).toBe(2)
+	})
+
+	it('ignores results that arrive after the selection was cleared', () => {
+		const onSearch = vi.fn()
+		const view = createView({onSearch, searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		expect(onSearch).toHaveBeenCalledTimes(1)
+		const gen = onSearch.mock.calls[0][1]
+
+		const users: ReadonlyArray<UserSearchOption> = [
+			{id: 1, username: 'alice', name: 'Alice'},
+		]
+		view.setResults(users, gen)
+
+		const firstChild = view.el.querySelector('.search-results')?.children[0] as HTMLElement
+		firstChild.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		view.clearSelection()
+
+		view.setResults(users, gen)
+
+		expect(view.el.querySelector('.search-results')).toBeNull()
 	})
 })

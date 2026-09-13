@@ -101,11 +101,7 @@ export const UserSearchView = View.extend({
 				this._results = []
 				this.render()
 			}
-			if (opts.onSearch.length > 1) {
-				opts.onSearch(this._query, this._generation)
-			} else {
-				opts.onSearch(this._query)
-			}
+			opts.onSearch(this._query, this._generation)
 		}, delay)
 	},
 
