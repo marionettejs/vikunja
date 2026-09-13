@@ -228,6 +228,34 @@ describe('EditTeamHost', () => {
 		expect(document.body.querySelector('.editor-bubble')).toBeNull()
 	})
 
+	it('shows the bubble menu only once there is a selection in the editor', async () => {
+		vi.useFakeTimers()
+		try {
+			wrapper = mount(EditTeamHost, {
+				attachTo: document.body,
+			})
+			await flushPromises()
+
+			const bubble = document.body.querySelector<HTMLElement>('.editor-bubble')
+			expect(bubble).not.toBeNull()
+			expect(bubble!.style.visibility).not.toBe('visible')
+
+			const editor = capturedOptions.getEditor()
+			expect(editor).toBeDefined()
+
+			editor.view.dom.focus()
+			editor.commands.focus()
+			editor.commands.selectAll()
+
+			vi.advanceTimersByTime(300)
+			await flushPromises()
+
+			expect(bubble!.style.visibility).toBe('visible')
+		} finally {
+			vi.useRealTimers()
+		}
+	})
+
 	it('a member refresh in flight does not replace the team the route navigated to', async () => {
 		const deferreds: Record<number, {resolve: (team: any) => void, reject: (err: any) => void}> = {}
 
