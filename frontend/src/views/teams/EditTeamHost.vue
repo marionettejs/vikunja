@@ -696,4 +696,58 @@ onUnmounted(() => {
 		}
 	}
 }
+
+.editor-bubble {
+	z-index: 4600;
+	background: var(--white);
+	border-radius: $radius;
+	box-shadow: var(--shadow-md);
+	overflow: hidden;
+
+	&__wrapper {
+		display: flex;
+	}
+
+	&__button {
+		font-family: inherit;
+		font-size: 1rem;
+		line-height: 1;
+		box-sizing: border-box;
+		padding: 0.5rem 0.75rem;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		color: var(--text);
+
+		&:hover,
+		&:focus {
+			background: var(--grey-100);
+		}
+
+		&.is-active {
+			background: var(--primary);
+			color: var(--white);
+		}
+
+		&[data-command='bold'] .icon {
+			font-weight: bold;
+		}
+
+		&[data-command='italic'] .icon {
+			font-style: italic;
+		}
+
+		&[data-command='underline'] .icon {
+			text-decoration: underline;
+		}
+
+		&[data-command='strike'] .icon {
+			text-decoration: line-through;
+		}
+
+		&[data-command='code'] .icon {
+			font-family: monospace;
+		}
+	}
+}
 </style>
