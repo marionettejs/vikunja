@@ -1,0 +1,26 @@
+frontend/src/marionette/views/RichTextEditorView.test.ts
+  s_e4fe7fd5d6a6e7::t_7f863e0c88cd09 119-133
+frontend/src/marionette/views/RichTextEditorView.ts
+  s_e4fe7fd5d6a6e7::t_7f863e0c88cd09 63-65
+frontend/src/marionette/views/UserSearchView.ts
+  s_e4fe7fd5d6a6e7::t_59331c68aa8192 104
+frontend/src/marionette/views/UserSearchView.test.ts
+  s_e4fe7fd5d6a6e7::t_c8ec565f14719a 76,93
+  s_e4fe7fd5d6a6e7::t_e3ce5500a8886a 254-324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b6c7f9e27ded840acb4009364de371a64567f706",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
