@@ -1,0 +1,19 @@
+frontend/src/marionette/views/EditorBubbleMenuView.test.ts
+  s_e4fe7fd5d6a6e7::t_995f104d8390e2 140-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "54d298a0ac44af8421f1ba9f57a2ec19f0e58969",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "unknown"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
