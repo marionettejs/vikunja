@@ -117,6 +117,14 @@ describe('RichTextEditorView', () => {
 		}).not.toThrow()
 	})
 
+	it('preserves significant whitespace in the content it is constructed with', () => {
+		const view = createView({content: '<p>alpha    beta</p>'})
+		view.render()
+		document.body.appendChild(view.el)
+
+		expect(view.getContent()).toContain('alpha    beta')
+	})
+
 	it('onChange is called when the content changes', () => {
 		const onChange = vi.fn()
 		const view = createView({

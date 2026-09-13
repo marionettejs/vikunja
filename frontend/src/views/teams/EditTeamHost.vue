@@ -372,12 +372,24 @@ async function handleAddMember(): Promise<void> {
 	}
 }
 
+let loadGeneration = 0
+
 async function reloadTeam(): Promise<void> {
 	if (!currentTeam.value) {
 		return
 	}
-	const team = await teamService.get(currentTeam.value)
-	if (!isMounted) {
+	loadGeneration += 1
+	const generation = loadGeneration
+	let team: ITeam
+	try {
+		team = await teamService.get(currentTeam.value)
+	} catch (e) {
+		if (generation === loadGeneration) {
+			throw e
+		}
+		return
+	}
+	if (!isMounted || generation !== loadGeneration) {
 		return
 	}
 	currentTeam.value = team
@@ -484,8 +496,6 @@ function rebuildViews(): void {
 	renderViews()
 }
 
-let loadGeneration = 0
-
 async function loadTeam(id: number): Promise<void> {
 	loadGeneration += 1
 	const generation = loadGeneration
@@ -590,8 +600,16 @@ onUnmounted(() => {
 // The Marionette search control renders outside Vue, so scoped styles never reach it.
 // These mirror the dropdown rows the replaced multiselect produced.
 .team-edit-host {
+	.multiselect {
+		position: relative;
+		inline-size: 100%;
+	}
+
 	.search-results {
 		position: absolute;
+		inset-inline: 0;
+		inline-size: 100%;
+		box-sizing: border-box;
 		z-index: 100;
 		max-height: 20rem;
 		overflow-y: auto;
@@ -603,6 +621,10 @@ onUnmounted(() => {
 	.search-result-item {
 		display: block;
 		width: 100%;
+		box-sizing: border-box;
+		font-family: inherit;
+		font-size: 1rem;
+		line-height: 1.5;
 		padding: 0.5rem 1rem;
 		text-align: start;
 		background: transparent;

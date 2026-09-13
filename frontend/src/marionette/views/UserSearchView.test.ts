@@ -162,6 +162,43 @@ describe('UserSearchView', () => {
 		expect(view.el.querySelector('.search-results')).toBeNull()
 	})
 
+	it('a result rendered for the previous query cannot be selected after the input changes', () => {
+		const onSelect = vi.fn()
+		const view = createView({onSelect, searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		view.setResults([{id: 1, username: 'alice', name: 'Alice'}], view.getGeneration())
+		expect(view.el.querySelectorAll('.search-result-item').length).toBe(1)
+
+		input.value = 'bo'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		expect(view.el.querySelectorAll('.search-result-item').length).toBe(0)
+		expect(view.getSelected()).toBeNull()
+		expect(onSelect).not.toHaveBeenCalledWith(expect.objectContaining({id: 1}))
+	})
+
+	it('keeps focus and the typed value in the input after the results are cleared', () => {
+		const view = createView({searchDelay: 100})
+		const input = view.el.querySelector('.input-wrapper input') as HTMLInputElement
+
+		input.value = 'al'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+		vi.advanceTimersByTime(100)
+		view.setResults([{id: 1, username: 'alice', name: 'Alice'}], view.getGeneration())
+
+		input.focus()
+		input.value = 'ali'
+		input.dispatchEvent(new Event('input', {bubbles: true}))
+
+		expect(view.el.querySelectorAll('.search-result-item').length).toBe(0)
+		expect(document.activeElement).toBe(input)
+		expect(input.value).toBe('ali')
+	})
+
 	it('results delivered for a superseded query do NOT replace newer results', () => {
 		const onSearch = vi.fn()
 		const view = createView({onSearch, searchDelay: 100})

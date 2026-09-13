@@ -83,6 +83,8 @@ export const UserSearchView = View.extend({
 		const value = (event.target as HTMLInputElement).value
 		this._query = value
 		this._generation += 1
+		this._results = []
+		this.render()
 
 		if (this._selected !== null) {
 			this._selected = null
