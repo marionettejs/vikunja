@@ -1,0 +1,21 @@
+frontend/src/marionette/views/EditorBubbleMenuView.test.ts
+  s_336ff1938ec4d9::t_28d87d227611f3 78-83
+frontend/src/marionette/views/EditorBubbleMenuView.ts
+  s_336ff1938ec4d9::t_f2200aa2f6a4bc 2-11,16-22,73,87,94,101,108,115,122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "33f66f192ac828fcf5a3c6a3c088eb2015595868",
+  "prompts": {},
+  "sessions": {
+    "s_336ff1938ec4d9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09b0d-e24d-77d1-8caa-f0adff904c7a",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
