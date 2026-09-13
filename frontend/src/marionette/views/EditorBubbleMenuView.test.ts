@@ -137,6 +137,25 @@ describe('EditorBubbleMenuView', () => {
 		expect(editor!.isActive('bold')).toBe(false)
 	})
 
+	it.each(['bold', 'italic', 'underline', 'strike', 'code'])(
+		'clicking the %s button toggles that mark on the editor',
+		command => {
+			const view = createView()
+			view.render()
+			document.body.appendChild(view.el)
+
+			editor!.commands.selectAll()
+			expect(editor!.isActive(command)).toBe(false)
+
+			const button = view.el.querySelector(`[data-command="${command}"]`) as HTMLButtonElement
+			button.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+			expect(editor!.isActive(command)).toBe(true)
+
+			button.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+			expect(editor!.isActive(command)).toBe(false)
+		},
+	)
+
 	it('after toggling bold on and calling refresh(), the bold button has aria-pressed="true" and the italic button has aria-pressed="false"', () => {
 		const view = createView()
 		view.render()
