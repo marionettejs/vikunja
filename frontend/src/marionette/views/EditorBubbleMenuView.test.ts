@@ -75,9 +75,12 @@ describe('EditorBubbleMenuView', () => {
 			expect(btn.getAttribute('type')).toBe('button')
 		})
 
-		const expectedIcons = ['B', 'I', 'U', 'S', '</>', '🔗']
-		const actualIcons = buttons.map(btn => btn.querySelector('.icon')?.textContent)
-		expect(actualIcons).toEqual(expectedIcons)
+		const expectedIcons = ['bold', 'italic', 'underline', 'strikethrough', 'code', 'link']
+		buttons.forEach((btn, index) => {
+			const svg = btn.querySelector('.icon svg')
+			expect(svg).not.toBeNull()
+			expect(svg?.getAttribute('data-icon')).toBe(expectedIcons[index])
+		})
 	})
 
 	it('each button carries the aria-label supplied in labels', () => {

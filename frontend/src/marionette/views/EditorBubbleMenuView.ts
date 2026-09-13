@@ -1,7 +1,24 @@
 import {html, nothing} from 'lit-html'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import {icon} from '@fortawesome/fontawesome-svg-core'
+import {
+	faBold,
+	faCode,
+	faItalic,
+	faLink,
+	faStrikethrough,
+	faUnderline,
+} from '@fortawesome/free-solid-svg-icons'
 import type {Editor} from '@tiptap/core'
 import type {ViewInstance} from 'marionette'
 import {View} from '../index'
+
+const svgBold = icon(faBold).html[0]
+const svgItalic = icon(faItalic).html[0]
+const svgUnderline = icon(faUnderline).html[0]
+const svgStrikethrough = icon(faStrikethrough).html[0]
+const svgCode = icon(faCode).html[0]
+const svgLink = icon(faLink).html[0]
 
 export interface EditorBubbleMenuViewOptions {
 	getEditor: () => Editor | undefined
@@ -53,7 +70,7 @@ export const EditorBubbleMenuView = View.extend({
 						data-command='${btn.command}'
 						aria-label='${btn.label}'
 						aria-pressed='${btn.isMark ? (btn.isActive ? 'true' : 'false') : nothing}'
-					><span class='icon'>${btn.icon}</span></button>`
+					><span class='icon'>${unsafeSVG(btn.icon)}</span></button>`
 		})}
 			</div>
 		`
@@ -67,42 +84,42 @@ export const EditorBubbleMenuView = View.extend({
 			{
 				command: 'bold',
 				label: opts.labels.bold,
-				icon: 'B',
+				icon: svgBold,
 				isMark: true,
 				isActive: Boolean(editor?.isActive('bold')),
 			},
 			{
 				command: 'italic',
 				label: opts.labels.italic,
-				icon: 'I',
+				icon: svgItalic,
 				isMark: true,
 				isActive: Boolean(editor?.isActive('italic')),
 			},
 			{
 				command: 'underline',
 				label: opts.labels.underline,
-				icon: 'U',
+				icon: svgUnderline,
 				isMark: true,
 				isActive: Boolean(editor?.isActive('underline')),
 			},
 			{
 				command: 'strike',
 				label: opts.labels.strikethrough,
-				icon: 'S',
+				icon: svgStrikethrough,
 				isMark: true,
 				isActive: Boolean(editor?.isActive('strike')),
 			},
 			{
 				command: 'code',
 				label: opts.labels.code,
-				icon: '</>',
+				icon: svgCode,
 				isMark: true,
 				isActive: Boolean(editor?.isActive('code')),
 			},
 			{
 				command: 'link',
 				label: opts.labels.link,
-				icon: '🔗',
+				icon: svgLink,
 				isMark: false,
 				isActive: Boolean(editor?.isActive('link')),
 			},

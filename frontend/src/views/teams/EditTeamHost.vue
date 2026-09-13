@@ -729,26 +729,6 @@ onUnmounted(() => {
 			background: var(--primary);
 			color: var(--white);
 		}
-
-		&[data-command='bold'] .icon {
-			font-weight: bold;
-		}
-
-		&[data-command='italic'] .icon {
-			font-style: italic;
-		}
-
-		&[data-command='underline'] .icon {
-			text-decoration: underline;
-		}
-
-		&[data-command='strike'] .icon {
-			text-decoration: line-through;
-		}
-
-		&[data-command='code'] .icon {
-			font-family: monospace;
-		}
 	}
 }
 </style>
