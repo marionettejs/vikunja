@@ -29,8 +29,8 @@ const {mockError, mockSuccess, mockPush, mockBack} = vi.hoisted(() => ({
 	mockBack: vi.fn(),
 }))
 
-const {routeParams} = vi.hoisted(() => {
-	const {reactive} = require('vue')
+const {routeParams} = await vi.hoisted(async () => {
+	const {reactive} = await import('vue')
 	return {
 		routeParams: reactive({id: '42'}),
 	}
@@ -353,5 +353,122 @@ describe('EditTeamHost', () => {
 		const inputFinal = wrapper.find<HTMLInputElement>('#teamtext')
 		expect(inputFinal.element.value).toBe('Team 99')
 		expect(document.title).toContain('Team 99')
+	})
+
+	it('an older member refresh that resolves last does not overwrite the newer one', async () => {
+		const deferredGets: Array<{resolve: (team: any) => void, reject: (err: any) => void}> = []
+
+		mockGetTeam.mockImplementation(() => {
+			return new Promise((resolve, reject) => {
+				deferredGets.push({resolve, reject})
+			})
+		})
+
+		const team42 = {
+			id: 42,
+			name: 'Team 42',
+			description: '<p>Team 42 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+				{
+					id: 2,
+					username: 'otheruser',
+					name: 'Other User',
+					admin: false,
+				},
+			],
+		}
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		// Initial load call is deferredGets[0]
+		expect(deferredGets).toHaveLength(1)
+		deferredGets[0].resolve(team42)
+		await flushPromises()
+
+		const inputInitial = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(inputInitial.element.value).toBe('Team 42')
+
+		mockUpdateMember.mockResolvedValue({})
+
+		const toggleAdminBtn = document.body.querySelector<HTMLButtonElement>('button.toggle-admin')
+		expect(toggleAdminBtn).not.toBeNull()
+
+		// Click toggle-admin to start refresh A
+		toggleAdminBtn!.click()
+		await flushPromises()
+		// deferredGets[1] is refresh A
+		expect(deferredGets).toHaveLength(2)
+
+		// Click toggle-admin again to start refresh B
+		toggleAdminBtn!.click()
+		await flushPromises()
+		// deferredGets[2] is refresh B
+		expect(deferredGets).toHaveLength(3)
+
+		// Settle refresh B first with 'Team 42 Newer' (member 2 is admin)
+		deferredGets[2].resolve({
+			...team42,
+			name: 'Team 42 Newer',
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+				{
+					id: 2,
+					username: 'otheruser',
+					name: 'Other User',
+					admin: true,
+				},
+			],
+		})
+		await flushPromises()
+
+		const member2RowAfterNewer = document.body.querySelector('tr[data-member-id="2"]')
+		expect(member2RowAfterNewer).not.toBeNull()
+		expect(member2RowAfterNewer?.textContent).toContain('team.attributes.admin')
+		expect(member2RowAfterNewer?.querySelector('button.toggle-admin')?.textContent?.trim()).toBe('team.edit.makeMember')
+
+		// Settle refresh A last with 'Team 42 Older' (member 2 is regular member)
+		deferredGets[1].resolve({
+			...team42,
+			name: 'Team 42 Older',
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+				{
+					id: 2,
+					username: 'otheruser',
+					name: 'Other User',
+					admin: false,
+				},
+			],
+		})
+		await flushPromises()
+
+		// The older refresh resolving last must NOT overwrite the newer one
+		const member2RowFinal = document.body.querySelector('tr[data-member-id="2"]')
+		expect(member2RowFinal).not.toBeNull()
+		expect(member2RowFinal?.textContent).toContain('team.attributes.admin')
+		expect(member2RowFinal?.querySelector('button.toggle-admin')?.textContent?.trim()).toBe('team.edit.makeMember')
 	})
 })
