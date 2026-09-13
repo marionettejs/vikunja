@@ -20,6 +20,10 @@ import {TeamMembersView} from '@/marionette/views/TeamMembersView'
 import {UserSearchView, type UserSearchOption} from '@/marionette/views/UserSearchView'
 import {ModalCardView} from '@/marionette/views/ModalCardView'
 import {ConfirmTextView} from '@/marionette/views/ConfirmTextView'
+import {EditorBubbleMenuView} from '@/marionette/views/EditorBubbleMenuView'
+import {BubbleMenuPlugin} from '@tiptap/extension-bubble-menu'
+import {setLinkInEditor} from '@/components/input/editor/setLinkInEditor'
+import {isTextSelection} from '@tiptap/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -39,6 +43,8 @@ let editorView: InstanceType<typeof RichTextEditorView> | null = null
 let membersView: InstanceType<typeof TeamMembersView> | null = null
 let searchView: InstanceType<typeof UserSearchView> | null = null
 let activeModal: InstanceType<typeof ModalCardView> | null = null
+let bubbleMenuView: InstanceType<typeof EditorBubbleMenuView> | null = null
+let bubbleMenuRefresh: (() => void) | null = null
 
 let isMounted = false
 const currentTeam = ref<ITeam | null>(null)
@@ -101,6 +107,20 @@ function destroyViews(): void {
 	if (formView) {
 		formView.destroy()
 		formView = null
+	}
+	if (bubbleMenuView) {
+		const descriptionEditor = editorView?.getEditor()
+		if (descriptionEditor) {
+			if (bubbleMenuRefresh) {
+				descriptionEditor.off('selectionUpdate', bubbleMenuRefresh)
+				descriptionEditor.off('transaction', bubbleMenuRefresh)
+			}
+			descriptionEditor.unregisterPlugin('teamDescriptionBubbleMenu')
+		}
+		bubbleMenuRefresh = null
+		bubbleMenuView.el.remove()
+		bubbleMenuView.destroy()
+		bubbleMenuView = null
 	}
 	if (editorView) {
 		editorView.destroy()
@@ -456,6 +476,44 @@ function renderViews(): void {
 
 		editorView.render()
 		formView.showChildView('description', editorView)
+
+		const descriptionEditor = editorView.getEditor()
+		if (descriptionEditor) {
+			bubbleMenuView = new EditorBubbleMenuView({
+				getEditor: () => editorView?.getEditor(),
+				labels: {
+					bold: t('input.editor.bold'),
+					italic: t('input.editor.italic'),
+					underline: t('input.editor.underline'),
+					strikethrough: t('input.editor.strikethrough'),
+					code: t('input.editor.code'),
+					link: t('input.editor.link'),
+				},
+				onLink: rect => setLinkInEditor(rect, editorView?.getEditor()),
+			})
+			bubbleMenuView.render()
+			document.body.appendChild(bubbleMenuView.el)
+
+			descriptionEditor.registerPlugin(BubbleMenuPlugin({
+				pluginKey: 'teamDescriptionBubbleMenu',
+				editor: descriptionEditor,
+				element: bubbleMenuView.el as HTMLElement,
+				shouldShow: ({view, element, state, from, to}) => {
+					const isEmptyTextBlock = !state.doc.textBetween(from, to).length
+						&& isTextSelection(state.selection)
+					const hasEditorFocus = view.hasFocus() || element.contains(document.activeElement)
+					return hasEditorFocus
+						&& from !== to
+						&& !isEmptyTextBlock
+						&& !descriptionEditor.isActive('image')
+						&& !descriptionEditor.isActive('taskLink')
+				},
+			}))
+
+			bubbleMenuRefresh = () => bubbleMenuView?.refresh()
+			descriptionEditor.on('selectionUpdate', bubbleMenuRefresh)
+			descriptionEditor.on('transaction', bubbleMenuRefresh)
+		}
 	}
 
 	if (canManage && searchRegion.value) {

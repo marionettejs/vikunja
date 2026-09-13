@@ -189,4 +189,31 @@ describe('EditTeamHost', () => {
 
 		expect(capturedOptions.getEditor()).toBeUndefined()
 	})
+
+	it('attaches a bubble menu carrying the six formatting controls', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const buttons = document.body.querySelectorAll('.editor-bubble__button')
+		expect(buttons).toHaveLength(6)
+
+		const commands = Array.from(buttons).map(btn => btn.getAttribute('data-command'))
+		expect(commands).toEqual(['bold', 'italic', 'underline', 'strike', 'code', 'link'])
+	})
+
+	it('removes the bubble menu from the document when the host unmounts', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		expect(document.body.querySelector('.editor-bubble')).not.toBeNull()
+
+		wrapper.unmount()
+		wrapper = null
+
+		expect(document.body.querySelector('.editor-bubble')).toBeNull()
+	})
 })
