@@ -4,7 +4,7 @@ import UserSettingsModel from '@/models/userSettings'
 import { AUTH_TYPES, type IUser, type AuthType } from '@/modelTypes/IUser'
 import type { IUserSettings } from '@/modelTypes/IUserSettings'
 
-export function getDisplayName(user: IUser) {
+export function getDisplayName(user: Pick<IUser, 'name' | 'username'>) {
 	if (user.name !== '') {
 		return user.name
 	}
