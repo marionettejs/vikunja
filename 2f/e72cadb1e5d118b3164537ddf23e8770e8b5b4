@@ -1,0 +1,23 @@
+frontend/src/views/teams/EditTeamHost.vue
+  s_e4fe7fd5d6a6e7::t_d5478b7ec9522d 214
+  s_e4fe7fd5d6a6e7::t_46f70b3d3a54a1 193,219,428
+  s_e4fe7fd5d6a6e7::t_fb1f7e231931c9 204,398-416,423,433
+frontend/src/views/teams/EditTeamHost.test.ts
+  s_e4fe7fd5d6a6e7::t_f603846a3b9a10 530-674
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2fe72cadb1e5d118b3164537ddf23e8770e8b5b4",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
