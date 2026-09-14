@@ -1,0 +1,21 @@
+.github/workflows/test.yml
+  s_267e7a791356aa::t_52f9434267c9cb 7-8
+migration/README.md
+  s_267e7a791356aa::t_0414f95095509c 189,191-194,197-199
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3b767258188f39aeea6178d686b353e097f417aa",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
