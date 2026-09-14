@@ -32,6 +32,7 @@ import TaskCollectionService, {type TaskFilterParams} from '@/services/taskColle
 import {getRandomColorHex} from '@/helpers/color/randomColor'
 import {runWrites} from '@/helpers/runWrites'
 import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
+import {createTaskMutations} from '@/helpers/taskMutations'
 import {error} from '@/message'
 import {REPEAT_TYPES} from '@/types/IRepeatAfter'
 import {TASK_REPEAT_MODES} from '@/types/IRepeatMode'
@@ -186,15 +187,25 @@ export const useTaskStore = defineStore('task', () => {
 		}
 	}
 
+	function mutationsFor(taskService: TaskService) {
+		return createTaskMutations({
+			updatePersistence: taskService.update.bind(taskService),
+			deletePersistence: taskService.delete.bind(taskService),
+			ensureTaskIsInCorrectBucket: kanbanStore.ensureTaskIsInCorrectBucket,
+			publishLastUpdatedTask: task => {
+				lastUpdatedTask.value = task
+			},
+			removeTaskInBucket: kanbanStore.removeTaskInBucket,
+		})
+	}
+
 	async function update(task: ITask) {
 		const cancel = setModuleLoading(setIsLoading)
-
 		const taskService = new TaskService()
+		const taskMutations = mutationsFor(taskService)
+
 		try {
-			const updatedTask = await taskService.update(task)
-			kanbanStore.ensureTaskIsInCorrectBucket(updatedTask)
-			lastUpdatedTask.value = updatedTask
-			return updatedTask
+			return await taskMutations.update(task)
 		} finally {
 			cancel()
 		}
@@ -202,9 +213,9 @@ export const useTaskStore = defineStore('task', () => {
 
 	async function deleteTask(task: ITask) {
 		const taskService = new TaskService()
-		const response = await taskService.delete(task)
-		kanbanStore.removeTaskInBucket(task)
-		return response
+		const taskMutations = mutationsFor(taskService)
+
+		return taskMutations.delete(task)
 	}
 
 	// Adds a task attachment in store.

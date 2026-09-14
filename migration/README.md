@@ -247,3 +247,19 @@ Codex simplified the change, replaced the editor mock with a real editor and
 corrected the navigation test to open a prompt before same-document history
 navigation. The corrected change passed 27 focused tests and both browser
 scenarios. The draft passing lint alone did not establish browser correctness.
+
+## Task mutation preparation
+
+Task update/delete ordering now lives in a stateless, framework-neutral helper.
+The existing task store supplies persistence and workspace effects and remains
+its only application consumer. Update still persists before bucket placement and
+Gantt notification; delete removes the original task after persistence succeeds.
+The store retains loading cleanup and creates a service for each call. This adds
+no entity cache or second writer and does not activate a native task screen.
+
+Spark drafted the extraction and helper tests. Codex consolidated dependency
+wiring and added rejected-delete and real-store integration coverage. Twenty
+focused tests and changed-file lint pass. The repository type check still fails
+on baseline diagnostics, with no additional location-normalized diagnostics in
+the changed production files. Browser coverage is deferred to PR CI because no
+screen is activated by this extraction; frozen upstream E2E files are unchanged.

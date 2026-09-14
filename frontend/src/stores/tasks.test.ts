@@ -1,5 +1,5 @@
 import {setActivePinia, createPinia} from 'pinia'
-import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 
 vi.mock('@/router', () => ({
 	default: {
@@ -36,6 +36,7 @@ vi.mock('@/client/generated', () => labelSdk)
 
 import {buildDefaultRemindersForQuickAdd, useTaskStore} from './tasks'
 import {useKanbanStore} from './kanban'
+import TaskService from '@/services/task'
 import {REMINDER_PERIOD_RELATIVE_TO_TYPES} from '@/types/IReminderPeriodRelativeTo'
 import type {ITaskReminder} from '@/modelTypes/ITaskReminder'
 import type {IBucket} from '@/modelTypes/IBucket'
@@ -191,5 +192,47 @@ describe('task label operations', () => {
 			path: {projecttask: 7, label: 4},
 		})
 		expect(kanbanStore.buckets[0].tasks[0].labels).toEqual([])
+	})
+})
+
+
+describe('task mutation integration', () => {
+	beforeEach(() => setActivePinia(createPinia()))
+	afterEach(() => vi.restoreAllMocks())
+
+	it('publishes the persisted task after bucket placement', async () => {
+		const store = useTaskStore()
+		const kanban = useKanbanStore()
+		const input = {id: 7, title: 'Before'} as ITask
+		const persisted = {id: 7, title: 'After'} as ITask
+		vi.spyOn(TaskService.prototype, 'update').mockResolvedValue(persisted)
+		const placement = vi.spyOn(kanban, 'ensureTaskIsInCorrectBucket').mockImplementation(() => {
+			expect(store.lastUpdatedTask).toBeNull()
+		})
+		expect(await store.update(input)).toBe(persisted)
+		expect(placement).toHaveBeenCalledWith(persisted)
+		expect(store.lastUpdatedTask?.title).toBe('After')
+		expect(store.isLoading).toBe(false)
+	})
+
+	it('leaves observers unchanged after a failed save', async () => {
+		const store = useTaskStore()
+		const failure = new Error('save failed')
+		vi.spyOn(TaskService.prototype, 'update').mockRejectedValue(failure)
+		const placement = vi.spyOn(useKanbanStore(), 'ensureTaskIsInCorrectBucket')
+		await expect(store.update({id: 7} as ITask)).rejects.toBe(failure)
+		expect(placement).not.toHaveBeenCalled()
+		expect(store.lastUpdatedTask).toBeNull()
+		expect(store.isLoading).toBe(false)
+	})
+
+	it('removes the original task only after deletion succeeds', async () => {
+		const store = useTaskStore()
+		const input = {id: 7} as ITask
+		const response = {message: 'Deleted'}
+		vi.spyOn(TaskService.prototype, 'delete').mockResolvedValue(response)
+		const remove = vi.spyOn(useKanbanStore(), 'removeTaskInBucket').mockImplementation(() => {})
+		expect(await store.delete(input)).toBe(response)
+		expect(remove).toHaveBeenCalledWith(input)
 	})
 })
