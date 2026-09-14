@@ -1,0 +1,65 @@
+import {test, expect} from '../../support/fixtures'
+import {TeamFactory} from '../../factories/team'
+import {TeamMemberFactory} from '../../factories/team_member'
+
+test('team image alt text can be edited, cleared and saved across reload', async ({authenticatedPage: page}) => {
+	await TeamFactory.create(1, {id: 1, description: '<p>Before</p><img src="/test-image.png" alt="Original"><p>After</p>'})
+	await TeamMemberFactory.create(1, {team_id: 1, admin: true})
+	await page.route('**/test-image.png', route => route.fulfill({contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="blue"/></svg>'}))
+	await page.goto('/teams/1/edit')
+	const image = page.locator('.rich-text-editor img')
+	await image.click()
+	const menu = page.locator('.mn-image-alt-menu__button')
+	await expect(menu).toBeVisible()
+	await menu.click()
+	const prompt = page.getByPlaceholder('Describe this image')
+	await expect(prompt).toHaveValue('Original')
+	await prompt.fill('A blue square')
+	await prompt.press('Enter')
+	await expect(image).toHaveAttribute('alt', 'A blue square')
+	await image.click()
+	await menu.click()
+	await prompt.fill('')
+	await prompt.press('Enter')
+	await expect(image).toHaveAttribute('alt', '')
+	await page.locator('.save-button').click()
+	await expect(page.locator('.global-notification')).toContainText('Success')
+	await page.reload()
+	await expect(image).toHaveAttribute('alt', '')
+	await page.goto('/teams')
+	await expect(menu).toHaveCount(0)
+})
+
+test('team image insertion prompts for alt text and preserves consecutive images', async ({authenticatedPage: page}) => {
+	await TeamFactory.create(1, {id: 1, description: '<p>Images</p>'})
+	await TeamMemberFactory.create(1, {team_id: 1, admin: true})
+	await page.route('**/alt-test-*.png', route => route.fulfill({contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60"><rect width="60" height="60" fill="blue"/></svg>'}))
+	await page.goto('/teams/1/edit')
+	const editor = page.locator('.rich-text-editor .ProseMirror')
+	await editor.click()
+	await page.keyboard.press('End')
+	const imageButton = page.locator('.mn-editor-toolbar [data-command="image"]')
+	for (const n of [1, 2]) {
+		await imageButton.click()
+		const url = page.getByPlaceholder('URL', {exact: true})
+		await url.fill(`${new URL(page.url()).origin}/alt-test-${n}.png`)
+		await url.press('Enter')
+		const alt = page.getByPlaceholder('Describe this image')
+		await expect(alt).toBeVisible()
+		if (n === 1) {
+			await alt.fill('First image')
+			await alt.press('Enter')
+		} else {
+			await alt.press('Escape')
+		}
+		await expect(alt).toHaveCount(0)
+		if (n === 1) await expect(editor).toBeFocused()
+		await expect(editor.locator('img')).toHaveCount(n)
+	}
+	await expect(editor.locator('img').first()).toHaveAttribute('alt', 'First image')
+	await page.locator('.save-button').click()
+	await expect(page.locator('.global-notification')).toContainText('Success')
+	await page.reload()
+	await expect(editor.locator('img')).toHaveCount(2)
+	await expect(editor.locator('img').first()).toHaveAttribute('alt', 'First image')
+})

@@ -24,6 +24,8 @@ import {ModalCardView} from '@/marionette/views/ModalCardView'
 import {ConfirmTextView} from '@/marionette/views/ConfirmTextView'
 import {EditorBubbleMenuView} from '@/marionette/views/EditorBubbleMenuView'
 import {EditorToolbarView, type EditorToolbarViewInstance} from '@/marionette/views/EditorToolbarView'
+import {ImageAltMenuView} from '@/marionette/views/ImageAltMenuView'
+import {setImageAltInEditor} from '@/components/input/editor/setImageAltInEditor'
 import {BubbleMenuPlugin} from '@tiptap/extension-bubble-menu'
 import {setLinkInEditor} from '@/components/input/editor/setLinkInEditor'
 import {isTextSelection} from '@tiptap/core'
@@ -53,6 +55,7 @@ let bubbleMenuRefresh: (() => void) | null = null
 let descriptionHostView: InstanceType<typeof TeamDescriptionEditorHostView> | null = null
 let toolbarView: InstanceType<typeof EditorToolbarView> | null = null
 let toolbarRefresh: (() => void) | null = null
+let imageAltMenuView: InstanceType<typeof ImageAltMenuView> | null = null
 let editorGeneration = 0
 let syncDescriptionHostView: (() => void) | null = null
 let detachDescriptionHostView: (() => void) | null = null
@@ -155,6 +158,13 @@ function handleDescriptionLink(rect: DOMRect): void {
 	void setLinkInEditor(rect, editorView?.getEditor(), () => isMounted && generation === editorGeneration)
 }
 
+function handleImageAlt(rect: DOMRect): void {
+	const editor = editorView?.getEditor()
+	if (!editor || !editor.isActive('image')) return
+	const generation = editorGeneration
+	void setImageAltInEditor(editor, editor.state.selection.from, rect, () => isMounted && generation === editorGeneration)
+}
+
 function handleDescriptionImageUpload(rect: DOMRect): void {
 	const editorInstance = editorView?.getEditor()
 	if (!editorInstance) {
@@ -163,7 +173,7 @@ function handleDescriptionImageUpload(rect: DOMRect): void {
 
 	const generation = editorGeneration
 
-	inputPrompt(rect, t('input.editor.urlPlaceholder'), '', editorInstance).then((url) => {
+	inputPrompt(rect, t('input.editor.urlPlaceholder'), '', editorInstance).then(async (url) => {
 		const currentEditor = editorView?.getEditor()
 		if (
 			!isMounted
@@ -182,11 +192,31 @@ function handleDescriptionImageUpload(rect: DOMRect): void {
 		}
 
 		currentEditor.chain().focus().setImage({src: url}).run()
+		let position: number | null = null
+		currentEditor.state.doc.descendants((node, pos) => {
+			if (node.type.name === 'image' && node.attrs.src === url) position = pos
+		})
+		if (position !== null) {
+			currentEditor.chain().setNodeSelection(position).run()
+			const image = currentEditor.view.nodeDOM(position) as HTMLElement | null
+			await setImageAltInEditor(currentEditor, position, image?.getBoundingClientRect() ?? rect,
+				() => isMounted && generation === editorGeneration)
+			if (isMounted && generation === editorGeneration && !currentEditor.isDestroyed
+				&& currentEditor.state.selection.from === position && currentEditor.isActive('image')
+				&& currentEditor.state.doc.nodeAt(position)?.attrs.src === url) {
+				currentEditor.chain().setTextSelection(position + 1).run()
+			}
+		}
 	})
 }
 
 function destroyViews(): void {
 	destroyModal()
+	if (imageAltMenuView) {
+		editorView?.getEditor()?.unregisterPlugin('teamImageAltMenu')
+		imageAltMenuView.destroy()
+		imageAltMenuView = null
+	}
 	if (formView) {
 		if (detachDescriptionHostView) {
 			formView.off('before:render', detachDescriptionHostView)
@@ -694,6 +724,17 @@ function renderViews(): void {
 				},
 			}))
 
+			imageAltMenuView = new ImageAltMenuView({label: t('input.editor.altText'), onEdit: handleImageAlt})
+			imageAltMenuView.render()
+			document.body.appendChild(imageAltMenuView.el)
+			descriptionEditor.registerPlugin(BubbleMenuPlugin({
+				pluginKey: 'teamImageAltMenu',
+				editor: descriptionEditor,
+				element: imageAltMenuView.el as HTMLElement,
+				shouldShow: ({view, element}) => descriptionEditor.isEditable && descriptionEditor.isActive('image')
+					&& (view.hasFocus() || element.contains(document.activeElement)),
+			}))
+
 			bubbleMenuRefresh = () => bubbleMenuView?.refresh()
 			toolbarRefresh = () => {
 				toolbarView?.refresh()
@@ -887,6 +928,7 @@ onUnmounted(() => {
 	}
 }
 
+.mn-image-alt-menu,
 .mn-editor-bubble {
 	z-index: 4600;
 	background: var(--white);
@@ -986,6 +1028,19 @@ onUnmounted(() => {
 		border: 1px solid var(--grey-400);
 		font-size: .75rem;
 		block-size: 1.5rem;
+	}
+}
+.mn-image-alt-menu__button {
+	padding: .375rem .75rem;
+	border: 0;
+	border-radius: $radius;
+	background: transparent;
+	color: var(--grey-900);
+	cursor: pointer;
+
+	&:hover,
+	&:focus-visible {
+		background: var(--grey-200);
 	}
 }
 </style>

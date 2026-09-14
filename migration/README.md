@@ -193,7 +193,9 @@ The team editor now uses a Marionette/lit-html formatting toolbar, including
 headings, lists, tables, links, image URLs and keyboard navigation. Regions own
 the toolbar and editor; the description is detached and reattached when the form
 renders validation or disabled state, preserving its live editor and content.
-Image alt-text controls remain deferred and must be restored before final parity.
+The image alt-text follow-up restores selected-image editing and the prompt after
+image URL insertion. Broader editor/workflow parity still requires the remaining
+migration acceptance work.
 
 Spark produced the initial toolbar and partial repairs. Antigravity Sonnet
 identified the region lifecycle and image-test fixture problems, but its command
@@ -218,3 +220,22 @@ The API build, generated-client and translation checks, frontend lint/types/unit
 checks, frontend build and all six browser-test shards remain enabled. Browser
 tests continue to exercise the interface against the real, unchanged backend.
 There is no path classifier or conditional backend test policy.
+
+## Image alt-text follow-up
+
+The team editor shows a Marionette image-selection menu for editing or clearing
+alt text and asks for alt text after inserting an image URL. Cancellation keeps
+the image. Consecutive insertions preserve earlier images. Delayed answers are
+ignored after navigation, editor destruction or target-image replacement.
+
+Antigravity Sonnet returned the initial small menu View as source text after
+native CLI editing had failed on earlier work. Codex corrected its template
+binding and button type, integrated the menu and guarded prompt helper, and
+wrote the focused and browser tests. This is heavily assisted output, not a
+measurement of unassisted framework proficiency.
+
+Validation includes 24 focused tests and two new browser scenarios covering
+editing/clearing, saved reload, route cleanup, consecutive images and cancelled
+alt text. Existing upstream E2E files remain unchanged. The local repository-wide
+type check still reports baseline diagnostics; no new image-alt-file diagnostics
+were reported. This does not establish full application migration parity.

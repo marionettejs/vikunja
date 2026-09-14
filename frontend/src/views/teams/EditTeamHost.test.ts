@@ -290,7 +290,7 @@ describe('EditTeamHost', () => {
 	})
 
 	it('inserts an image when the image prompt is accepted', async () => {
-		mockInputPrompt.mockResolvedValue('https://example.local/cat.png')
+		mockInputPrompt.mockResolvedValueOnce('https://example.local/cat.png').mockResolvedValueOnce('A cat')
 		wrapper = mount(EditTeamHost, {
 			attachTo: document.body,
 		})
@@ -305,7 +305,7 @@ describe('EditTeamHost', () => {
 		imageButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
 		await flushPromises()
 
-		expect(mockInputPrompt).toHaveBeenCalledTimes(1)
+		expect(mockInputPrompt).toHaveBeenCalledTimes(2)
 		const after = editor.getHTML()
 		expect(before).not.toBe(after)
 		expect(after).toContain('https://example.local/cat.png')
