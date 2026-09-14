@@ -239,3 +239,11 @@ editing/clearing, saved reload, route cleanup, consecutive images and cancelled
 alt text. Existing upstream E2E files remain unchanged. The local repository-wide
 type check still reports baseline diagnostics; no new image-alt-file diagnostics
 were reported. This does not establish full application migration parity.
+
+PR review follow-up: duplicate image URLs now target the insertion range rather
+than a matching URL elsewhere in the document. Pending prompts cancel when their
+editor is destroyed. Spark drafted lifecycle cleanup and supplemental tests;
+Codex simplified the change, replaced the editor mock with a real editor and
+corrected the navigation test to open a prompt before same-document history
+navigation. The corrected change passed 27 focused tests and both browser
+scenarios. The draft passing lint alone did not establish browser correctness.
