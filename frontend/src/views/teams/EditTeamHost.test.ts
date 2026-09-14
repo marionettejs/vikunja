@@ -245,10 +245,10 @@ describe('EditTeamHost', () => {
 		editor.commands.focus()
 		editor.commands.selectAll()
 
-		await new Promise(resolve => setTimeout(resolve, 350))
-		await flushPromises()
-
-		expect(bubble!.style.visibility).toBe('visible')
+		await vi.waitFor(
+			() => expect(bubble!.style.visibility).toBe('visible'),
+			{timeout: 2000, interval: 20},
+		)
 	})
 
 	it('a member refresh in flight does not replace the team the route navigated to', async () => {
