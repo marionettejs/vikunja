@@ -190,6 +190,7 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 	if (!currentTeam.value) {
 		return
 	}
+	const isCurrent = beginTeamOperation('save')
 	const description = editorView ? editorView.getContent() : (currentTeam.value.description ?? '')
 	formView?.setDisabled(true)
 	editorView?.setEditable(false)
@@ -200,7 +201,7 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 			isPublic: values.isPublic,
 			description,
 		})
-		if (!isMounted) {
+		if (!isCurrent()) {
 			return
 		}
 		currentTeam.value = updated
@@ -210,12 +211,12 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 		success(t('team.edit.success'))
 		document.title = `${t('team.edit.title', {name: updated.name})} | Vikunja`
 	} catch (e) {
-		if (!isMounted) {
+		if (!isCurrent()) {
 			return
 		}
 		error(e)
 	} finally {
-		if (isMounted) {
+		if (isCurrent()) {
 			formView?.setDisabled(false)
 			editorView?.setEditable(true)
 		}
@@ -394,35 +395,42 @@ async function handleAddMember(): Promise<void> {
 
 let loadGeneration = 0
 let refreshGeneration = 0
+let saveGeneration = 0
+
+function beginTeamOperation(token: 'refresh' | 'save') {
+	const team = currentTeam.value
+	const routeGeneration = loadGeneration
+	const teamId = team?.id
+	let op: number
+	if (token === 'refresh') {
+		refreshGeneration += 1
+		op = refreshGeneration
+	} else {
+		saveGeneration += 1
+		op = saveGeneration
+	}
+	return () => isMounted
+		&& routeGeneration === loadGeneration
+		&& (token === 'refresh' ? op === refreshGeneration : op === saveGeneration)
+		&& currentTeam.value?.id === teamId
+}
 
 async function reloadTeam(): Promise<void> {
 	const team = currentTeam.value
 	if (!team) {
 		return
 	}
-	const routeGeneration = loadGeneration
-	const teamId = team.id
-	refreshGeneration += 1
-	const refresh = refreshGeneration
+	const isCurrent = beginTeamOperation('refresh')
 	let updatedTeam: ITeam
 	try {
 		updatedTeam = await teamService.get(team)
 	} catch (e) {
-		if (
-			routeGeneration === loadGeneration &&
-			refresh === refreshGeneration &&
-			currentTeam.value?.id === teamId
-		) {
+		if (isCurrent()) {
 			throw e
 		}
 		return
 	}
-	if (
-		!isMounted ||
-		routeGeneration !== loadGeneration ||
-		refresh !== refreshGeneration ||
-		currentTeam.value?.id !== teamId
-	) {
+	if (!isCurrent()) {
 		return
 	}
 	currentTeam.value = updatedTeam

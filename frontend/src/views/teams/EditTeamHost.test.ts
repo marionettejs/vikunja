@@ -527,4 +527,149 @@ describe('EditTeamHost', () => {
 		const finalInput = wrapper.find<HTMLInputElement>('#teamtext')
 		expect(finalInput.element.value).toBe('Team 99')
 	})
+
+	function installDeferredUpdateTeam() {
+		const deferredUpdates: Array<{
+			model?: any
+			resolve: (team: any) => void
+			reject: (err: any) => void
+		}> = []
+		mockUpdateTeam.mockImplementation((model?: any) => {
+			return new Promise((resolve, reject) => {
+				deferredUpdates.push({model, resolve, reject})
+			})
+		})
+		return deferredUpdates
+	}
+
+	it('a save that resolves after navigation does not restore the previous team', async () => {
+		const deferredGets = installDeferredGetTeam()
+		const deferredUpdates = installDeferredUpdateTeam()
+
+		const team42 = makeTeam42()
+		const team99 = {
+			id: 99,
+			name: 'Team 99',
+			description: '<p>Team 99 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+			],
+		}
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		// Settle team 42
+		expect(deferredGets).toHaveLength(1)
+		deferredGets[0].resolve(team42)
+		await flushPromises()
+
+		// Type a new name into #teamtext and trigger save so teamService.update is in flight
+		const input = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(input.element.value).toBe('Team 42')
+		input.element.value = 'Team 42 Renamed'
+		input.element.dispatchEvent(new Event('input'))
+		await flushPromises()
+
+		const saveButton = document.body.querySelector<HTMLButtonElement>('button.save-button')
+		expect(saveButton).not.toBeNull()
+		saveButton!.click()
+		await flushPromises()
+
+		expect(deferredUpdates).toHaveLength(1)
+
+		// Navigate by setting the reactive route id to '99', and settle the load for team 99
+		routeParams.id = '99'
+		await flushPromises()
+
+		expect(deferredGets).toHaveLength(2)
+		deferredGets[1].resolve(team99)
+		await flushPromises()
+
+		// Now settle the pending update for team 42
+		deferredUpdates[0].resolve({
+			...team42,
+			name: 'Team 42 Renamed',
+		})
+		await flushPromises()
+
+		// Assert #teamtext still reads 'Team 99' and document.title still refers to team 99
+		const inputFinal = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(inputFinal.element.value).toBe('Team 99')
+		expect(document.title).toContain('Team 99')
+	})
+
+	it('a failed save of the previous team does not raise an error on the new team', async () => {
+		const deferredGets = installDeferredGetTeam()
+		const deferredUpdates = installDeferredUpdateTeam()
+
+		const team42 = makeTeam42()
+		const team99 = {
+			id: 99,
+			name: 'Team 99',
+			description: '<p>Team 99 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+			],
+		}
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		// Settle team 42
+		expect(deferredGets).toHaveLength(1)
+		deferredGets[0].resolve(team42)
+		await flushPromises()
+
+		// Type a new name into #teamtext and trigger save so teamService.update is in flight
+		const input = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(input.element.value).toBe('Team 42')
+		input.element.value = 'Team 42 Failed Rename'
+		input.element.dispatchEvent(new Event('input'))
+		await flushPromises()
+
+		const saveButton = document.body.querySelector<HTMLButtonElement>('button.save-button')
+		expect(saveButton).not.toBeNull()
+		saveButton!.click()
+		await flushPromises()
+
+		expect(deferredUpdates).toHaveLength(1)
+
+		// Navigate by setting the reactive route id to '99', and settle the load for team 99
+		routeParams.id = '99'
+		await flushPromises()
+
+		expect(deferredGets).toHaveLength(2)
+		deferredGets[1].resolve(team99)
+		await flushPromises()
+
+		// Reject the pending update
+		deferredUpdates[0].reject(new Error('Save failed'))
+		await flushPromises()
+
+		// Assert the mocked error reporter was NOT called after navigation
+		expect(mockError).not.toHaveBeenCalled()
+	})
 })
