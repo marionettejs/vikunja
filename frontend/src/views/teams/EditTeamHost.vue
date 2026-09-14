@@ -191,11 +191,16 @@ function handleDescriptionImageUpload(rect: DOMRect): void {
 			return
 		}
 
-		currentEditor.chain().focus().setImage({src: url}).run()
 		let position: number | null = null
-		currentEditor.state.doc.descendants((node, pos) => {
-			if (node.type.name === 'image' && node.attrs.src === url) position = pos
-		})
+		currentEditor.chain().focus().setImage({src: url}).command(({tr}) => {
+			// Restrict lookup to the insertion range; URLs need not be unique.
+			tr.mapping.maps.at(-1)?.forEach((_from, _to, insertedFrom, insertedTo) => {
+				tr.doc.nodesBetween(insertedFrom, insertedTo, (node, pos) => {
+					if (node.type.name === 'image') position = pos
+				})
+			})
+			return true
+		}).run()
 		if (position !== null) {
 			currentEditor.chain().setNodeSelection(position).run()
 			const image = currentEditor.view.nodeDOM(position) as HTMLElement | null

@@ -309,6 +309,24 @@ describe('EditTeamHost', () => {
 		const after = editor.getHTML()
 		expect(before).not.toBe(after)
 		expect(after).toContain('https://example.local/cat.png')
+		expect(after).toContain('alt="A cat"')
+	})
+
+	it('applies inserted alt text before a later image with the same URL', async () => {
+		mockInputPrompt.mockResolvedValueOnce('https://example.local/cat.png').mockResolvedValueOnce('New image')
+		wrapper = mount(EditTeamHost, {attachTo: document.body})
+		await flushPromises()
+		const editor = capturedOptions.getEditor()
+		editor.commands.setContent('<p>Before</p><img src="https://example.local/cat.png" alt="Existing"><p>After</p>')
+		editor.commands.setTextSelection(1)
+		const button = document.body.querySelector('[data-command="image"]') as HTMLButtonElement
+		button.click()
+		await flushPromises()
+		const images: string[] = []
+		editor.state.doc.descendants((node: {type: {name: string}, attrs: {alt: string}}) => {
+			if (node.type.name === 'image') images.push(node.attrs.alt)
+		})
+		expect(images).toEqual(['New image', 'Existing'])
 	})
 
 	it('does nothing when the image prompt is canceled', async () => {
