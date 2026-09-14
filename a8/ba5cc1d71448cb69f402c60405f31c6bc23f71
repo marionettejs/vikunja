@@ -1,0 +1,19 @@
+frontend/src/views/teams/EditTeamHost.test.ts
+  s_e4fe7fd5d6a6e7::t_1e514315585ef9 138-141
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a8ba5cc1d71448cb69f402c60405f31c6bc23f71",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
