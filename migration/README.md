@@ -206,3 +206,15 @@ keyboard navigation, bold formatting, invalid-name validation, save/reload and
 route teardown. Existing upstream E2E files are unchanged. Image URL cancellation
 and navigation during the prompt are covered by focused host tests; browser
 coverage does not yet establish every toolbar command or final editor parity.
+
+## CI during the frontend migration
+
+Backend-only lint and test jobs are temporarily removed from the fork workflow.
+This migration must not change backend behavior or source. Restore all backend
+checks after migration is complete, using the workflow before PR #23 as the
+reference. Backend tests themselves remain in the repository.
+
+The API build, generated-client and translation checks, frontend lint/types/unit
+checks, frontend build and all six browser-test shards remain enabled. Browser
+tests continue to exercise the interface against the real, unchanged backend.
+There is no path classifier or conditional backend test policy.
