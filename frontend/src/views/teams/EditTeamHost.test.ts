@@ -135,6 +135,10 @@ describe('EditTeamHost', () => {
 	beforeEach(() => {
 		capturedOptions = null
 		routeParams.id = '42'
+		// These tests assert on shared jsdom globals; a failing test must not leak
+		// a stale title or leftover nodes into the next one.
+		document.title = ''
+		document.body.innerHTML = ''
 		mockGetTeam.mockReset()
 		mockUpdateTeam.mockReset()
 		mockDeleteTeam.mockReset()
