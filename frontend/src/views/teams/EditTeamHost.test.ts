@@ -251,16 +251,8 @@ describe('EditTeamHost', () => {
 		)
 	})
 
-	it('a member refresh in flight does not replace the team the route navigated to', async () => {
-		const deferreds: Record<number, {resolve: (team: any) => void, reject: (err: any) => void}> = {}
-
-		mockGetTeam.mockImplementation((model: {id: number}) => {
-			return new Promise((resolve, reject) => {
-				deferreds[model.id] = {resolve, reject}
-			})
-		})
-
-		const team42 = {
+	function makeTeam42() {
+		return {
 			id: 42,
 			name: 'Team 42',
 			description: '<p>Team 42 description</p>',
@@ -283,6 +275,26 @@ describe('EditTeamHost', () => {
 				},
 			],
 		}
+	}
+
+	function installDeferredGetTeam() {
+		const deferredGets: Array<{
+			id?: number
+			resolve: (team: any) => void
+			reject: (err: any) => void
+		}> = []
+		mockGetTeam.mockImplementation((model?: {id: number}) => {
+			return new Promise((resolve, reject) => {
+				deferredGets.push({id: model?.id, resolve, reject})
+			})
+		})
+		return deferredGets
+	}
+
+	it('a member refresh in flight does not replace the team the route navigated to', async () => {
+		const deferredGets = installDeferredGetTeam()
+
+		const team42 = makeTeam42()
 
 		const team99 = {
 			id: 99,
@@ -308,8 +320,9 @@ describe('EditTeamHost', () => {
 		await flushPromises()
 
 		// Settle team 42 initial load
-		expect(deferreds[42]).toBeDefined()
-		deferreds[42].resolve(team42)
+		const initialGet42 = deferredGets.find(d => d.id === 42)
+		expect(initialGet42).toBeDefined()
+		initialGet42!.resolve(team42)
 		await flushPromises()
 
 		// Form view has team 42
@@ -320,7 +333,8 @@ describe('EditTeamHost', () => {
 		// Start navigation to team 99
 		routeParams.id = '99'
 		await flushPromises()
-		expect(deferreds[99]).toBeDefined()
+		const get99 = deferredGets.find(d => d.id === 99)
+		expect(get99).toBeDefined()
 
 		// Trigger member mutation refresh on team 42
 		mockUpdateMember.mockResolvedValue({})
@@ -330,7 +344,7 @@ describe('EditTeamHost', () => {
 		await flushPromises()
 
 		// Settle team 99 first
-		deferreds[99].resolve(team99)
+		get99!.resolve(team99)
 		await flushPromises()
 
 		expect(document.title).toContain('Team 99')
@@ -338,7 +352,9 @@ describe('EditTeamHost', () => {
 		expect(inputAfterNav.element.value).toBe('Team 99')
 
 		// Now settle the member reload for team 42
-		deferreds[42].resolve({
+		const reloadGet42 = deferredGets.find(d => d.id === 42 && d !== initialGet42)
+		expect(reloadGet42).toBeDefined()
+		reloadGet42!.resolve({
 			...team42,
 			name: 'Team 42 Reloaded',
 		})
@@ -351,37 +367,9 @@ describe('EditTeamHost', () => {
 	})
 
 	it('an older member refresh that resolves last does not overwrite the newer one', async () => {
-		const deferredGets: Array<{resolve: (team: any) => void, reject: (err: any) => void}> = []
+		const deferredGets = installDeferredGetTeam()
 
-		mockGetTeam.mockImplementation(() => {
-			return new Promise((resolve, reject) => {
-				deferredGets.push({resolve, reject})
-			})
-		})
-
-		const team42 = {
-			id: 42,
-			name: 'Team 42',
-			description: '<p>Team 42 description</p>',
-			isPublic: false,
-			maxPermission: 2,
-			oidcId: null,
-			externalId: null,
-			members: [
-				{
-					id: 1,
-					username: 'testuser',
-					name: 'Test User',
-					admin: true,
-				},
-				{
-					id: 2,
-					username: 'otheruser',
-					name: 'Other User',
-					admin: false,
-				},
-			],
-		}
+		const team42 = makeTeam42()
 
 		wrapper = mount(EditTeamHost, {
 			attachTo: document.body,
@@ -465,5 +453,78 @@ describe('EditTeamHost', () => {
 		expect(member2RowFinal).not.toBeNull()
 		expect(member2RowFinal?.textContent).toContain('team.attributes.admin')
 		expect(member2RowFinal?.querySelector('button.toggle-admin')?.textContent?.trim()).toBe('team.edit.makeMember')
+	})
+
+	it('a pending refresh cannot carry the previous team drafts onto the newly loaded team', async () => {
+		const deferredGets = installDeferredGetTeam()
+
+		const team42 = makeTeam42()
+
+		const team99 = {
+			id: 99,
+			name: 'Team 99',
+			description: '<p>Team 99 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+			],
+		}
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		// Settle team 42 initial load
+		expect(deferredGets).toHaveLength(1)
+		const initialGet42 = deferredGets[0]
+		initialGet42.resolve(team42)
+		await flushPromises()
+
+		const input = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(input.element.value).toBe('Team 42')
+
+		// Type into the team name input so there is an unsaved draft
+		input.element.value = 'Draft Name Never Saved'
+		input.element.dispatchEvent(new Event('input'))
+		await flushPromises()
+
+		// Start a member refresh
+		mockUpdateMember.mockResolvedValue({})
+		const toggleAdminBtn = document.body.querySelector<HTMLButtonElement>('button.toggle-admin')
+		expect(toggleAdminBtn).not.toBeNull()
+		toggleAdminBtn!.click()
+		await flushPromises()
+		// deferredGets[1] is the member refresh for team 42
+		expect(deferredGets).toHaveLength(2)
+
+		// While that refresh is pending, navigate by setting the reactive route id to '99'
+		routeParams.id = '99'
+		await flushPromises()
+		// deferredGets[2] is the load for team 99
+		expect(deferredGets).toHaveLength(3)
+
+		// Settle the pending refresh for team 42
+		deferredGets[1].resolve({
+			...team42,
+			name: 'Team 42 Reloaded',
+		})
+		await flushPromises()
+
+		// Settle the load for team 99 with a team named 'Team 99'
+		deferredGets[2].resolve(team99)
+		await flushPromises()
+
+		// Assert the #teamtext input value is 'Team 99' — NOT 'Draft Name Never Saved', and not 'Team 42'
+		const finalInput = wrapper.find<HTMLInputElement>('#teamtext')
+		expect(finalInput.element.value).toBe('Team 99')
 	})
 })
