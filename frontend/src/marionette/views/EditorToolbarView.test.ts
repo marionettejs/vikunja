@@ -167,10 +167,12 @@ describe('EditorToolbarView', () => {
 		document.body.appendChild(view.el)
 
 		const imageButton = view.el.querySelector('[data-command="image"]') as HTMLButtonElement
-		imageButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		const rect = new DOMRect(25, 40, 30, 20)
+		vi.spyOn(imageButton, 'getBoundingClientRect').mockReturnValue(rect)
+		imageButton.querySelector('svg')!.dispatchEvent(new MouseEvent('click', {bubbles: true}))
 
 		expect(onImageUpload).toHaveBeenCalledTimes(1)
-		expect(onImageUpload.mock.calls[0][0]).toBeInstanceOf(MouseEvent)
+		expect(onImageUpload).toHaveBeenCalledWith(rect)
 	})
 
 	it('supports arrow-key and home/end roving-focus navigation', () => {
@@ -201,7 +203,10 @@ describe('EditorToolbarView', () => {
 		document.body.appendChild(view.el)
 
 		const tableButton = view.el.querySelector('[data-command="table"]') as HTMLButtonElement
+		expect(tableButton.getAttribute('aria-expanded')).toBe('false')
 		tableButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		expect(tableButton.getAttribute('aria-expanded')).toBe('true')
+		expect(document.getElementById(tableButton.getAttribute('aria-controls')!)).not.toBeNull()
 
 		const tableCommands = Array.from(view.el.querySelectorAll<HTMLButtonElement>('.mn-editor-toolbar__button[data-command]'))
 			.map(button => button.getAttribute('data-command'))

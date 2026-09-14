@@ -85,7 +85,7 @@ export interface EditorToolbarViewOptions {
 		redo: string
 		table: TableLabels
 	}
-	onImageUpload: (event: MouseEvent) => void
+	onImageUpload: (rect: DOMRect) => void
 	onLink: (rect: DOMRect) => void
 }
 
@@ -94,6 +94,7 @@ export interface EditorToolbarViewInstance extends ViewInstance {
 }
 
 interface TemplateData {
+	tableControlsId: string
 	editor: Editor | undefined
 	labels: EditorToolbarViewOptions['labels']
 	isHeading1Active: boolean
@@ -147,6 +148,7 @@ export const EditorToolbarView = View.extend({
 
 		return {
 			labels: opts.labels,
+			tableControlsId: `${this.cid}-table-controls`,
 			editor,
 			isHeading1Active: Boolean(editor?.isActive('heading', {level: 1})),
 			isHeading2Active: Boolean(editor?.isActive('heading', {level: 2})),
@@ -440,14 +442,15 @@ export const EditorToolbarView = View.extend({
 						class='mn-editor-toolbar__button ${isTableActive ? 'is-active' : ''}'
 						data-command='table'
 						aria-label='${labels.table.title}'
-						aria-pressed='${isTableActive ? 'true' : 'false'}'
+						aria-expanded='${tableMode ? 'true' : 'false'}'
+						aria-controls=${tableMode ? data.tableControlsId : nothing}
 						title='${labels.table.title}'
 					>
 						<span class='icon'>${unsafeSVG(svgTable)}</span>
 						<span class='is-sr-only'>${labels.table.title}</span>
 					</button>
 					${tableMode ? html`
-						<div class='mn-editor-toolbar__table-buttons'>
+						<div id=${data.tableControlsId} class='mn-editor-toolbar__table-buttons'>
 							<button
 								type='button'
 								class='mn-editor-toolbar__button'
@@ -680,7 +683,7 @@ export const EditorToolbarView = View.extend({
 		}
 
 		if (command === 'image') {
-			opts.onImageUpload(event)
+			opts.onImageUpload(button.getBoundingClientRect())
 			return
 		}
 

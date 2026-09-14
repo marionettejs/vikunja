@@ -331,7 +331,7 @@ describe('EditTeamHost', () => {
 	})
 
 	it('ignores a pending image prompt once navigation creates a new editor', async () => {
-		let resolvePrompt: ((value: string | null) => void) | null = null
+		let resolvePrompt!: (value: string | null) => void
 		mockInputPrompt.mockImplementation(() => new Promise((resolve) => {
 			resolvePrompt = resolve
 		}))
@@ -373,7 +373,7 @@ describe('EditTeamHost', () => {
 		expect(nextEditor).not.toBe(staleEditor)
 		expect(staleEditor.isDestroyed).toBe(true)
 
-		resolvePrompt!('https://example.local/cat.png')
+		resolvePrompt('https://example.local/cat.png')
 		await flushPromises()
 
 		expect(nextEditor.getHTML()).not.toContain('https://example.local/cat.png')

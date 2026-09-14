@@ -150,15 +150,18 @@ function attachDescriptionHostToForm(): void {
 	formView.showChildView('description', descriptionHostView)
 }
 
-function handleDescriptionImageUpload(event: MouseEvent): void {
+function handleDescriptionLink(rect: DOMRect): void {
+	const generation = editorGeneration
+	void setLinkInEditor(rect, editorView?.getEditor(), () => isMounted && generation === editorGeneration)
+}
+
+function handleDescriptionImageUpload(rect: DOMRect): void {
 	const editorInstance = editorView?.getEditor()
 	if (!editorInstance) {
 		return
 	}
 
 	const generation = editorGeneration
-	const target = (event.currentTarget as HTMLElement | null) || (event.target as HTMLElement | null)
-	const rect = target?.getBoundingClientRect() ?? new DOMRect()
 
 	inputPrompt(rect, t('input.editor.urlPlaceholder'), '', editorInstance).then((url) => {
 		const currentEditor = editorView?.getEditor()
@@ -642,7 +645,7 @@ function renderViews(): void {
 				},
 			},
 			onImageUpload: handleDescriptionImageUpload,
-			onLink: rect => setLinkInEditor(rect, editorView?.getEditor()),
+			onLink: handleDescriptionLink,
 		})
 
 		descriptionHostView = new TeamDescriptionEditorHostView({
@@ -670,7 +673,7 @@ function renderViews(): void {
 					code: t('input.editor.code'),
 					link: t('input.editor.link'),
 				},
-				onLink: rect => setLinkInEditor(rect, editorView?.getEditor()),
+				onLink: handleDescriptionLink,
 			})
 			bubbleMenuView.render()
 			document.body.appendChild(bubbleMenuView.el)
@@ -741,6 +744,7 @@ function rebuildViews(): void {
 }
 
 async function loadTeam(id: number): Promise<void> {
+	editorGeneration += 1
 	loadGeneration += 1
 	const generation = loadGeneration
 	try {

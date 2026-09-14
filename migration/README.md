@@ -3,11 +3,12 @@
 This is an experimental migration of Vikunja's full frontend to published
 `marionette@5.0.0-beta.2`. The baseline is
 [`go-vikunja/vikunja` at `5d22d730aa35b0666d0849099c12a1e638baabc9`](https://github.com/go-vikunja/vikunja/tree/5d22d730aa35b0666d0849099c12a1e638baabc9).
-The application still uses Vue for its shell, routing and existing features. The
-About dialog's version-content block now uses a Marionette View hosted by a
-Marionette Region. The surrounding modal, card, buttons and navigation remain Vue;
-this is the first partial integration, not a completed feature migration. See
-[Architecture and Foundation](./architecture.md) for the configured stack and adapter contracts.
+The About block was the first partial integration. Team list, create and edit
+workflows now use Marionette views within the approved narrow Vue shell/router
+boundary. The team description toolbar is part of that workflow, not a new
+Vue-to-Marionette field bridge. The remaining Vue shell and deferred editor
+controls still prevent full-app parity. See [Architecture and Foundation](./architecture.md)
+for the configured stack and adapter contracts.
 
 ## Completion criteria
 
