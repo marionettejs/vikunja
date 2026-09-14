@@ -1,0 +1,21 @@
+frontend/src/views/teams/EditTeamHost.test.ts
+  s_267e7a791356aa::t_aeab5bcbb32511 312-329
+frontend/src/views/teams/EditTeamHost.vue
+  s_267e7a791356aa::t_4b92d66d92c533 195-203
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "280f00cf291148c940a5075d6b5c2016c23dc5e9",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
