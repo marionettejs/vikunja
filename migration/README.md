@@ -164,8 +164,8 @@ migration parity or coverage of every previously untested feature.
 
 Gemini and Claude implement bounded tasks through Antigravity CLI. Codex
 coordinates, prepares the environment and independently reviews and verifies
-results. Bounded Spark CLI support reviews are recorded separately from Antigravity
-implementation. This is a supervised case study, not a controlled ranking of models or
+results. Spark CLI also implements bounded tasks; its implementation and review runs are
+recorded separately from Antigravity work. This is a supervised case study, not a controlled ranking of models or
 frameworks, and it does not imply that every change received human review.
 
 Records distinguish the requested and actual model, documentation revision,
@@ -185,3 +185,23 @@ The fork retains the upstream test workflow and dependency review. Its CI runs
 for pull requests, merge groups, main updates and manual requests. Inherited
 release, preview publication and upstream-specific integration workflows are
 removed. No deployment or package publication is part of this migration workflow.
+
+## Team description toolbar follow-up
+
+The team editor now uses a Marionette/lit-html formatting toolbar, including
+headings, lists, tables, links, image URLs and keyboard navigation. Regions own
+the toolbar and editor; the description is detached and reattached when the form
+renders validation or disabled state, preserving its live editor and content.
+Image alt-text controls remain deferred and must be restored before final parity.
+
+Spark produced the initial toolbar and partial repairs. Antigravity Sonnet
+identified the region lifecycle and image-test fixture problems, but its command
+permission and editing-tool argument failures prevented edits. Codex applied the
+repairs, corrected toolbar types and added direct browser coverage. This result
+is assisted development, not an unassisted agent success.
+
+The additional `frontend/tests/e2e/editor/marionette-team-toolbar.spec.ts` checks
+keyboard navigation, bold formatting, invalid-name validation, save/reload and
+route teardown. Existing upstream E2E files are unchanged. Image URL cancellation
+and navigation during the prompt are covered by focused host tests; browser
+coverage does not yet establish every toolbar command or final editor parity.

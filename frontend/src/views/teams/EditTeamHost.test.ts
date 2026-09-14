@@ -1,6 +1,7 @@
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
 import {mount, flushPromises, type VueWrapper} from '@vue/test-utils'
 import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
 import EditTeamHost from './EditTeamHost.vue'
 
 let capturedOptions: any = null
@@ -20,6 +21,10 @@ const {mockGetMembers, mockCreateMember, mockUpdateMember, mockDeleteMember} = v
 
 const {mockGetAllUsers} = vi.hoisted(() => ({
 	mockGetAllUsers: vi.fn(),
+}))
+
+const {mockInputPrompt} = vi.hoisted(() => ({
+	mockInputPrompt: vi.fn(),
 }))
 
 const {mockError, mockSuccess, mockPush, mockBack} = vi.hoisted(() => ({
@@ -125,8 +130,12 @@ vi.mock('@/stores/config', () => ({
 vi.mock('@/components/input/editor/editorExtensions', () => ({
 	createEditorExtensions: (options: any) => {
 		capturedOptions = options
-		return [StarterKit]
+		return [StarterKit, Image]
 	},
+}))
+
+vi.mock('@/helpers/inputPrompt', () => ({
+	default: mockInputPrompt,
 }))
 
 describe('EditTeamHost', () => {
@@ -139,6 +148,7 @@ describe('EditTeamHost', () => {
 		// a stale title or leftover nodes into the next one.
 		document.title = ''
 		document.body.innerHTML = ''
+		mockInputPrompt.mockReset()
 		mockGetTeam.mockReset()
 		mockUpdateTeam.mockReset()
 		mockDeleteTeam.mockReset()
@@ -218,6 +228,39 @@ describe('EditTeamHost', () => {
 		expect(commands).toEqual(['bold', 'italic', 'underline', 'strike', 'code', 'link'])
 	})
 
+	it('attaches a toolbar carrying the full formatting controls', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const buttons = document.body.querySelectorAll('.mn-editor-toolbar__button[data-command]')
+		expect(buttons).toHaveLength(19)
+
+		const commands = Array.from(buttons).map(btn => btn.getAttribute('data-command'))
+		expect(commands).toEqual([
+			'heading1',
+			'heading2',
+			'heading3',
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+			'code',
+			'quote',
+			'bulletList',
+			'orderedList',
+			'taskList',
+			'image',
+			'link',
+			'text',
+			'horizontalRule',
+			'undo',
+			'redo',
+			'table',
+		])
+	})
+
 	it('removes the bubble menu from the document when the host unmounts', async () => {
 		wrapper = mount(EditTeamHost, {
 			attachTo: document.body,
@@ -230,6 +273,159 @@ describe('EditTeamHost', () => {
 		wrapper = null
 
 		expect(document.body.querySelector('.mn-editor-bubble')).toBeNull()
+	})
+
+	it('removes the toolbar from the document when the host unmounts', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		expect(document.body.querySelector('.mn-editor-toolbar')).not.toBeNull()
+
+		wrapper.unmount()
+		wrapper = null
+
+		expect(document.body.querySelector('.mn-editor-toolbar')).toBeNull()
+	})
+
+	it('inserts an image when the image prompt is accepted', async () => {
+		mockInputPrompt.mockResolvedValue('https://example.local/cat.png')
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const imageButton = document.body.querySelector('.mn-editor-toolbar__button[data-command="image"]') as HTMLButtonElement
+		expect(imageButton).not.toBeNull()
+
+		const editor = capturedOptions.getEditor()
+		const before = editor.getHTML()
+
+		imageButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		await flushPromises()
+
+		expect(mockInputPrompt).toHaveBeenCalledTimes(1)
+		const after = editor.getHTML()
+		expect(before).not.toBe(after)
+		expect(after).toContain('https://example.local/cat.png')
+	})
+
+	it('does nothing when the image prompt is canceled', async () => {
+		mockInputPrompt.mockResolvedValue(null)
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const imageButton = document.body.querySelector('.mn-editor-toolbar__button[data-command="image"]') as HTMLButtonElement
+		expect(imageButton).not.toBeNull()
+
+		const editor = capturedOptions.getEditor()
+		const before = editor.getHTML()
+
+		imageButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		await flushPromises()
+
+		expect(editor.getHTML()).toBe(before)
+	})
+
+	it('ignores a pending image prompt once navigation creates a new editor', async () => {
+		let resolvePrompt: ((value: string | null) => void) | null = null
+		mockInputPrompt.mockImplementation(() => new Promise((resolve) => {
+			resolvePrompt = resolve
+		}))
+
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const imageButton = document.body.querySelector('.mn-editor-toolbar__button[data-command="image"]') as HTMLButtonElement
+		expect(imageButton).not.toBeNull()
+
+		const staleEditor = capturedOptions.getEditor()
+		const staleHtml = staleEditor.getHTML()
+		imageButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		expect(resolvePrompt).not.toBeNull()
+
+		mockGetTeam.mockResolvedValueOnce({
+			id: 99,
+			name: 'Team 99',
+			description: '<p>Team 99 description</p>',
+			isPublic: false,
+			maxPermission: 2,
+			oidcId: null,
+			externalId: null,
+			members: [
+				{
+					id: 1,
+					username: 'testuser',
+					name: 'Test User',
+					admin: true,
+				},
+			],
+		})
+		routeParams.id = '99'
+		await flushPromises()
+
+		const nextEditor = capturedOptions.getEditor()
+		expect(nextEditor).not.toBe(staleEditor)
+		expect(staleEditor.isDestroyed).toBe(true)
+
+		resolvePrompt!('https://example.local/cat.png')
+		await flushPromises()
+
+		expect(nextEditor.getHTML()).not.toContain('https://example.local/cat.png')
+		expect(nextEditor.getHTML()).toContain('Team 99 description')
+		expect(staleHtml).toContain('Initial team description')
+	})
+
+	it('keeps toolbar and editor in sync for a bold command', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const editor = capturedOptions.getEditor()
+		expect(editor).toBeDefined()
+		editor.commands.selectAll()
+
+		const boldButton = document.body.querySelector('.mn-editor-toolbar__button[data-command="bold"]') as HTMLButtonElement
+		expect(boldButton).not.toBeNull()
+		boldButton.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+
+		expect(editor.isActive('bold')).toBe(true)
+		const refreshed = document.body.querySelector('.mn-editor-toolbar__button[data-command="bold"]') as HTMLButtonElement
+		expect(refreshed.classList.contains('is-active')).toBe(true)
+		expect(refreshed.getAttribute('aria-pressed')).toBe('true')
+	})
+
+	it('preserves the editor and toolbar through form validation rerenders', async () => {
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
+
+		const editorBefore = capturedOptions.getEditor()
+		const toolbarBefore = document.body.querySelector('.mn-editor-toolbar')
+		expect(editorBefore).toBeDefined()
+		expect(toolbarBefore).not.toBeNull()
+
+		const input = wrapper.find<HTMLInputElement>('#teamtext')
+		input.element.value = ''
+		input.element.dispatchEvent(new Event('input', {bubbles: true}))
+		const saveButton = document.body.querySelector<HTMLButtonElement>('button.save-button')
+		expect(saveButton).not.toBeNull()
+		saveButton!.click()
+		await flushPromises()
+
+		expect(document.body.querySelector('.mn-editor-toolbar')).not.toBeNull()
+		const editorAfter = capturedOptions.getEditor()
+		const toolbarAfter = document.body.querySelector('.mn-editor-toolbar')
+		expect(editorAfter).toBe(editorBefore)
+		expect(toolbarAfter).toBe(toolbarBefore)
+		expect(editorAfter.getHTML()).toContain('Initial team description')
 	})
 
 	it('shows the bubble menu only once there is a selection in the editor', async () => {

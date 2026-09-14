@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {Extensions} from '@tiptap/core'
+import {html} from 'lit-html'
 import {ref, nextTick, onMounted, onUnmounted, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import type {ITeam} from '@/modelTypes/ITeam'
@@ -14,6 +15,7 @@ import TeamService from '@/services/team'
 import TeamMemberService from '@/services/teamMember'
 import UserService from '@/services/user'
 import {createEditorExtensions} from '@/components/input/editor/editorExtensions'
+import inputPrompt from '@/helpers/inputPrompt'
 import {TeamEditFormView} from '@/marionette/views/TeamEditFormView'
 import {RichTextEditorView} from '@/marionette/views/RichTextEditorView'
 import {TeamMembersView} from '@/marionette/views/TeamMembersView'
@@ -21,9 +23,12 @@ import {UserSearchView, type UserSearchOption} from '@/marionette/views/UserSear
 import {ModalCardView} from '@/marionette/views/ModalCardView'
 import {ConfirmTextView} from '@/marionette/views/ConfirmTextView'
 import {EditorBubbleMenuView} from '@/marionette/views/EditorBubbleMenuView'
+import {EditorToolbarView, type EditorToolbarViewInstance} from '@/marionette/views/EditorToolbarView'
 import {BubbleMenuPlugin} from '@tiptap/extension-bubble-menu'
 import {setLinkInEditor} from '@/components/input/editor/setLinkInEditor'
 import {isTextSelection} from '@tiptap/core'
+import type {ViewInstance} from 'marionette'
+import {View} from '@/marionette/index'
 
 const route = useRoute()
 const router = useRouter()
@@ -45,6 +50,12 @@ let searchView: InstanceType<typeof UserSearchView> | null = null
 let activeModal: InstanceType<typeof ModalCardView> | null = null
 let bubbleMenuView: InstanceType<typeof EditorBubbleMenuView> | null = null
 let bubbleMenuRefresh: (() => void) | null = null
+let descriptionHostView: InstanceType<typeof TeamDescriptionEditorHostView> | null = null
+let toolbarView: InstanceType<typeof EditorToolbarView> | null = null
+let toolbarRefresh: (() => void) | null = null
+let editorGeneration = 0
+let syncDescriptionHostView: (() => void) | null = null
+let detachDescriptionHostView: (() => void) | null = null
 
 let isMounted = false
 const currentTeam = ref<ITeam | null>(null)
@@ -56,6 +67,36 @@ let savedDraftDescription: string | null = null
 
 const isEditingRef = ref(true)
 const contentHasChangedRef = ref(false)
+
+interface TeamDescriptionEditorHostViewOptions {
+	toolbarView: EditorToolbarViewInstance
+	editorView: InstanceType<typeof RichTextEditorView>
+}
+
+const TeamDescriptionEditorHostView = View.extend({
+	tagName: 'div',
+	className: 'team-description-editor-host',
+
+	regions: {
+		toolbar: '.team-description-editor-toolbar',
+		editor: '.team-description-editor',
+	},
+
+	template() {
+		return html`
+			<div class='team-description-editor-wrapper'>
+				<div class='team-description-editor-toolbar'></div>
+				<div class='team-description-editor'></div>
+			</div>
+		`
+	},
+
+	onRender() {
+		const opts = this.options as TeamDescriptionEditorHostViewOptions
+		this.showChildView('toolbar', opts.toolbarView)
+		this.showChildView('editor', opts.editorView)
+	},
+}) as new (options: TeamDescriptionEditorHostViewOptions) => ViewInstance
 
 function t(key: string, args?: Record<string, unknown>): string {
 	return args ? i18n.global.t(key, args) : i18n.global.t(key)
@@ -102,11 +143,60 @@ function destroyModal(): void {
 	}
 }
 
+function attachDescriptionHostToForm(): void {
+	if (!formView || !descriptionHostView) {
+		return
+	}
+	formView.showChildView('description', descriptionHostView)
+}
+
+function handleDescriptionImageUpload(event: MouseEvent): void {
+	const editorInstance = editorView?.getEditor()
+	if (!editorInstance) {
+		return
+	}
+
+	const generation = editorGeneration
+	const target = (event.currentTarget as HTMLElement | null) || (event.target as HTMLElement | null)
+	const rect = target?.getBoundingClientRect() ?? new DOMRect()
+
+	inputPrompt(rect, t('input.editor.urlPlaceholder'), '', editorInstance).then((url) => {
+		const currentEditor = editorView?.getEditor()
+		if (
+			!isMounted
+			|| !editorInstance
+			|| editorInstance.isDestroyed
+			|| generation !== editorGeneration
+			|| !currentEditor
+			|| currentEditor !== editorInstance
+			|| currentEditor.isDestroyed
+		) {
+			return
+		}
+
+		if (url === null || url === '') {
+			return
+		}
+
+		currentEditor.chain().focus().setImage({src: url}).run()
+	})
+}
+
 function destroyViews(): void {
 	destroyModal()
 	if (formView) {
+		if (detachDescriptionHostView) {
+			formView.off('before:render', detachDescriptionHostView)
+			detachDescriptionHostView = null
+		}
+		if (syncDescriptionHostView) {
+			formView.off('render', syncDescriptionHostView)
+			syncDescriptionHostView = null
+		}
 		formView.destroy()
 		formView = null
+		descriptionHostView = null
+		toolbarView = null
 	}
 	if (bubbleMenuView) {
 		const descriptionEditor = editorView?.getEditor()
@@ -115,17 +205,19 @@ function destroyViews(): void {
 				descriptionEditor.off('selectionUpdate', bubbleMenuRefresh)
 				descriptionEditor.off('transaction', bubbleMenuRefresh)
 			}
+			if (toolbarRefresh) {
+				descriptionEditor.off('selectionUpdate', toolbarRefresh)
+				descriptionEditor.off('transaction', toolbarRefresh)
+			}
 			descriptionEditor.unregisterPlugin('teamDescriptionBubbleMenu')
 		}
 		bubbleMenuRefresh = null
+		toolbarRefresh = null
 		bubbleMenuView.el.remove()
 		bubbleMenuView.destroy()
 		bubbleMenuView = null
 	}
-	if (editorView) {
-		editorView.destroy()
-		editorView = null
-	}
+	editorView = null
 	if (searchView) {
 		searchView.destroy()
 		searchView = null
@@ -497,6 +589,7 @@ function renderViews(): void {
 			uploadAndInsertFiles: () => {},
 		})
 
+		editorGeneration += 1
 		editorView = new RichTextEditorView({
 			extensions,
 			content: initialDescription,
@@ -507,7 +600,63 @@ function renderViews(): void {
 		})
 
 		editorView.render()
-		formView.showChildView('description', editorView)
+		toolbarView = new EditorToolbarView({
+			getEditor: () => editorView?.getEditor(),
+			labels: {
+				toolbarLabel: t('input.editor.toolbarLabel'),
+				heading1: t('input.editor.heading1'),
+				heading2: t('input.editor.heading2'),
+				heading3: t('input.editor.heading3'),
+				bold: t('input.editor.bold'),
+				italic: t('input.editor.italic'),
+				underline: t('input.editor.underline'),
+				strikethrough: t('input.editor.strikethrough'),
+				code: t('input.editor.code'),
+				quote: t('input.editor.quote'),
+				bulletList: t('input.editor.bulletList'),
+				orderedList: t('input.editor.orderedList'),
+				taskList: t('input.editor.taskList'),
+				image: t('input.editor.image'),
+				link: t('input.editor.link'),
+				text: t('input.editor.text'),
+				horizontalRule: t('input.editor.horizontalRule'),
+				undo: t('input.editor.undo'),
+				redo: t('input.editor.redo'),
+				table: {
+					title: t('input.editor.table.title'),
+					insert: t('input.editor.table.insert'),
+					addColumnBefore: t('input.editor.table.addColumnBefore'),
+					addColumnAfter: t('input.editor.table.addColumnAfter'),
+					deleteColumn: t('input.editor.table.deleteColumn'),
+					addRowBefore: t('input.editor.table.addRowBefore'),
+					addRowAfter: t('input.editor.table.addRowAfter'),
+					deleteRow: t('input.editor.table.deleteRow'),
+					deleteTable: t('input.editor.table.deleteTable'),
+					mergeCells: t('input.editor.table.mergeCells'),
+					splitCell: t('input.editor.table.splitCell'),
+					toggleHeaderColumn: t('input.editor.table.toggleHeaderColumn'),
+					toggleHeaderRow: t('input.editor.table.toggleHeaderRow'),
+					toggleHeaderCell: t('input.editor.table.toggleHeaderCell'),
+					mergeOrSplit: t('input.editor.table.mergeOrSplit'),
+					fixTables: t('input.editor.table.fixTables'),
+				},
+			},
+			onImageUpload: handleDescriptionImageUpload,
+			onLink: rect => setLinkInEditor(rect, editorView?.getEditor()),
+		})
+
+		descriptionHostView = new TeamDescriptionEditorHostView({
+			toolbarView,
+			editorView,
+		})
+
+		formView.showChildView('description', descriptionHostView)
+		detachDescriptionHostView = () => {
+			formView?.detachChildView('description')
+		}
+		syncDescriptionHostView = attachDescriptionHostToForm
+		formView.on('before:render', detachDescriptionHostView)
+		formView.on('render', syncDescriptionHostView)
 
 		const descriptionEditor = editorView.getEditor()
 		if (descriptionEditor) {
@@ -543,8 +692,13 @@ function renderViews(): void {
 			}))
 
 			bubbleMenuRefresh = () => bubbleMenuView?.refresh()
+			toolbarRefresh = () => {
+				toolbarView?.refresh()
+			}
 			descriptionEditor.on('selectionUpdate', bubbleMenuRefresh)
 			descriptionEditor.on('transaction', bubbleMenuRefresh)
+			descriptionEditor.on('selectionUpdate', toolbarRefresh)
+			descriptionEditor.on('transaction', toolbarRefresh)
 		}
 	}
 
@@ -760,6 +914,74 @@ onUnmounted(() => {
 			background: var(--primary);
 			color: var(--white);
 		}
+	}
+}
+
+.team-description-editor-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+}
+
+.mn-editor-toolbar {
+	background: var(--white);
+	border: 1px solid var(--grey-200);
+	user-select: none;
+	padding: .5rem;
+	border-radius: $radius;
+	display: flex;
+	flex-wrap: wrap;
+
+	> * + * {
+		border-inline-start: 1px solid var(--grey-200);
+		margin-inline-start: 6px;
+		padding-inline-start: 6px;
+	}
+}
+
+.mn-editor-toolbar__button {
+	min-inline-size: 2rem;
+	block-size: 2rem;
+	border-radius: $radius;
+	border: 1px solid transparent;
+	color: var(--grey-700);
+	transition: all $transition;
+	background: transparent;
+	margin-inline-end: .25rem;
+
+	&:hover {
+		background: var(--grey-100);
+		border-color: var(--grey-200);
+	}
+
+	&.is-active {
+		background: var(--primary);
+		color: var(--white);
+	}
+
+	.icon {
+		position: relative;
+
+		.icon__lower-text {
+			font-size: .75rem;
+			position: absolute;
+			inset-block-end: -3px;
+			inset-inline-end: -2px;
+			font-weight: bold;
+		}
+	}
+}
+
+.mn-editor-toolbar__table-buttons {
+	margin-block-start: .5rem;
+
+	> .mn-editor-toolbar__button {
+		margin-inline-end: .5rem;
+		margin-block-end: .5rem;
+		padding: 0 .25rem;
+		border: 1px solid var(--grey-400);
+		font-size: .75rem;
+		block-size: 1.5rem;
 	}
 }
 </style>
