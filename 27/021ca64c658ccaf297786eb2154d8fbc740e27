@@ -1,0 +1,25 @@
+.github/scripts/backend-checks.py
+  s_267e7a791356aa::t_3bce9c234946b5 1-54
+.github/scripts/test_backend_checks.py
+  s_267e7a791356aa::t_dd88dee1a389b9 1-43
+.github/workflows/test.yml
+  s_267e7a791356aa::t_509bedd74ffa88 7-21,81,83,93,95,103,105,154,157,235,238,328,331,351,354,374,377,476,479
+migration/README.md
+  s_267e7a791356aa::t_b8c49fa5143d6c 188-200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "27021ca64c658ccaf297786eb2154d8fbc740e27",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
