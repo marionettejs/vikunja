@@ -1,0 +1,33 @@
+frontend/src/components/input/editor/setImageAltInEditor.test.ts
+  s_267e7a791356aa::t_a8732498d177fc 1-44
+frontend/src/components/input/editor/setImageAltInEditor.ts
+  s_267e7a791356aa::t_17f6f157fe1556 1-12
+frontend/src/marionette/views/ImageAltMenuView.test.ts
+  s_267e7a791356aa::t_2c4fa241feb508 1-29
+frontend/src/marionette/views/ImageAltMenuView.ts
+  s_267e7a791356aa::t_676721d894debc 1-38
+frontend/src/views/teams/EditTeamHost.test.ts
+  s_267e7a791356aa::t_54d6fb0828e613 293,308
+frontend/src/views/teams/EditTeamHost.vue
+  s_267e7a791356aa::t_72ee22ee614a29 27-28,58,161-167,176,195-209,215-219,727-737,931,1033-1045
+frontend/tests/e2e/editor/marionette-image-alt.spec.ts
+  s_267e7a791356aa::t_0bfbdbbcfc57bb 1-65
+migration/README.md
+  s_267e7a791356aa::t_a0715cfe038a12 196-198,223-241
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "10b0295a7cb536f2716649a3939206a9c0039655",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
