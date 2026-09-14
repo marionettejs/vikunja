@@ -185,3 +185,16 @@ The fork retains the upstream test workflow and dependency review. Its CI runs
 for pull requests, merge groups, main updates and manual requests. Inherited
 release, preview publication and upstream-specific integration workflows are
 removed. No deployment or package publication is part of this migration workflow.
+
+## Frontend-only CI
+
+Backend-only lint and test jobs skip when every changed path is under `frontend/`
+or `migration/`, except Go/SQL source and Go module files. Other paths, including
+CI configuration, trigger the full suite. Pull requests compare against their
+merge base; merge groups and main pushes compare their full revision range.
+Manual runs and unavailable change data run the full suite.
+
+The API build, generated-client and translation checks, frontend lint/types/unit
+checks, frontend build and all six browser-test shards always run. Browser tests
+continue to exercise the interface against the real API. Backend tests are
+conditional, not deleted; this does not authorize backend changes in the migration.
