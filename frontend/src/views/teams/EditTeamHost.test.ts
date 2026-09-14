@@ -494,7 +494,7 @@ describe('EditTeamHost', () => {
 
 		// Type into the team name input so there is an unsaved draft
 		input.element.value = 'Draft Name Never Saved'
-		input.element.dispatchEvent(new Event('input'))
+		input.element.dispatchEvent(new Event('input', {bubbles: true}))
 		await flushPromises()
 
 		// Start a member refresh
@@ -579,7 +579,7 @@ describe('EditTeamHost', () => {
 		const input = wrapper.find<HTMLInputElement>('#teamtext')
 		expect(input.element.value).toBe('Team 42')
 		input.element.value = 'Team 42 Renamed'
-		input.element.dispatchEvent(new Event('input'))
+		input.element.dispatchEvent(new Event('input', {bubbles: true}))
 		await flushPromises()
 
 		const saveButton = document.body.querySelector<HTMLButtonElement>('button.save-button')
@@ -647,7 +647,7 @@ describe('EditTeamHost', () => {
 		const input = wrapper.find<HTMLInputElement>('#teamtext')
 		expect(input.element.value).toBe('Team 42')
 		input.element.value = 'Team 42 Failed Rename'
-		input.element.dispatchEvent(new Event('input'))
+		input.element.dispatchEvent(new Event('input', {bubbles: true}))
 		await flushPromises()
 
 		const saveButton = document.body.querySelector<HTMLButtonElement>('button.save-button')

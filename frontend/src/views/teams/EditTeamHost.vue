@@ -190,7 +190,7 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 	if (!currentTeam.value) {
 		return
 	}
-	const isCurrent = beginTeamOperation('save')
+	const {isLatest, onSameTeam} = beginTeamOperation('save')
 	const description = editorView ? editorView.getContent() : (currentTeam.value.description ?? '')
 	formView?.setDisabled(true)
 	editorView?.setEditable(false)
@@ -201,22 +201,25 @@ async function handleSave(values: {name: string, isPublic: boolean}): Promise<vo
 			isPublic: values.isPublic,
 			description,
 		})
-		if (!isCurrent()) {
+		if (!isLatest()) {
 			return
 		}
 		currentTeam.value = updated
+		// A refresh already in flight read the team before this save landed, so
+		// letting it commit would undo the save.
+		refreshGeneration += 1
 		savedDraftName = null
 		savedDraftIsPublic = null
 		savedDraftDescription = null
 		success(t('team.edit.success'))
 		document.title = `${t('team.edit.title', {name: updated.name})} | Vikunja`
 	} catch (e) {
-		if (!isCurrent()) {
+		if (!isLatest()) {
 			return
 		}
 		error(e)
 	} finally {
-		if (isCurrent()) {
+		if (onSameTeam()) {
 			formView?.setDisabled(false)
 			editorView?.setEditable(true)
 		}
@@ -397,22 +400,30 @@ let loadGeneration = 0
 let refreshGeneration = 0
 let saveGeneration = 0
 
-function beginTeamOperation(token: 'refresh' | 'save') {
-	const team = currentTeam.value
+// Route loads, member refreshes and saves all commit to currentTeam, and each
+// ordering is its own: a newer refresh supersedes an older refresh, a newer save
+// an older save. They are not interchangeable, so they do not share a token.
+function beginTeamOperation(kind: 'refresh' | 'save') {
 	const routeGeneration = loadGeneration
-	const teamId = team?.id
+	const teamId = currentTeam.value?.id
 	let op: number
-	if (token === 'refresh') {
+	if (kind === 'refresh') {
 		refreshGeneration += 1
 		op = refreshGeneration
 	} else {
 		saveGeneration += 1
 		op = saveGeneration
 	}
-	return () => isMounted
+	// Control state belongs to the team on screen rather than to the operation,
+	// so a superseded save still re-enables the form it disabled.
+	const onSameTeam = () => isMounted
 		&& routeGeneration === loadGeneration
-		&& (token === 'refresh' ? op === refreshGeneration : op === saveGeneration)
 		&& currentTeam.value?.id === teamId
+	return {
+		onSameTeam,
+		isLatest: () => onSameTeam()
+			&& op === (kind === 'refresh' ? refreshGeneration : saveGeneration),
+	}
 }
 
 async function reloadTeam(): Promise<void> {
@@ -420,17 +431,17 @@ async function reloadTeam(): Promise<void> {
 	if (!team) {
 		return
 	}
-	const isCurrent = beginTeamOperation('refresh')
+	const {isLatest} = beginTeamOperation('refresh')
 	let updatedTeam: ITeam
 	try {
 		updatedTeam = await teamService.get(team)
 	} catch (e) {
-		if (isCurrent()) {
+		if (isLatest()) {
 			throw e
 		}
 		return
 	}
-	if (!isCurrent()) {
+	if (!isLatest()) {
 		return
 	}
 	currentTeam.value = updatedTeam
