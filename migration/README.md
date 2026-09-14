@@ -185,3 +185,15 @@ The fork retains the upstream test workflow and dependency review. Its CI runs
 for pull requests, merge groups, main updates and manual requests. Inherited
 release, preview publication and upstream-specific integration workflows are
 removed. No deployment or package publication is part of this migration workflow.
+
+## CI during the frontend migration
+
+Backend-only lint and test jobs are temporarily removed from the fork workflow.
+This migration must not change backend behavior or source. Restore all backend
+checks after migration is complete, using the workflow before PR #23 as the
+reference. Backend tests themselves remain in the repository.
+
+The API build, generated-client and translation checks, frontend lint/types/unit
+checks, frontend build and all six browser-test shards remain enabled. Browser
+tests continue to exercise the interface against the real, unchanged backend.
+There is no path classifier or conditional backend test policy.
