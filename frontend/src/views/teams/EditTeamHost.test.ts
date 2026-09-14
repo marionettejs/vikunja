@@ -207,7 +207,7 @@ describe('EditTeamHost', () => {
 		})
 		await flushPromises()
 
-		const buttons = document.body.querySelectorAll('.editor-bubble__button')
+		const buttons = document.body.querySelectorAll('.mn-editor-bubble__button')
 		expect(buttons).toHaveLength(6)
 
 		const commands = Array.from(buttons).map(btn => btn.getAttribute('data-command'))
@@ -220,40 +220,35 @@ describe('EditTeamHost', () => {
 		})
 		await flushPromises()
 
-		expect(document.body.querySelector('.editor-bubble')).not.toBeNull()
+		expect(document.body.querySelector('.mn-editor-bubble')).not.toBeNull()
 
 		wrapper.unmount()
 		wrapper = null
 
-		expect(document.body.querySelector('.editor-bubble')).toBeNull()
+		expect(document.body.querySelector('.mn-editor-bubble')).toBeNull()
 	})
 
 	it('shows the bubble menu only once there is a selection in the editor', async () => {
-		vi.useFakeTimers()
-		try {
-			wrapper = mount(EditTeamHost, {
-				attachTo: document.body,
-			})
-			await flushPromises()
+		wrapper = mount(EditTeamHost, {
+			attachTo: document.body,
+		})
+		await flushPromises()
 
-			const bubble = document.body.querySelector<HTMLElement>('.editor-bubble')
-			expect(bubble).not.toBeNull()
-			expect(bubble!.style.visibility).not.toBe('visible')
+		const bubble = document.body.querySelector<HTMLElement>('.mn-editor-bubble')
+		expect(bubble).not.toBeNull()
+		expect(bubble!.style.visibility).not.toBe('visible')
 
-			const editor = capturedOptions.getEditor()
-			expect(editor).toBeDefined()
+		const editor = capturedOptions.getEditor()
+		expect(editor).toBeDefined()
 
-			editor.view.dom.focus()
-			editor.commands.focus()
-			editor.commands.selectAll()
+		editor.view.dom.focus()
+		editor.commands.focus()
+		editor.commands.selectAll()
 
-			vi.advanceTimersByTime(300)
-			await flushPromises()
+		await new Promise(resolve => setTimeout(resolve, 350))
+		await flushPromises()
 
-			expect(bubble!.style.visibility).toBe('visible')
-		} finally {
-			vi.useRealTimers()
-		}
+		expect(bubble!.style.visibility).toBe('visible')
 	})
 
 	it('a member refresh in flight does not replace the team the route navigated to', async () => {

@@ -71,7 +71,7 @@ describe('EditorBubbleMenuView', () => {
 		expect(actualCommands).toEqual(expectedCommands)
 
 		buttons.forEach(btn => {
-			expect(btn.classList.contains('editor-bubble__button')).toBe(true)
+			expect(btn.classList.contains('mn-editor-bubble__button')).toBe(true)
 			expect(btn.getAttribute('type')).toBe('button')
 		})
 
@@ -240,7 +240,7 @@ describe('EditorBubbleMenuView', () => {
 		view.render()
 		document.body.appendChild(view.el)
 
-		const wrapper = view.el.querySelector('.editor-bubble__wrapper') as HTMLElement
+		const wrapper = view.el.querySelector('.mn-editor-bubble__wrapper') as HTMLElement
 		expect(wrapper).not.toBeNull()
 
 		expect(() => {

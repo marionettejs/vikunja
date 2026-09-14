@@ -710,7 +710,7 @@ onUnmounted(() => {
 	}
 }
 
-.editor-bubble {
+.mn-editor-bubble {
 	z-index: 4600;
 	background: var(--white);
 	border-radius: $radius;

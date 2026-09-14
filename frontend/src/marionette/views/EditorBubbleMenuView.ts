@@ -50,7 +50,7 @@ interface TemplateData {
 }
 
 export const EditorBubbleMenuView = View.extend({
-	className: 'editor-bubble',
+	className: 'mn-editor-bubble',
 
 	events: {
 		'click': 'onClick',
@@ -58,9 +58,9 @@ export const EditorBubbleMenuView = View.extend({
 
 	template(data: TemplateData) {
 		return html`
-			<div class='editor-bubble__wrapper'>
+			<div class='mn-editor-bubble__wrapper'>
 				${data.buttons.map(btn => {
-			const classNames = ['editor-bubble__button']
+			const classNames = ['mn-editor-bubble__button']
 			if (btn.isActive) {
 				classNames.push('is-active')
 			}
