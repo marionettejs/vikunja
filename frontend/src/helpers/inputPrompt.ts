@@ -94,8 +94,14 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 		// the blur it triggers must NOT be countered by the re-assert below. Reset on
 		// mouseup so a drag that never produces a click doesn't latch this forever.
 		let dismissing = false
+		let isActive = true
+		const onEditorDestroy = () => {
+			resolve(null)
+			cleanup()
+		}
 
 		nextTick(() => {
+			if (!isActive) return
 			const inputEl = document.getElementById(id) as HTMLInputElement | null
 			inputEl?.focus()
 
@@ -144,6 +150,9 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 		document.addEventListener('mouseup', handleOutsideMouseup, true)
 
 		const cleanup = () => {
+			isActive = false
+			clearTimeout(outsideClickTimer)
+			editor?.off('destroy', onEditorDestroy)
 			window.removeEventListener('scroll', handleScroll, true)
 			document.removeEventListener('click', handleClickOutside)
 			document.removeEventListener('mousedown', handleOutsideMousedown, true)
@@ -183,8 +192,10 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 			cleanup()
 		})
 
+		editor?.on('destroy', onEditorDestroy)
+
 		// Add slight delay to prevent immediate closing
-		setTimeout(() => {
+		const outsideClickTimer = setTimeout(() => {
 			document.addEventListener('click', handleClickOutside)
 		}, 100)
 
