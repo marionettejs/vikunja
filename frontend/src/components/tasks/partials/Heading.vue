@@ -24,20 +24,10 @@
 				<Icon icon="times" />
 			</BaseButton>
 		</div>
-		<h1
-			class="title input"
-			:class="{'disabled': !canWrite}"
-			:contenteditable="canWrite ? true : undefined"
-			:tabindex="canWrite ? 0 : undefined"
-			:aria-label="canWrite ? $t('task.attributes.title') : undefined"
-			:spellcheck="false"
-			@input="handleTitleInput"
-			@blur="save($event.target as HTMLElement)"
-			@keydown.enter.prevent.stop="!$event.isComposing && ($event.target as HTMLInputElement).blur()"
-			@keydown.esc.prevent.stop="!$event.isComposing && cancel($event.target as HTMLInputElement)"
-		>
-			{{ task.title.trim() }}
-		</h1>
+		<MarionetteViewHost
+			class="task-title-host"
+			:view-factory="viewFactory"
+		/>
 		<BaseButton
 			v-if="hasClose"
 			:aria-label="$t('task.detail.closeTaskDetail')"
@@ -69,15 +59,19 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, onBeforeUnmount, watch} from 'vue'
+import {ref, computed, onBeforeUnmount, onUnmounted, watch} from 'vue'
 import {useRouter} from 'vue-router'
 import {useI18n} from 'vue-i18n'
+import {Model} from '@mnjs/data'
 
 import {error} from '@/message'
 import BaseButton from '@/components/base/BaseButton.vue'
 import CustomTransition from '@/components/misc/CustomTransition.vue'
 import ColorBubble from '@/components/misc/ColorBubble.vue'
 import Done from '@/components/misc/Done.vue'
+import MarionetteViewHost from '@/components/bridge/MarionetteViewHost.vue'
+import TaskTitleView from '@/marionette/views/TaskTitleView'
+import type {TaskTitleModelAttributes} from '@/marionette/views/TaskTitleView'
 
 import {useCopyToClipboard} from '@/composables/useCopyToClipboard'
 import {useTaskStore} from '@/stores/tasks'
@@ -98,7 +92,7 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const copy = useCopyToClipboard()
-const {t} = useI18n({useScope: 'global'})
+const {t, locale} = useI18n({useScope: 'global'})
 
 async function copyUrl() {
 	const route = router.resolve({name: 'task.detail', query: {taskId: props.task.id}})
@@ -112,80 +106,107 @@ const loading = computed(() => taskStore.isLoading)
 
 const textIdentifier = computed(() => getTaskIdentifier(props.task))
 
-// Since loading is global state, this variable ensures we're only showing the saving icon when saving the description.
 const saving = ref(false)
-
 const showSavedMessage = ref(false)
+let savedTimer: ReturnType<typeof setTimeout> | null = null
+let isDisposed = false
 
-// Track if title has unsaved changes
-const titleHasChanges = ref(false)
-
-function handleBeforeUnload(e: BeforeUnloadEvent) {
-	if (titleHasChanges.value) {
-		e.preventDefault()
-		// Modern browsers ignore custom messages but this is still required
-		e.returnValue = ''
-		return ''
+function clearSavedTimer() {
+	if (savedTimer !== null) {
+		clearTimeout(savedTimer)
+		savedTimer = null
 	}
 }
 
-onMounted(() => {
-	window.addEventListener('beforeunload', handleBeforeUnload)
+const titleModel = new Model<TaskTitleModelAttributes>({
+	title: props.task.title,
+	canWrite: props.canWrite,
+	label: props.canWrite ? t('task.attributes.title') : '',
 })
 
-onBeforeUnmount(() => {
-	window.removeEventListener('beforeunload', handleBeforeUnload)
-})
+watch(
+	[() => props.task.title, () => props.canWrite, () => locale.value],
+	([title, canWrite]) => {
+		titleModel.set({
+			title,
+			canWrite,
+			label: canWrite ? t('task.attributes.title') : '',
+		})
+	},
+)
 
-// Reset titleHasChanges when the task changes
-watch(() => props.task.id, () => {
-	titleHasChanges.value = false
-})
+watch(
+	() => props.task.id,
+	() => {
+		clearSavedTimer()
+		showSavedMessage.value = false
+		saving.value = false
+		titleModel.set({
+			title: props.task.title,
+			canWrite: props.canWrite,
+			label: props.canWrite ? t('task.attributes.title') : '',
+		})
+	},
+)
 
-function handleTitleInput(event: Event) {
-	const target = event.target as HTMLInputElement
-	titleHasChanges.value = target.textContent !== props.task.title
-}
-
-async function save(element: HTMLElement) {
-	const title = element.textContent ?? ''
-
-	// An empty title would be discarded by the api, so revert and tell the user instead of failing silently.
-	if (title.trim() === '') {
-		element.textContent = props.task.title
-		titleHasChanges.value = false
-		error({message: t('task.detail.titleRequired')})
+async function saveTitle(title: string, capturedTaskId: number) {
+	if (isDisposed || !props.canWrite || props.task.id !== capturedTaskId) {
 		return
 	}
-
-	// We only want to save if the title was actually changed.
-	// so we only continue if the task title changed.
-	if (title === props.task.title) {
-		return
-	}
-
+	const currentTask = props.task
 	try {
 		saving.value = true
 		const newTask = await taskStore.update({
-			...props.task,
+			...currentTask,
 			title,
 		})
+		if (isDisposed || props.task.id !== capturedTaskId) {
+			return
+		}
 		emit('update:task', newTask)
-		titleHasChanges.value = false
 		showSavedMessage.value = true
-		setTimeout(() => {
+		clearSavedTimer()
+		savedTimer = setTimeout(() => {
 			showSavedMessage.value = false
+			savedTimer = null
 		}, 2000)
+	} catch (err: unknown) {
+		if (!isDisposed && props.task.id === capturedTaskId) {
+			error(err)
+		}
 	} finally {
-		saving.value = false
+		if (!isDisposed && props.task.id === capturedTaskId) {
+			saving.value = false
+		}
 	}
 }
 
-async function cancel(element: HTMLInputElement) {
-	element.textContent = props.task.title
-	titleHasChanges.value = false
-	element.blur()
-}
+const taskId = computed(() => props.task.id)
+const viewFactory = computed(() => {
+	const capturedTaskId = taskId.value
+
+	return () => {
+		return new TaskTitleView({
+			model: titleModel,
+			onCommit: (title: string) => {
+				void saveTitle(title, capturedTaskId)
+			},
+			onInvalid: () => {
+				error({message: t('task.detail.titleRequired')})
+			},
+		})
+	}
+})
+
+onBeforeUnmount(() => {
+	isDisposed = true
+	clearSavedTimer()
+})
+
+onUnmounted(() => {
+	clearSavedTimer()
+	titleModel.destroy()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -201,18 +222,25 @@ async function cancel(element: HTMLInputElement) {
 	}
 }
 
-.title {
-	margin-block-end: 0;
+.task-title-host {
+	display: contents;
+
+	:deep(.title) {
+		margin-block-end: 0;
+	}
+
+	:deep(.title.input) {
+		min-block-size: calc(1.8rem * 1.125 + .6rem + 2px);
+		margin-inline-end: 0;
+
+		@media screen and (max-width: $tablet) {
+			margin: 0 -.3rem .5rem;
+		}
+	}
 }
 
-.title.input {
-	// 1.8rem is the font-size, 1.125 is the line-height, .3rem padding everywhere, 1px border around the whole thing.
-	min-block-size: calc(1.8rem * 1.125 + .6rem + 2px);
-	margin-inline-end: 0;
-
-	@media screen and (max-width: $tablet) {
-		margin: 0 -.3rem .5rem; // the title has 0.3rem padding - this make the text inside of it align with the rest
-	}
+.title {
+	margin-block-end: 0;
 }
 
 .title.task-id {

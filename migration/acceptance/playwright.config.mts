@@ -5,7 +5,7 @@ export default {
 	...base,
 	use: {...base.use, locale: 'en-US'},
 	testDir: import.meta.dirname,
-	testMatch: 'about.spec.ts',
+	testMatch: ['about.spec.ts', 'task-title.spec.ts'],
 	outputDir: resolve(import.meta.dirname, 'results'),
 	reporter: [['line'], ['json', {outputFile: resolve(import.meta.dirname, 'report.json')}]],
 }
