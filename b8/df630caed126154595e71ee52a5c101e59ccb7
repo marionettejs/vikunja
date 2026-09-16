@@ -1,0 +1,43 @@
+frontend/src/components/input/editor/TipTap.vue
+  s_c8d5a0f84a3d1f::t_9b5bf17746d581 289,292
+frontend/src/components/input/editor/clipboardPaste.test.ts
+  s_8e839ceaee97c7::t_83db4f85944fcb 18,20-21,24
+frontend/src/components/input/editor/deleteSelectionBeforeEnter.test.ts
+  s_8e839ceaee97c7::t_4e141ad5aaca83 18,20-21,24
+frontend/src/components/input/editor/editorExtensions.test.ts
+  s_8e839ceaee97c7::t_1247c35585ec2f 29,31-32,35
+frontend/src/components/input/editor/editorExtensions.ts
+  s_c8d5a0f84a3d1f::t_9f562ec3418a2b 39-49,52,54-55,58,144,188,255,266,270
+frontend/src/components/input/editor/markdownPaste.test.ts
+  s_8e839ceaee97c7::t_a4cbaf4fb29629 19,21-22,25
+frontend/src/components/input/editor/subscriptSuperscript.test.ts
+  s_8e839ceaee97c7::t_1b2a2a633d939b 10,12-13,16
+frontend/src/components/input/editor/taskLink.test.ts
+  s_8e839ceaee97c7::t_26a4972ebeef39 14,16-17,20
+frontend/src/views/teams/EditTeamHost.vue
+  s_c8d5a0f84a3d1f::t_3873a8d2ef4d04 620,622-623,626
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b8df630caed126154595e71ee52a5c101e59ccb7",
+  "prompts": {},
+  "sessions": {
+    "s_8e839ceaee97c7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0a8fd-cbe1-7f00-82e2-fbed77bf784b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    },
+    "s_c8d5a0f84a3d1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4847e98-7e11-4a8e-868a-92dcfb02fe06",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
