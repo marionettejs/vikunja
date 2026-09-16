@@ -7,13 +7,13 @@ import {createEditorExtensions, type EditorExtensionDeps} from './editorExtensio
 
 const stubDeps: EditorExtensionDeps = {
 	t: key => key,
-	isEditing: ref(true),
+	isEditing: () => true,
 	isEditEnabled: () => true,
-	placeholder: '',
-	contentHasChanged: ref(false),
+	placeholder: () => '',
+	contentHasChanged: () => false,
 	bubbleSave: () => {},
 	getEditor: () => undefined,
-	uploadCallback: undefined,
+	uploadCallback: () => undefined,
 	uploadAndInsertFiles: () => {},
 }
 

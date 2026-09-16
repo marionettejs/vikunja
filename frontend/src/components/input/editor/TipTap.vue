@@ -286,10 +286,10 @@ watch(
 
 const extensions: Extensions = createEditorExtensions({
 	t,
-	isEditing,
+	isEditing: () => isEditing.value,
 	isEditEnabled: () => props.isEditEnabled,
 	placeholder: () => props.placeholder,
-	contentHasChanged,
+	contentHasChanged: () => contentHasChanged.value,
 	bubbleSave,
 	getEditor: () => editor.value,
 	uploadCallback: () => props.uploadCallback,

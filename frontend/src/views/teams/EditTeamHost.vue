@@ -617,13 +617,13 @@ function renderViews(): void {
 
 		const extensions: Extensions = createEditorExtensions({
 			t,
-			isEditing: isEditingRef,
+			isEditing: () => isEditingRef.value,
 			isEditEnabled: () => true,
-			placeholder: t('team.attributes.descriptionPlaceholder'),
-			contentHasChanged: contentHasChangedRef,
+			placeholder: () => t('team.attributes.descriptionPlaceholder'),
+			contentHasChanged: () => contentHasChangedRef.value,
 			bubbleSave: () => {},
 			getEditor: () => editorView?.getEditor(),
-			uploadCallback: undefined,
+			uploadCallback: () => undefined,
 			uploadAndInsertFiles: () => {},
 		})
 

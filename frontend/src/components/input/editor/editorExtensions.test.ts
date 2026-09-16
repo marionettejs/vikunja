@@ -26,13 +26,13 @@ function createEditor(content: string) {
 	let editor: Editor
 	const deps: EditorExtensionDeps = {
 		t: key => key,
-		isEditing: ref(true),
+		isEditing: () => true,
 		isEditEnabled: () => true,
-		placeholder: '',
-		contentHasChanged: ref(false),
+		placeholder: () => '',
+		contentHasChanged: () => false,
 		bubbleSave: () => {},
 		getEditor: () => editor,
-		uploadCallback: undefined,
+		uploadCallback: () => undefined,
 		uploadAndInsertFiles: () => {},
 	}
 

@@ -11,13 +11,13 @@ const TASK_URL = 'http://localhost:3000/tasks/123'
 // paste handler and Link mark both compete with TaskLink for pastes.
 const stubDeps: EditorExtensionDeps = {
 	t: key => key,
-	isEditing: ref(true),
+	isEditing: () => true,
 	isEditEnabled: () => true,
-	placeholder: '',
-	contentHasChanged: ref(false),
+	placeholder: () => '',
+	contentHasChanged: () => false,
 	bubbleSave: () => {},
 	getEditor: () => undefined,
-	uploadCallback: undefined,
+	uploadCallback: () => undefined,
 	uploadAndInsertFiles: () => {},
 }
 
