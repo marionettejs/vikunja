@@ -1,0 +1,23 @@
+frontend/src/marionette/views/createEditorControls.test.ts
+  s_c8d5a0f84a3d1f::t_0f44dc885f2fca 1-175
+frontend/src/marionette/views/createEditorControls.ts
+  s_c8d5a0f84a3d1f::t_9df2deb28cac54 1-252
+frontend/src/views/teams/EditTeamHost.vue
+  s_c8d5a0f84a3d1f::t_062ac7b436f9c8 24-25,48,160-165,550-551,553-555,559
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "73b1d7b20e06c9e0444f34b30f9dd19b0f14689f",
+  "prompts": {},
+  "sessions": {
+    "s_c8d5a0f84a3d1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4847e98-7e11-4a8e-868a-92dcfb02fe06",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
