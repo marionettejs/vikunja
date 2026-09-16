@@ -106,4 +106,35 @@ describe('UserAvatarView', () => {
 
 		expect(fetchMock).toHaveBeenCalledTimes(1)
 	})
+
+	it('falls back to the placeholder while a replacement avatar loads', async () => {
+		const view = create({username: 'user1', size: 40})
+		await settled()
+		expect(view.el.querySelector('img')).not.toBeNull()
+
+		let resolveSecond: (url: string) => void = () => {}
+		fetchMock.mockReturnValueOnce(new Promise(resolve => {
+			resolveSecond = resolve
+		}))
+		view.setUser('user2')
+
+		// The previous user's url may be revoked a frame from now; it must already be gone.
+		expect(view.el.querySelector('img')).toBeNull()
+		expect(view.el.querySelector('.user-avatar-placeholder')).not.toBeNull()
+
+		resolveSecond('blob:second')
+		await settled()
+		expect(view.el.querySelector('img')?.getAttribute('src')).toBe('blob:second')
+	})
+
+	it('does not leave the previous avatar up when the replacement fails', async () => {
+		const view = create({username: 'user1', size: 40})
+		await settled()
+
+		fetchMock.mockRejectedValueOnce(new Error('nope'))
+		view.setUser('ghost')
+		await settled()
+
+		expect(view.el.querySelector('img')).toBeNull()
+	})
 })

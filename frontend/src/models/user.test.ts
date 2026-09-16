@@ -71,4 +71,31 @@ describe('invalidateAvatarCache', () => {
 
 		revoke.mockRestore()
 	})
+
+	it('drops the result of a request that an invalidation overtook', async () => {
+		let resolveStale: (url: string) => void = () => {}
+		getBlobUrl.mockReturnValueOnce(new Promise(resolve => {
+			resolveStale = resolve
+		}))
+
+		const inFlight = fetchAvatarBlobUrl({username: 'raced'}, 40)
+
+		invalidateAvatarCache({username: 'raced'})
+		resolveStale('blob:before-invalidation')
+		await inFlight
+
+		// A later read must go back to the service rather than reuse the overtaken answer.
+		getBlobUrl.mockResolvedValueOnce('blob:after-invalidation')
+		await expect(fetchAvatarBlobUrl({username: 'raced'}, 40)).resolves.toBe('blob:after-invalidation')
+	})
+
+	it('still caches a request for a user another invalidation did not touch', async () => {
+		getBlobUrl.mockResolvedValueOnce('blob:bystander')
+		const inFlight = fetchAvatarBlobUrl({username: 'bystander'}, 40)
+		invalidateAvatarCache({username: 'somebody-else'})
+		await inFlight
+
+		getBlobUrl.mockResolvedValueOnce('blob:unused')
+		await expect(fetchAvatarBlobUrl({username: 'bystander'}, 40)).resolves.toBe('blob:bystander')
+	})
 })

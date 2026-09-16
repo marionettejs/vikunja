@@ -12,6 +12,13 @@ function afterRender(callback: () => void) {
 }
 const avatarCache = new Map<string, string>()
 const pendingRequests = new Map<string, Promise<string>>()
+// Bumped by an invalidation of that user. A request started before one must not write its result
+// back: the answer it is carrying describes the avatar the invalidation just dropped.
+const userGenerations = new Map<string, number>()
+
+function generationOf(username: string): number {
+	return userGenerations.get(username) ?? 0
+}
 
 type InvalidationListener = (username: string) => void
 
@@ -46,14 +53,25 @@ export async function fetchAvatarBlobUrl(user: Pick<IUser, 'username'>, size = 5
 		return await pending
 	}
 
-	const requestPromise = avatarService.getBlobUrl(`/avatar/${user.username}?size=${size}`)
-		.then(url => {
-			avatarCache.set(key, url)
+	const startedAt = generationOf(user.username)
+
+	// Only ever clears this request's own entry: an invalidation may already have replaced it.
+	const clearPending = () => {
+		if (pendingRequests.get(key) === requestPromise) {
 			pendingRequests.delete(key)
+		}
+	}
+
+	const requestPromise: Promise<string> = avatarService.getBlobUrl(`/avatar/${user.username}?size=${size}`)
+		.then((url: string) => {
+			if (startedAt === generationOf(user.username)) {
+				avatarCache.set(key, url)
+			}
+			clearPending()
 			return url
 		})
-		.catch(error => {
-			pendingRequests.delete(key)
+		.catch((error: unknown) => {
+			clearPending()
 			throw error
 		})
 
@@ -65,6 +83,8 @@ export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 	if (!user || !user.username) {
 		return
 	}
+
+	userGenerations.set(user.username, generationOf(user.username) + 1)
 
 	const staleUrls: string[] = []
 	for (const key of Array.from(avatarCache.keys())) {

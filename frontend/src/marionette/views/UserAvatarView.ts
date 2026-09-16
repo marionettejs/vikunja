@@ -99,12 +99,14 @@ export const UserAvatarView = View.extend({
 
 	async _load(this: UserAvatarViewContext) {
 		const token = ++this._fetchToken
+		// Back to the placeholder first: the url being replaced may be revoked a frame from now,
+		// and a failed fetch must not leave the previous user's face on screen.
 		this._src = undefined
+		if (this.isRendered()) {
+			this.render()
+		}
 
 		if (!this._username) {
-			if (this.isRendered()) {
-				this.render()
-			}
 			return
 		}
 
