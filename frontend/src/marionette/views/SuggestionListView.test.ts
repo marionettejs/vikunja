@@ -78,11 +78,19 @@ describe('SuggestionListView', () => {
 		expect(options.onSelect).toHaveBeenCalledWith(1)
 	})
 
-	it('ignores keys it does not handle and leaves composing accept keys to the editor', () => {
+	it('ignores keys it does not handle', () => {
 		const {view, options} = createView()
 
 		expect(view.onKeyDown(key('Tab'))).toBe(false)
+		expect(options.onSelect).not.toHaveBeenCalled()
+	})
+
+	it('leaves every key to the IME while composing', () => {
+		const {view, options} = createView()
+
 		expect(view.onKeyDown(key('Enter', {isComposing: true}))).toBe(false)
+		expect(view.onKeyDown(key('ArrowDown', {isComposing: true}))).toBe(false)
+		expect(view.getSelectedIndex()).toBe(0)
 		expect(options.onSelect).not.toHaveBeenCalled()
 	})
 

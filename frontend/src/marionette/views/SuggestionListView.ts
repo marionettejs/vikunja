@@ -100,7 +100,7 @@ export const SuggestionListView = View.extend({
 
 	onKeyDown(this: SuggestionListViewContext, event: KeyboardEvent): boolean {
 		const entries = this._entries()
-		if (entries.length === 0) {
+		if (entries.length === 0 || event.isComposing) {
 			return false
 		}
 
@@ -115,9 +115,6 @@ export const SuggestionListView = View.extend({
 		}
 
 		if (this._acceptKeys().includes(event.key)) {
-			if (event.isComposing) {
-				return false
-			}
 			this._select(this._selectedIndex)
 			return true
 		}
