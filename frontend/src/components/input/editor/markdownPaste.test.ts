@@ -1,6 +1,5 @@
 import {describe, it, expect, afterEach, beforeEach} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {ref} from 'vue'
 import {Editor} from '@tiptap/core'
 import {Slice} from '@tiptap/pm/model'
 import {TextSelection} from '@tiptap/pm/state'

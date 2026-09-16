@@ -1,6 +1,5 @@
 import {describe, it, expect, beforeEach} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {ref} from 'vue'
 import {Editor} from '@tiptap/core'
 
 import {createEditorExtensions, type EditorExtensionDeps} from './editorExtensions'

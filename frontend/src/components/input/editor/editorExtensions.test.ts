@@ -1,6 +1,6 @@
 import {describe, it, expect, afterEach, beforeEach, vi} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {nextTick, ref} from 'vue'
+import {nextTick} from 'vue'
 import {Editor} from '@tiptap/core'
 import {createEditorExtensions, type EditorExtensionDeps} from './editorExtensions'
 import {clearAttachmentBlobCache} from '@/helpers/attachments'
