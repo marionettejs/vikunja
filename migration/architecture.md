@@ -8,9 +8,9 @@ This document records the approved rendering/data stack and its intended ownersh
 
 ## Foundation Stack
 
-- **Core Library**: `marionette@5.0.0-beta.2`
-- **Data & State Layer**: `@mnjs/data@5.0.0-beta.2` (dependency-light observable `Model` and ordered `Collection`)
-- **DOM Content Rendering**: `lit-html@3.3.3` via `@mnjs/adapters@5.0.0-beta.2` (`@mnjs/adapters/dom/lit-html`)
+- **Core Library**: `marionette@5.0.0-beta.3`
+- **Data & State Layer**: `@mnjs/data@5.0.0-beta.3` (dependency-light observable `Model` and ordered `Collection`)
+- **DOM Content Rendering**: `lit-html@3.3.3` via `@mnjs/adapters@5.0.0-beta.3` (`@mnjs/adapters/dom/lit-html`)
 
 ## Public Adapter Configuration
 

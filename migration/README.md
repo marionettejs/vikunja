@@ -1,7 +1,7 @@
 # Marionette migration record
 
 This is an experimental migration of Vikunja's full frontend to published
-`marionette@5.0.0-beta.2`. The baseline is
+`marionette@5.0.0-beta.3`. The baseline is
 [`go-vikunja/vikunja` at `5d22d730aa35b0666d0849099c12a1e638baabc9`](https://github.com/go-vikunja/vikunja/tree/5d22d730aa35b0666d0849099c12a1e638baabc9).
 The About block was the first partial integration. Team list, create and edit
 workflows now use Marionette views within the approved narrow Vue shell/router
