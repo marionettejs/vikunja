@@ -1,14 +1,32 @@
-import {nextTick, reactive} from 'vue'
-
 import type {IUser} from '@/modelTypes/IUser'
 import AvatarService from '@/services/avatar'
 
 const avatarService = new AvatarService()
+
+function afterRender(callback: () => void) {
+	if (typeof requestAnimationFrame === 'function') {
+		requestAnimationFrame(callback)
+		return
+	}
+	setTimeout(callback, 0)
+}
 const avatarCache = new Map<string, string>()
 const pendingRequests = new Map<string, Promise<string>>()
 
-// Bumped on invalidation so components rendering that user's cached avatar refetch it.
-export const avatarCacheVersions = reactive(new Map<string, number>())
+type InvalidationListener = (username: string) => void
+
+const invalidationListeners = new Set<InvalidationListener>()
+
+/**
+ * Anything rendering a cached avatar subscribes here and refetches when its user is invalidated.
+ * A plain subscription rather than a reactive map, so non-Vue views can listen too.
+ */
+export function onAvatarInvalidated(listener: InvalidationListener): () => void {
+	invalidationListeners.add(listener)
+	return () => {
+		invalidationListeners.delete(listener)
+	}
+}
 
 // Returns undefined, never '': Vue renders src="" which the browser resolves to the page
 // URL and reports as a failed image load.
@@ -67,9 +85,9 @@ export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 		}
 	}
 
-	avatarCacheVersions.set(user.username, (avatarCacheVersions.get(user.username) ?? 0) + 1)
+	invalidationListeners.forEach(listener => listener(user.username))
 
-	// Only after the version bump rendered: revoking a url a live <img> still holds
+	// Only after the listeners have rendered: revoking a url a live <img> still holds
 	// breaks it on the next re-decode (print, content-visibility).
-	void nextTick(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
+	afterRender(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
 }

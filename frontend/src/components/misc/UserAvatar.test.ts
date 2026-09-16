@@ -2,7 +2,7 @@ import {describe, it, expect, afterEach, beforeEach, vi} from 'vitest'
 import {mount, flushPromises, type VueWrapper} from '@vue/test-utils'
 
 import UserAvatar from './UserAvatar.vue'
-import {avatarCacheVersions, fetchAvatarBlobUrl, invalidateAvatarCache} from '@/helpers/avatarCache'
+import {fetchAvatarBlobUrl, invalidateAvatarCache} from '@/helpers/avatarCache'
 
 vi.mock('@/helpers/avatarCache', async (importOriginal) => {
 	const original = await importOriginal<typeof import('@/helpers/avatarCache')>()
@@ -26,7 +26,6 @@ function mountAvatar(props: InstanceType<typeof UserAvatar>['$props']) {
 beforeEach(() => {
 	fetchAvatarBlobUrlMock.mockReset()
 	fetchAvatarBlobUrlMock.mockResolvedValue('blob:avatar')
-	avatarCacheVersions.clear()
 })
 
 afterEach(() => {

@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, watch} from 'vue'
+import {onUnmounted, ref, watch} from 'vue'
 
-import {avatarCacheVersions, fetchAvatarBlobUrl} from '@/helpers/avatarCache'
+import {fetchAvatarBlobUrl, onAvatarInvalidated} from '@/helpers/avatarCache'
 import type {IUser} from '@/modelTypes/IUser'
 
 const props = withDefaults(defineProps<{
@@ -36,27 +36,31 @@ const src = ref<string>()
 // Guards against a slow fetch for a previous user overwriting a newer one.
 let fetchToken = 0
 
-watch(
-	[() => props.user?.username, () => props.size, () => avatarCacheVersions.get(props.user?.username ?? '')],
-	async () => {
-		const token = ++fetchToken
-		src.value = undefined
+async function load() {
+	const token = ++fetchToken
+	src.value = undefined
 
-		if (!props.user?.username) {
-			return
-		}
+	if (!props.user?.username) {
+		return
+	}
 
-		try {
-			const url = await fetchAvatarBlobUrl(props.user, props.size)
-			if (token === fetchToken) {
-				src.value = url
-			}
-		} catch {
-			// A missing avatar isn't worth a user-visible error; used to end up in Sentry unhandled.
+	try {
+		const url = await fetchAvatarBlobUrl(props.user, props.size)
+		if (token === fetchToken) {
+			src.value = url
 		}
-	},
-	{immediate: true},
-)
+	} catch {
+		// A missing avatar isn't worth a user-visible error; used to end up in Sentry unhandled.
+	}
+}
+
+watch([() => props.user?.username, () => props.size], load, {immediate: true})
+
+onUnmounted(onAvatarInvalidated(username => {
+	if (username === props.user?.username) {
+		void load()
+	}
+}))
 </script>
 
 <style lang="scss">

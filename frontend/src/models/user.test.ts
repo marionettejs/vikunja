@@ -1,5 +1,4 @@
 import {describe, it, expect, vi} from 'vitest'
-import {nextTick} from 'vue'
 
 import {getDisplayName} from './user'
 import {fetchAvatarBlobUrl, invalidateAvatarCache} from '@/helpers/avatarCache'
@@ -61,10 +60,10 @@ describe('invalidateAvatarCache', () => {
 		await fetchAvatarBlobUrl({username: 'kept'}, 40)
 
 		invalidateAvatarCache({username: 'stale'})
-		// A live <img> still holds the url until the version bump re-rendered.
+		// A live <img> still holds the url until the subscribers have re-rendered.
 		expect(revoke).not.toHaveBeenCalled()
 
-		await nextTick()
+		await new Promise(resolve => requestAnimationFrame(resolve))
 
 		expect(revoke).toHaveBeenCalledTimes(2)
 		expect(revoke).toHaveBeenCalledWith('blob:stale-40')
