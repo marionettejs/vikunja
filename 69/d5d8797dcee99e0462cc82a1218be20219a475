@@ -1,0 +1,27 @@
+frontend/src/components/input/editor/TipTap.vue
+  s_c8d5a0f84a3d1f::t_c30e896bec77e4 306
+frontend/src/components/input/editor/mention/mentionSuggestion.test.ts
+  s_c8d5a0f84a3d1f::t_c60500d59dd232 1-15,19-50,52-90,92-109
+frontend/src/components/input/editor/mention/mentionSuggestion.ts
+  s_c8d5a0f84a3d1f::t_04dedc3c8c9aac 1-10,12-15,23-32,38,40,47,53,64,77,84,86-117,120-135,137,145,151-153,157,170,176-179
+frontend/src/styles/components/editor-suggestion.scss
+  s_c8d5a0f84a3d1f::t_dc4ee06f041494 126-202
+frontend/tests/e2e/editor/native-mention-popup.spec.ts
+  s_c8d5a0f84a3d1f::t_c88f24f2d776c3 1-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "69d5d8797dcee99e0462cc82a1218be20219a475",
+  "prompts": {},
+  "sessions": {
+    "s_c8d5a0f84a3d1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4847e98-7e11-4a8e-868a-92dcfb02fe06",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
