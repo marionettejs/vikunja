@@ -1,0 +1,21 @@
+frontend/src/marionette/views/SuggestionListView.test.ts
+  s_c8d5a0f84a3d1f::t_c377d161a3bc61 81,85-90,92-93
+frontend/src/marionette/views/SuggestionListView.ts
+  s_c8d5a0f84a3d1f::t_fc8fa577ce4d49 103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4064178857409842104558e6327fe12d3a963ede",
+  "prompts": {},
+  "sessions": {
+    "s_c8d5a0f84a3d1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4847e98-7e11-4a8e-868a-92dcfb02fe06",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
