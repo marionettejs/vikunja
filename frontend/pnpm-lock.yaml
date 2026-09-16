@@ -47,11 +47,11 @@ importers:
         specifier: 3.4.2
         version: 3.4.2(vue@3.5.42(typescript@6.0.3))
       '@mnjs/adapters':
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2(lit-html@3.3.3)(marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))
+        specifier: 5.0.0-beta.3
+        version: 5.0.0-beta.3(lit-html@3.3.3)(marionette@5.0.0-beta.3(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))
       '@mnjs/data':
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2
+        specifier: 5.0.0-beta.3
+        version: 5.0.0-beta.3
       '@sentry/vue':
         specifier: 10.73.0
         version: 10.73.0(pinia@4.0.3(@vue/devtools-api@8.2.1)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(vue@3.5.42(typescript@6.0.3))
@@ -161,8 +161,8 @@ importers:
         specifier: 3.3.0
         version: 3.3.0
       marionette:
-        specifier: 5.0.0-beta.2
-        version: 5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
+        specifier: 5.0.0-beta.3
+        version: 5.0.0-beta.3(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
       marked:
         specifier: 18.0.11
         version: 18.0.11
@@ -1841,8 +1841,8 @@ packages:
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
 
-  '@mnjs/adapters@5.0.0-beta.2':
-    resolution: {integrity: sha512-N7xAEL1l3x2YSfxVA+7gOzt2ltrxYBE8hStZs6kbOW1CRPa2X4mvuDNEZxqXve5M52UR85gr2yzDwXBokB+hPg==}
+  '@mnjs/adapters@5.0.0-beta.3':
+    resolution: {integrity: sha512-cyGmKgIhKenxcxcx592QEXYA9SyBh3sF6wdtjOkrboa8SVqn4tEfRSiFKdNVNqk6d+zbPwixsVXFL5M9jgLZ0A==}
     engines: {node: '>=24'}
     peerDependencies:
       '@types/backbone': ^1.4.23
@@ -1850,7 +1850,7 @@ packages:
       backbone: ^1.4.0
       jquery: ^4.0.0
       lit-html: ^3.3.3
-      marionette: 5.0.0-beta.2
+      marionette: 5.0.0-beta.3
       morphdom: ^2.7.8
     peerDependenciesMeta:
       '@types/backbone':
@@ -1866,16 +1866,16 @@ packages:
       morphdom:
         optional: true
 
-  '@mnjs/data@5.0.0-beta.2':
-    resolution: {integrity: sha512-70pyH9scolIBs4pzTk8CqL4Gsh0WWADMJj0D6rWeHM4/6ttkCFLN5cAhBlX6fyoY9iGb7zmwhkoX+MDHGH/BOQ==}
+  '@mnjs/data@5.0.0-beta.3':
+    resolution: {integrity: sha512-vz6MHj1j9XAomdFxvU7DOcFgEKSxeZMwoPutEGx7AV8IDFwvJRDCHbv7GTP+CyNr1BEYXCADS3FT/6FfsQRfdw==}
     engines: {node: '>=24'}
 
-  '@mnjs/radio@5.0.0-beta.2':
-    resolution: {integrity: sha512-Nk1uUSpd0g4baV+2FzGTuDmEsoiEy6SixDYU+STHzKfEmBW8mI0Jb1sa1GMqPPuEC2KsSzTmin7TlSMtnTfQKw==}
+  '@mnjs/radio@5.0.0-beta.3':
+    resolution: {integrity: sha512-XEHAWjf0BEmJ/5n6jD8A4iqwHmEzz6MnIBn6xENNtTipGdOTz4PAQyoqkMxxAr62DkLOiIj6aNiaVgsPbVa8kg==}
     engines: {node: '>=24'}
 
-  '@mnjs/utils@5.0.0-beta.2':
-    resolution: {integrity: sha512-DMoPoB87vu5TUYnB6CnATU15hwuJipFCMTpAAhcS21vWv/QMVB9BaxeaTs5QooaO8YwZcL0zl8zQPFsEfNskuQ==}
+  '@mnjs/utils@5.0.0-beta.3':
+    resolution: {integrity: sha512-QF/4oUeH6qFFJT0MoyTyRNCvEsiOKGPounV83oXkCtU3bQxkpUsNbHZTJ1xc2qMeW8p0JmD/RrktKRV7JsCQXA==}
     engines: {node: '>=24'}
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
@@ -5103,8 +5103,8 @@ packages:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
 
-  marionette@5.0.0-beta.2:
-    resolution: {integrity: sha512-n+iEn/xAwLpeyuqWrWZpWIiECXfdqEnwKKeCCob1OB4iHeNLds+NtvzQCfjewzggf5BBi9PVCwalpujcQH6Bmw==}
+  marionette@5.0.0-beta.3:
+    resolution: {integrity: sha512-RsoQYDYlotp/EiABEIlWPlNZxnp3jqo3NRqctnMFbTOLOurdOZ6szTOXEUgDIdySycVFIMflKGHbHxUHsjrzOA==}
     engines: {node: '>=24'}
     peerDependencies:
       eslint: ^10.0.0
@@ -8968,21 +8968,21 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.3': {}
 
-  '@mnjs/adapters@5.0.0-beta.2(lit-html@3.3.3)(marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))':
+  '@mnjs/adapters@5.0.0-beta.3(lit-html@3.3.3)(marionette@5.0.0-beta.3(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)))':
     dependencies:
-      marionette: 5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
+      marionette: 5.0.0-beta.3(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2))
     optionalDependencies:
       lit-html: 3.3.3
 
-  '@mnjs/data@5.0.0-beta.2':
+  '@mnjs/data@5.0.0-beta.3':
     dependencies:
-      '@mnjs/utils': 5.0.0-beta.2
+      '@mnjs/utils': 5.0.0-beta.3
 
-  '@mnjs/radio@5.0.0-beta.2':
+  '@mnjs/radio@5.0.0-beta.3':
     dependencies:
-      '@mnjs/utils': 5.0.0-beta.2
+      '@mnjs/utils': 5.0.0-beta.3
 
-  '@mnjs/utils@5.0.0-beta.2': {}
+  '@mnjs/utils@5.0.0-beta.3': {}
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
@@ -12299,10 +12299,10 @@ snapshots:
 
   map-obj@4.3.0: {}
 
-  marionette@5.0.0-beta.2(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)):
+  marionette@5.0.0-beta.3(eslint@10.10.0(jiti@2.7.0)(supports-color@10.2.2)):
     dependencies:
-      '@mnjs/radio': 5.0.0-beta.2
-      '@mnjs/utils': 5.0.0-beta.2
+      '@mnjs/radio': 5.0.0-beta.3
+      '@mnjs/utils': 5.0.0-beta.3
     optionalDependencies:
       eslint: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
 
