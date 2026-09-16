@@ -1,14 +1,39 @@
-import {nextTick, reactive} from 'vue'
-
 import type {IUser} from '@/modelTypes/IUser'
 import AvatarService from '@/services/avatar'
 
 const avatarService = new AvatarService()
+
+function afterRender(callback: () => void) {
+	if (typeof requestAnimationFrame === 'function') {
+		requestAnimationFrame(callback)
+		return
+	}
+	setTimeout(callback, 0)
+}
 const avatarCache = new Map<string, string>()
 const pendingRequests = new Map<string, Promise<string>>()
+// Bumped by an invalidation of that user. A request started before one must not write its result
+// back: the answer it is carrying describes the avatar the invalidation just dropped.
+const userGenerations = new Map<string, number>()
 
-// Bumped on invalidation so components rendering that user's cached avatar refetch it.
-export const avatarCacheVersions = reactive(new Map<string, number>())
+function generationOf(username: string): number {
+	return userGenerations.get(username) ?? 0
+}
+
+type InvalidationListener = (username: string) => void
+
+const invalidationListeners = new Set<InvalidationListener>()
+
+/**
+ * Anything rendering a cached avatar subscribes here and refetches when its user is invalidated.
+ * A plain subscription rather than a reactive map, so non-Vue views can listen too.
+ */
+export function onAvatarInvalidated(listener: InvalidationListener): () => void {
+	invalidationListeners.add(listener)
+	return () => {
+		invalidationListeners.delete(listener)
+	}
+}
 
 // Returns undefined, never '': Vue renders src="" which the browser resolves to the page
 // URL and reports as a failed image load.
@@ -28,14 +53,25 @@ export async function fetchAvatarBlobUrl(user: Pick<IUser, 'username'>, size = 5
 		return await pending
 	}
 
-	const requestPromise = avatarService.getBlobUrl(`/avatar/${user.username}?size=${size}`)
-		.then(url => {
-			avatarCache.set(key, url)
+	const startedAt = generationOf(user.username)
+
+	// Only ever clears this request's own entry: an invalidation may already have replaced it.
+	const clearPending = () => {
+		if (pendingRequests.get(key) === requestPromise) {
 			pendingRequests.delete(key)
+		}
+	}
+
+	const requestPromise: Promise<string> = avatarService.getBlobUrl(`/avatar/${user.username}?size=${size}`)
+		.then((url: string) => {
+			if (startedAt === generationOf(user.username)) {
+				avatarCache.set(key, url)
+			}
+			clearPending()
 			return url
 		})
-		.catch(error => {
-			pendingRequests.delete(key)
+		.catch((error: unknown) => {
+			clearPending()
 			throw error
 		})
 
@@ -47,6 +83,8 @@ export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 	if (!user || !user.username) {
 		return
 	}
+
+	userGenerations.set(user.username, generationOf(user.username) + 1)
 
 	const staleUrls: string[] = []
 	for (const key of Array.from(avatarCache.keys())) {
@@ -67,9 +105,9 @@ export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 		}
 	}
 
-	avatarCacheVersions.set(user.username, (avatarCacheVersions.get(user.username) ?? 0) + 1)
+	invalidationListeners.forEach(listener => listener(user.username))
 
-	// Only after the version bump rendered: revoking a url a live <img> still holds
+	// Only after the listeners have rendered: revoking a url a live <img> still holds
 	// breaks it on the next re-decode (print, content-visibility).
-	void nextTick(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
+	afterRender(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
 }

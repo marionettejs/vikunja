@@ -1,13 +1,18 @@
-import { VueRenderer } from '@tiptap/vue-3'
-import type { Editor } from '@tiptap/core'
+import type {Editor} from '@tiptap/core'
+import {html} from 'lit-html'
+import type {MentionNodeAttrs} from '@tiptap/extension-mention'
 
-import MentionList from './MentionList.vue'
-import { getPopupContainer } from '../popupContainer'
-import { createSuggestionPopup, type SuggestionPopup } from '../suggestionPopup'
+import {SuggestionListView} from '@/marionette/views/SuggestionListView'
+import type {SuggestionListViewInstance} from '@/marionette/views/SuggestionListView'
+import {UserAvatarView} from '@/marionette/views/UserAvatarView'
+import type {UserAvatarViewInstance} from '@/marionette/views/UserAvatarView'
+import {getPopupContainer} from '../popupContainer'
+import {createSuggestionPopup, type SuggestionPopup} from '../suggestionPopup'
 import ProjectUserService from '@/services/projectUsers'
-import { getDisplayName } from '@/models/user'
-import type { IUser } from '@/modelTypes/IUser'
-import type { MentionNodeAttrs } from '@tiptap/extension-mention'
+import {getDisplayName} from '@/models/user'
+import type {IUser} from '@/modelTypes/IUser'
+
+type TranslateFunction = (key: string) => string
 
 interface MentionItem extends MentionNodeAttrs {
 	id: string
@@ -15,27 +20,37 @@ interface MentionItem extends MentionNodeAttrs {
 	username: string
 }
 
+interface SuggestionProps {
+	editor: Editor
+	clientRect?: (() => DOMRect | null) | null
+	items: MentionItem[]
+	command: (item: MentionItem) => void
+}
+
+const AVATAR_SIZE = 32
+const SEARCH_DEBOUNCE = 300
+
 async function searchUsersForProject(projectId: number, query: string): Promise<MentionItem[]> {
 	const projectUserService = new ProjectUserService()
 
 	// Use server-side search with the 's' parameter
 	// @ts-expect-error - projectId is used for URL replacement but not part of IAbstract
-	const users = await projectUserService.getAll({ projectId }, { s: query }) as IUser[]
+	const users = await projectUserService.getAll({projectId}, {s: query}) as IUser[]
 
-	return users.map((user) => ({
+	return users.map(user => ({
 		id: user.username,
 		label: getDisplayName(user),
 		username: user.username,
 	}))
 }
 
-export default function mentionSuggestionSetup(projectId: number) {
+export default function mentionSuggestionSetup(projectId: number, t: TranslateFunction) {
 	let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 	return {
 		char: '@',
 
-		items: async ({ query }: { query: string }): Promise<MentionItem[]> => {
+		items: async ({query}: {query: string}): Promise<MentionItem[]> => {
 			if (!projectId) {
 				return []
 			}
@@ -46,7 +61,7 @@ export default function mentionSuggestionSetup(projectId: number) {
 			}
 
 			// Return a promise that resolves after debounce delay
-			return new Promise((resolve) => {
+			return new Promise(resolve => {
 				debounceTimer = setTimeout(async () => {
 					try {
 						// Use server-side search - the backend will handle searching by username and display name
@@ -59,27 +74,67 @@ export default function mentionSuggestionSetup(projectId: number) {
 						console.error('Failed to fetch users for mentions:', error)
 						resolve([])
 					}
-				}, 300) // 300ms debounce delay
+				}, SEARCH_DEBOUNCE)
 			})
 		},
 
 		render: () => {
 			// onExit runs without a matching onStart when the plugin view is recreated
 			// while a suggestion is already active, so this stays null until mounted.
-			let component: VueRenderer | null = null
+			let list: SuggestionListViewInstance | null = null
 			let popup: SuggestionPopup | null = null
+			let currentProps: SuggestionProps | null = null
+			// The avatars are live views embedded in the list's markup, so this owns their lifetime.
+			let avatarViews: UserAvatarViewInstance[] = []
+
+			function destroyAvatars() {
+				avatarViews.forEach(view => view.destroy())
+				avatarViews = []
+			}
+
+			function entries(items: MentionItem[]) {
+				destroyAvatars()
+
+				return items.map(item => {
+					const avatar = new UserAvatarView({username: item.username, size: AVATAR_SIZE})
+					avatar.render()
+					avatar.el.classList.add('mention-avatar')
+					avatarViews.push(avatar)
+
+					return {
+						key: item.username,
+						content: html`
+							${avatar.el}
+							<div class="mention-info">
+								<p class="mention-name">${item.label}</p>
+								${item.label === item.username ? '' : html`
+									<p class="mention-username">@${item.username}</p>
+								`}
+							</div>
+						`,
+					}
+				})
+			}
 
 			return {
-				onStart: (props: {
-					editor: Editor
-					clientRect?: (() => DOMRect | null) | null
-					items: MentionItem[]
-					command: (item: MentionItem) => void
-				}) => {
-					component = new VueRenderer(MentionList, {
-						props,
-						editor: props.editor,
+				onStart: (props: SuggestionProps) => {
+					currentProps = props
+
+					list = new SuggestionListView({
+						className: 'mention-items editor-suggestion-popup',
+						itemClassName: 'mention-item',
+						emptyLabel: t('task.mention.noUsersFound'),
+						entries: entries(props.items),
+						scrollSelectedIntoView: true,
+						onSelect: index => {
+							const props = currentProps
+							const item = props?.items[index]
+							if (props && item) {
+								props.command(item)
+							}
+						},
 					})
+					list.render()
 
 					if (!props.clientRect) {
 						return
@@ -87,23 +142,19 @@ export default function mentionSuggestionSetup(projectId: number) {
 
 					popup = createSuggestionPopup(
 						getPopupContainer(props.editor),
-						component.element!,
+						list.el,
 						props.clientRect,
 						props.editor.view.dom,
 					)
 				},
 
-				onUpdate(props: {
-					editor: Editor
-					clientRect?: (() => DOMRect | null) | null
-					items: MentionItem[]
-					command: (item: MentionItem) => void
-				}) {
-					component?.updateProps(props)
+				onUpdate(props: SuggestionProps) {
+					currentProps = props
+					list?.setEntries(entries(props.items))
 					popup?.reposition()
 				},
 
-				onKeyDown(props: { event: KeyboardEvent }) {
+				onKeyDown(props: {event: KeyboardEvent}) {
 					if (props.event.key === 'Escape') {
 						if (props.event.isComposing) {
 							return false
@@ -116,14 +167,16 @@ export default function mentionSuggestionSetup(projectId: number) {
 						return true
 					}
 
-					return component?.ref?.onKeyDown(props)
+					return list?.onKeyDown(props.event) ?? false
 				},
 
 				onExit() {
 					popup?.destroy()
 					popup = null
-					component?.destroy()
-					component = null
+					list?.destroy()
+					list = null
+					destroyAvatars()
+					currentProps = null
 				},
 			}
 		},
