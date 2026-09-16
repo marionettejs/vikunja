@@ -145,6 +145,12 @@ function attachDescriptionHostToForm(): void {
 
 function destroyViews(): void {
 	destroyModal()
+	// Before the form: destroying it cascades into the editor, and the controls have to
+	// unregister their plugins and listeners while that editor is still alive.
+	if (editorControls) {
+		editorControls.destroy()
+		editorControls = null
+	}
 	if (formView) {
 		if (detachDescriptionHostView) {
 			formView.off('before:render', detachDescriptionHostView)
@@ -157,12 +163,6 @@ function destroyViews(): void {
 		formView.destroy()
 		formView = null
 		descriptionHostView = null
-	}
-	// After the form, so the toolbar Region has already released it, but before the editor
-	// reference is dropped: the controls unregister their plugins through it.
-	if (editorControls) {
-		editorControls.destroy()
-		editorControls = null
 	}
 	editorView = null
 	if (searchView) {

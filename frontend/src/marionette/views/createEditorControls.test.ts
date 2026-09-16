@@ -172,4 +172,32 @@ describe('createEditorControls', () => {
 
 		expect(() => created.destroy()).not.toThrow()
 	})
+
+	it('refuses to build controls for an editor that does not exist yet', () => {
+		expect(() => createEditorControls({
+			getEditor: () => undefined,
+			t,
+			pluginKeyPrefix: 'test',
+			isActive: () => true,
+		})).toThrow(/rendered editor/)
+	})
+
+	it('detaches from the editor it registered with, not whatever the owner points at now', () => {
+		const created = create()
+		const unregisterOriginal = vi.spyOn(editor!, 'unregisterPlugin')
+
+		const replacementElement = document.createElement('div')
+		document.body.appendChild(replacementElement)
+		const replacement = new Editor({element: replacementElement, extensions: [StarterKit]})
+		const original = editor!
+		editor = replacement
+
+		created.destroy()
+
+		expect(unregisterOriginal).toHaveBeenCalledWith('testBubbleMenu')
+		expect(unregisterOriginal).toHaveBeenCalledWith('testImageAltMenu')
+
+		replacement.destroy()
+		editor = original
+	})
 })

@@ -10,6 +10,7 @@ import {EditorToolbarView, type EditorToolbarViewInstance} from './EditorToolbar
 import {ImageAltMenuView} from './ImageAltMenuView'
 
 export interface EditorControlsOptions {
+	/** Must already resolve to a live editor: the controls attach to it once, at construction. */
 	getEditor: () => Editor | undefined
 	t: (key: string) => string
 	/** Namespaces the registered ProseMirror plugins so two editors can be live at once. */
@@ -100,6 +101,13 @@ export function createEditorControls(options: EditorControlsOptions): EditorCont
 	const bubbleMenuKey = `${pluginKeyPrefix}BubbleMenu`
 	const imageAltMenuKey = `${pluginKeyPrefix}ImageAltMenu`
 
+	// The plugins and listeners attach once, here. Controls built before the editor exists could
+	// never attach afterwards, so that is a caller bug rather than a state to carry.
+	const registeredEditor = getEditor()
+	if (!registeredEditor) {
+		throw new Error('createEditorControls needs a rendered editor')
+	}
+
 	function handleLink(rect: DOMRect) {
 		void setLinkInEditor(rect, getEditor(), isActive)
 	}
@@ -188,36 +196,33 @@ export function createEditorControls(options: EditorControlsOptions): EditorCont
 		toolbarView.refresh()
 	}
 
-	const editor = getEditor()
-	if (editor) {
-		editor.registerPlugin(BubbleMenuPlugin({
-			pluginKey: bubbleMenuKey,
-			editor,
-			element: bubbleMenuView.el as HTMLElement,
-			shouldShow: ({view, element, state, from, to}) => {
-				const isEmptyTextBlock = !state.doc.textBetween(from, to).length
-					&& isTextSelection(state.selection)
-				const hasEditorFocus = view.hasFocus() || element.contains(document.activeElement)
-				return hasEditorFocus
-					&& from !== to
-					&& !isEmptyTextBlock
-					&& !editor.isActive('image')
-					&& !editor.isActive('taskLink')
-			},
-		}))
+	registeredEditor.registerPlugin(BubbleMenuPlugin({
+		pluginKey: bubbleMenuKey,
+		editor: registeredEditor,
+		element: bubbleMenuView.el as HTMLElement,
+		shouldShow: ({view, element, state, from, to}) => {
+			const isEmptyTextBlock = !state.doc.textBetween(from, to).length
+				&& isTextSelection(state.selection)
+			const hasEditorFocus = view.hasFocus() || element.contains(document.activeElement)
+			return hasEditorFocus
+				&& from !== to
+				&& !isEmptyTextBlock
+				&& !registeredEditor.isActive('image')
+				&& !registeredEditor.isActive('taskLink')
+		},
+	}))
 
-		editor.registerPlugin(BubbleMenuPlugin({
-			pluginKey: imageAltMenuKey,
-			editor,
-			element: imageAltMenuView.el as HTMLElement,
-			shouldShow: ({view, element}) => editor.isEditable
-				&& editor.isActive('image')
-				&& (view.hasFocus() || element.contains(document.activeElement)),
-		}))
+	registeredEditor.registerPlugin(BubbleMenuPlugin({
+		pluginKey: imageAltMenuKey,
+		editor: registeredEditor,
+		element: imageAltMenuView.el as HTMLElement,
+		shouldShow: ({view, element}) => registeredEditor.isEditable
+			&& registeredEditor.isActive('image')
+			&& (view.hasFocus() || element.contains(document.activeElement)),
+	}))
 
-		editor.on('selectionUpdate', refresh)
-		editor.on('transaction', refresh)
-	}
+	registeredEditor.on('selectionUpdate', refresh)
+	registeredEditor.on('transaction', refresh)
 
 	let destroyed = false
 
@@ -230,13 +235,13 @@ export function createEditorControls(options: EditorControlsOptions): EditorCont
 			}
 			destroyed = true
 
-			// Detach from the editor before destroying the elements the plugins position.
-			const current = getEditor()
-			if (current && !current.isDestroyed) {
-				current.off('selectionUpdate', refresh)
-				current.off('transaction', refresh)
-				current.unregisterPlugin(bubbleMenuKey)
-				current.unregisterPlugin(imageAltMenuKey)
+			// Detach from the editor these controls actually registered with, not whatever the
+			// owner points at now, and do it before destroying the elements the plugins position.
+			if (!registeredEditor.isDestroyed) {
+				registeredEditor.off('selectionUpdate', refresh)
+				registeredEditor.off('transaction', refresh)
+				registeredEditor.unregisterPlugin(bubbleMenuKey)
+				registeredEditor.unregisterPlugin(imageAltMenuKey)
 			}
 
 			bubbleMenuView.el.remove()
