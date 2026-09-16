@@ -15,20 +15,14 @@ import TeamService from '@/services/team'
 import TeamMemberService from '@/services/teamMember'
 import UserService from '@/services/user'
 import {createEditorExtensions} from '@/components/input/editor/editorExtensions'
-import inputPrompt from '@/helpers/inputPrompt'
 import {TeamEditFormView} from '@/marionette/views/TeamEditFormView'
 import {RichTextEditorView} from '@/marionette/views/RichTextEditorView'
 import {TeamMembersView} from '@/marionette/views/TeamMembersView'
 import {UserSearchView, type UserSearchOption} from '@/marionette/views/UserSearchView'
 import {ModalCardView} from '@/marionette/views/ModalCardView'
 import {ConfirmTextView} from '@/marionette/views/ConfirmTextView'
-import {EditorBubbleMenuView} from '@/marionette/views/EditorBubbleMenuView'
-import {EditorToolbarView, type EditorToolbarViewInstance} from '@/marionette/views/EditorToolbarView'
-import {ImageAltMenuView} from '@/marionette/views/ImageAltMenuView'
-import {setImageAltInEditor} from '@/components/input/editor/setImageAltInEditor'
-import {BubbleMenuPlugin} from '@tiptap/extension-bubble-menu'
-import {setLinkInEditor} from '@/components/input/editor/setLinkInEditor'
-import {isTextSelection} from '@tiptap/core'
+import {type EditorToolbarViewInstance} from '@/marionette/views/EditorToolbarView'
+import {createEditorControls, type EditorControls} from '@/marionette/views/createEditorControls'
 import type {ViewInstance} from 'marionette'
 import {View} from '@/marionette/index'
 
@@ -50,12 +44,8 @@ let editorView: InstanceType<typeof RichTextEditorView> | null = null
 let membersView: InstanceType<typeof TeamMembersView> | null = null
 let searchView: InstanceType<typeof UserSearchView> | null = null
 let activeModal: InstanceType<typeof ModalCardView> | null = null
-let bubbleMenuView: InstanceType<typeof EditorBubbleMenuView> | null = null
-let bubbleMenuRefresh: (() => void) | null = null
 let descriptionHostView: InstanceType<typeof TeamDescriptionEditorHostView> | null = null
-let toolbarView: InstanceType<typeof EditorToolbarView> | null = null
-let toolbarRefresh: (() => void) | null = null
-let imageAltMenuView: InstanceType<typeof ImageAltMenuView> | null = null
+let editorControls: EditorControls | null = null
 let editorGeneration = 0
 let syncDescriptionHostView: (() => void) | null = null
 let detachDescriptionHostView: (() => void) | null = null
@@ -153,75 +143,8 @@ function attachDescriptionHostToForm(): void {
 	formView.showChildView('description', descriptionHostView)
 }
 
-function handleDescriptionLink(rect: DOMRect): void {
-	const generation = editorGeneration
-	void setLinkInEditor(rect, editorView?.getEditor(), () => isMounted && generation === editorGeneration)
-}
-
-function handleImageAlt(rect: DOMRect): void {
-	const editor = editorView?.getEditor()
-	if (!editor || !editor.isActive('image')) return
-	const generation = editorGeneration
-	void setImageAltInEditor(editor, editor.state.selection.from, rect, () => isMounted && generation === editorGeneration)
-}
-
-function handleDescriptionImageUpload(rect: DOMRect): void {
-	const editorInstance = editorView?.getEditor()
-	if (!editorInstance) {
-		return
-	}
-
-	const generation = editorGeneration
-
-	inputPrompt(rect, t('input.editor.urlPlaceholder'), '', editorInstance).then(async (url) => {
-		const currentEditor = editorView?.getEditor()
-		if (
-			!isMounted
-			|| !editorInstance
-			|| editorInstance.isDestroyed
-			|| generation !== editorGeneration
-			|| !currentEditor
-			|| currentEditor !== editorInstance
-			|| currentEditor.isDestroyed
-		) {
-			return
-		}
-
-		if (url === null || url === '') {
-			return
-		}
-
-		let position: number | null = null
-		currentEditor.chain().focus().setImage({src: url}).command(({tr}) => {
-			// Restrict lookup to the insertion range; URLs need not be unique.
-			tr.mapping.maps.at(-1)?.forEach((_from, _to, insertedFrom, insertedTo) => {
-				tr.doc.nodesBetween(insertedFrom, insertedTo, (node, pos) => {
-					if (node.type.name === 'image') position = pos
-				})
-			})
-			return true
-		}).run()
-		if (position !== null) {
-			currentEditor.chain().setNodeSelection(position).run()
-			const image = currentEditor.view.nodeDOM(position) as HTMLElement | null
-			await setImageAltInEditor(currentEditor, position, image?.getBoundingClientRect() ?? rect,
-				() => isMounted && generation === editorGeneration)
-			if (isMounted && generation === editorGeneration && !currentEditor.isDestroyed
-				&& currentEditor.state.selection.from === position && currentEditor.isActive('image')
-				&& currentEditor.state.doc.nodeAt(position)?.attrs.src === url) {
-				currentEditor.chain().setTextSelection(position + 1).run()
-			}
-		}
-	})
-}
-
 function destroyViews(): void {
 	destroyModal()
-	if (imageAltMenuView) {
-		editorView?.getEditor()?.unregisterPlugin('teamImageAltMenu')
-		imageAltMenuView.destroy()
-		imageAltMenuView = null
-	}
 	if (formView) {
 		if (detachDescriptionHostView) {
 			formView.off('before:render', detachDescriptionHostView)
@@ -234,26 +157,12 @@ function destroyViews(): void {
 		formView.destroy()
 		formView = null
 		descriptionHostView = null
-		toolbarView = null
 	}
-	if (bubbleMenuView) {
-		const descriptionEditor = editorView?.getEditor()
-		if (descriptionEditor) {
-			if (bubbleMenuRefresh) {
-				descriptionEditor.off('selectionUpdate', bubbleMenuRefresh)
-				descriptionEditor.off('transaction', bubbleMenuRefresh)
-			}
-			if (toolbarRefresh) {
-				descriptionEditor.off('selectionUpdate', toolbarRefresh)
-				descriptionEditor.off('transaction', toolbarRefresh)
-			}
-			descriptionEditor.unregisterPlugin('teamDescriptionBubbleMenu')
-		}
-		bubbleMenuRefresh = null
-		toolbarRefresh = null
-		bubbleMenuView.el.remove()
-		bubbleMenuView.destroy()
-		bubbleMenuView = null
+	// After the form, so the toolbar Region has already released it, but before the editor
+	// reference is dropped: the controls unregister their plugins through it.
+	if (editorControls) {
+		editorControls.destroy()
+		editorControls = null
 	}
 	editorView = null
 	if (searchView) {
@@ -638,53 +547,16 @@ function renderViews(): void {
 		})
 
 		editorView.render()
-		toolbarView = new EditorToolbarView({
+		const generation = editorGeneration
+		editorControls = createEditorControls({
 			getEditor: () => editorView?.getEditor(),
-			labels: {
-				toolbarLabel: t('input.editor.toolbarLabel'),
-				heading1: t('input.editor.heading1'),
-				heading2: t('input.editor.heading2'),
-				heading3: t('input.editor.heading3'),
-				bold: t('input.editor.bold'),
-				italic: t('input.editor.italic'),
-				underline: t('input.editor.underline'),
-				strikethrough: t('input.editor.strikethrough'),
-				code: t('input.editor.code'),
-				quote: t('input.editor.quote'),
-				bulletList: t('input.editor.bulletList'),
-				orderedList: t('input.editor.orderedList'),
-				taskList: t('input.editor.taskList'),
-				image: t('input.editor.image'),
-				link: t('input.editor.link'),
-				text: t('input.editor.text'),
-				horizontalRule: t('input.editor.horizontalRule'),
-				undo: t('input.editor.undo'),
-				redo: t('input.editor.redo'),
-				table: {
-					title: t('input.editor.table.title'),
-					insert: t('input.editor.table.insert'),
-					addColumnBefore: t('input.editor.table.addColumnBefore'),
-					addColumnAfter: t('input.editor.table.addColumnAfter'),
-					deleteColumn: t('input.editor.table.deleteColumn'),
-					addRowBefore: t('input.editor.table.addRowBefore'),
-					addRowAfter: t('input.editor.table.addRowAfter'),
-					deleteRow: t('input.editor.table.deleteRow'),
-					deleteTable: t('input.editor.table.deleteTable'),
-					mergeCells: t('input.editor.table.mergeCells'),
-					splitCell: t('input.editor.table.splitCell'),
-					toggleHeaderColumn: t('input.editor.table.toggleHeaderColumn'),
-					toggleHeaderRow: t('input.editor.table.toggleHeaderRow'),
-					toggleHeaderCell: t('input.editor.table.toggleHeaderCell'),
-					mergeOrSplit: t('input.editor.table.mergeOrSplit'),
-					fixTables: t('input.editor.table.fixTables'),
-				},
-			},
-			onImageUpload: handleDescriptionImageUpload,
-			onLink: handleDescriptionLink,
+			t,
+			pluginKeyPrefix: 'teamDescription',
+			isActive: () => isMounted && generation === editorGeneration,
 		})
 
 		descriptionHostView = new TeamDescriptionEditorHostView({
-			toolbarView,
+			toolbarView: editorControls.toolbarView,
 			editorView,
 		})
 
@@ -696,59 +568,6 @@ function renderViews(): void {
 		formView.on('before:render', detachDescriptionHostView)
 		formView.on('render', syncDescriptionHostView)
 
-		const descriptionEditor = editorView.getEditor()
-		if (descriptionEditor) {
-			bubbleMenuView = new EditorBubbleMenuView({
-				getEditor: () => editorView?.getEditor(),
-				labels: {
-					bold: t('input.editor.bold'),
-					italic: t('input.editor.italic'),
-					underline: t('input.editor.underline'),
-					strikethrough: t('input.editor.strikethrough'),
-					code: t('input.editor.code'),
-					link: t('input.editor.link'),
-				},
-				onLink: handleDescriptionLink,
-			})
-			bubbleMenuView.render()
-			document.body.appendChild(bubbleMenuView.el)
-
-			descriptionEditor.registerPlugin(BubbleMenuPlugin({
-				pluginKey: 'teamDescriptionBubbleMenu',
-				editor: descriptionEditor,
-				element: bubbleMenuView.el as HTMLElement,
-				shouldShow: ({view, element, state, from, to}) => {
-					const isEmptyTextBlock = !state.doc.textBetween(from, to).length
-						&& isTextSelection(state.selection)
-					const hasEditorFocus = view.hasFocus() || element.contains(document.activeElement)
-					return hasEditorFocus
-						&& from !== to
-						&& !isEmptyTextBlock
-						&& !descriptionEditor.isActive('image')
-						&& !descriptionEditor.isActive('taskLink')
-				},
-			}))
-
-			imageAltMenuView = new ImageAltMenuView({label: t('input.editor.altText'), onEdit: handleImageAlt})
-			imageAltMenuView.render()
-			document.body.appendChild(imageAltMenuView.el)
-			descriptionEditor.registerPlugin(BubbleMenuPlugin({
-				pluginKey: 'teamImageAltMenu',
-				editor: descriptionEditor,
-				element: imageAltMenuView.el as HTMLElement,
-				shouldShow: ({view, element}) => descriptionEditor.isEditable && descriptionEditor.isActive('image')
-					&& (view.hasFocus() || element.contains(document.activeElement)),
-			}))
-
-			bubbleMenuRefresh = () => bubbleMenuView?.refresh()
-			toolbarRefresh = () => {
-				toolbarView?.refresh()
-			}
-			descriptionEditor.on('selectionUpdate', bubbleMenuRefresh)
-			descriptionEditor.on('transaction', bubbleMenuRefresh)
-			descriptionEditor.on('selectionUpdate', toolbarRefresh)
-			descriptionEditor.on('transaction', toolbarRefresh)
-		}
 	}
 
 	if (canManage && searchRegion.value) {
