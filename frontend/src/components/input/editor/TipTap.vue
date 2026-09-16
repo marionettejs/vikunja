@@ -303,7 +303,7 @@ if (props.enableMentions && props.projectId > 0) {
 			HTMLAttributes: {
 				class: 'mention',
 			},
-			suggestion: mentionSuggestionSetup(props.projectId),
+			suggestion: mentionSuggestionSetup(props.projectId, t),
 		}).extend({
 
 			parseHTML() {
