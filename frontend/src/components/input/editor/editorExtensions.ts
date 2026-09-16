@@ -27,7 +27,7 @@ import {createClipboardParser, fillRequiredContent, repairSliceContent} from './
 
 import Commands from './commands'
 import suggestionSetup from './suggestion'
-import {EmojiExtension} from './emoji/emojiExtension'
+import {createEmojiExtension} from './emoji/emojiExtension'
 
 import {common, createLowlight} from 'lowlight'
 
@@ -336,7 +336,7 @@ export function createEditorExtensions(deps: EditorExtensionDeps): Extensions {
 			suggestion: suggestionSetup(t),
 		}),
 
-		EmojiExtension,
+		createEmojiExtension(t),
 
 		PasteHandler,
 	]

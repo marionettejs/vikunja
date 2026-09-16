@@ -3,21 +3,25 @@ import Suggestion from '@tiptap/suggestion'
 
 import emojiSuggestionSetup from './emojiSuggestion'
 
-export const EmojiExtension = Extension.create({
-	name: 'emojiAutocomplete',
+type TranslateFunction = (key: string) => string
 
-	addOptions() {
-		return {
-			suggestion: emojiSuggestionSetup(),
-		}
-	},
+export function createEmojiExtension(t: TranslateFunction) {
+	return Extension.create({
+		name: 'emojiAutocomplete',
 
-	addProseMirrorPlugins() {
-		return [
-			Suggestion({
-				editor: this.editor,
-				...this.options.suggestion,
-			}),
-		]
-	},
-})
+		addOptions() {
+			return {
+				suggestion: emojiSuggestionSetup(t),
+			}
+		},
+
+		addProseMirrorPlugins() {
+			return [
+				Suggestion({
+					editor: this.editor,
+					...this.options.suggestion,
+				}),
+			]
+		},
+	})
+}
