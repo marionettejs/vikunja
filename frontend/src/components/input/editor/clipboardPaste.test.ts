@@ -1,6 +1,5 @@
 import {describe, it, expect, afterEach, beforeEach} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {ref} from 'vue'
 import {Editor} from '@tiptap/core'
 import {TextSelection} from '@tiptap/pm/state'
 
@@ -15,13 +14,13 @@ function createEditor(content: string) {
 	let editor: Editor
 	const deps: EditorExtensionDeps = {
 		t: key => key,
-		isEditing: ref(true),
+		isEditing: () => true,
 		isEditEnabled: () => true,
-		placeholder: '',
-		contentHasChanged: ref(false),
+		placeholder: () => '',
+		contentHasChanged: () => false,
 		bubbleSave: () => {},
 		getEditor: () => editor,
-		uploadCallback: undefined,
+		uploadCallback: () => undefined,
 		uploadAndInsertFiles: () => {},
 	}
 

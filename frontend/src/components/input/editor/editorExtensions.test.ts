@@ -1,6 +1,6 @@
 import {describe, it, expect, afterEach, beforeEach, vi} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {nextTick, ref} from 'vue'
+import {nextTick} from 'vue'
 import {Editor} from '@tiptap/core'
 import {createEditorExtensions, type EditorExtensionDeps} from './editorExtensions'
 import {clearAttachmentBlobCache} from '@/helpers/attachments'
@@ -26,13 +26,13 @@ function createEditor(content: string) {
 	let editor: Editor
 	const deps: EditorExtensionDeps = {
 		t: key => key,
-		isEditing: ref(true),
+		isEditing: () => true,
 		isEditEnabled: () => true,
-		placeholder: '',
-		contentHasChanged: ref(false),
+		placeholder: () => '',
+		contentHasChanged: () => false,
 		bubbleSave: () => {},
 		getEditor: () => editor,
-		uploadCallback: undefined,
+		uploadCallback: () => undefined,
 		uploadAndInsertFiles: () => {},
 	}
 

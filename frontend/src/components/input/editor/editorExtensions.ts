@@ -1,5 +1,3 @@
-import {nextTick, toValue, type MaybeRefOrGetter, type Ref} from 'vue'
-
 import StarterKit from '@tiptap/starter-kit'
 import {createNodeFromContent, Extension, mergeAttributes, type Editor, type Extensions} from '@tiptap/core'
 import {Plugin, PluginKey} from '@tiptap/pm/state'
@@ -38,15 +36,26 @@ import {fetchAttachmentBlobUrl} from '@/helpers/attachments'
 
 type ImageNodeKey = `${ITask['id']}-${IAttachment['id']}`
 
+// renderHTML only describes the node; the element itself lands in the document later. A frame
+// callback is the first point where the rendered image can be looked up by id, and it does not tie
+// the extensions to a framework's scheduler.
+function afterDomUpdate(callback: () => void) {
+	if (typeof requestAnimationFrame === 'function') {
+		requestAnimationFrame(callback)
+		return
+	}
+	setTimeout(callback, 0)
+}
+
 export interface EditorExtensionDeps {
 	t: (key: string) => string
-	isEditing: Ref<boolean>
+	isEditing: () => boolean
 	isEditEnabled: () => boolean
-	placeholder: MaybeRefOrGetter<string>
-	contentHasChanged: Ref<boolean>
+	placeholder: () => string
+	contentHasChanged: () => boolean
 	bubbleSave: () => void
 	getEditor: () => Editor | undefined
-	uploadCallback: MaybeRefOrGetter<UploadCallback | undefined>
+	uploadCallback: () => UploadCallback | undefined
 	uploadAndInsertFiles: (files: File[] | FileList) => void
 }
 
@@ -132,7 +141,7 @@ export function createEditorExtensions(deps: EditorExtensionDeps): Extensions {
 				const nodeKey: ImageNodeKey = `${taskId}-${attachmentId}`
 				const id = 'tiptap-image-' + nodeKey
 
-				nextTick(async () => {
+				afterDomUpdate(async () => {
 
 					// no live view: fail closed, never fall back to document
 					const root = getEditor()?.view?.dom
@@ -176,7 +185,7 @@ export function createEditorExtensions(deps: EditorExtensionDeps): Extensions {
 						handlePaste: (view, event) => {
 
 							// Handle images pasted from clipboard
-							if (typeof toValue(uploadCallback) !== 'undefined' && event.clipboardData?.items?.length) {
+							if (typeof uploadCallback() !== 'undefined' && event.clipboardData?.items?.length) {
 
 								for (const item of event.clipboardData.items) {
 									if (item.kind === 'file' && item.type.startsWith('image/')) {
@@ -243,7 +252,7 @@ export function createEditorExtensions(deps: EditorExtensionDeps): Extensions {
 				return {
 					'Shift-Enter': () => this.editor.commands.setHardBreak(),
 					'Mod-Enter': () => {
-						if (contentHasChanged.value) {
+						if (contentHasChanged()) {
 							bubbleSave()
 						}
 						return true
@@ -254,11 +263,11 @@ export function createEditorExtensions(deps: EditorExtensionDeps): Extensions {
 
 		Placeholder.configure({
 			placeholder({editor}) {
-				if (!isEditing.value || editor.getText() !== '' && !editor.isFocused) {
+				if (!isEditing() || editor.getText() !== '' && !editor.isFocused) {
 					return ''
 				}
 
-				return toValue(placeholder) || t('input.editor.placeholder')
+				return placeholder() || t('input.editor.placeholder')
 			},
 		}),
 		Typography,

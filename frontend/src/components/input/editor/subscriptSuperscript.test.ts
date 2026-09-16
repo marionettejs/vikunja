@@ -1,19 +1,18 @@
 import {describe, it, expect, beforeEach} from 'vitest'
 import {createPinia, setActivePinia} from 'pinia'
-import {ref} from 'vue'
 import {Editor} from '@tiptap/core'
 
 import {createEditorExtensions, type EditorExtensionDeps} from './editorExtensions'
 
 const stubDeps: EditorExtensionDeps = {
 	t: key => key,
-	isEditing: ref(true),
+	isEditing: () => true,
 	isEditEnabled: () => true,
-	placeholder: '',
-	contentHasChanged: ref(false),
+	placeholder: () => '',
+	contentHasChanged: () => false,
 	bubbleSave: () => {},
 	getEditor: () => undefined,
-	uploadCallback: undefined,
+	uploadCallback: () => undefined,
 	uploadAndInsertFiles: () => {},
 }
 
