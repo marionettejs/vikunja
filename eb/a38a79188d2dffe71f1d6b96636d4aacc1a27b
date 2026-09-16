@@ -1,0 +1,25 @@
+frontend/src/helpers/avatarCache.ts
+  s_c8d5a0f84a3d1f::t_1a6bbf1cc0008a 15-21,56-60,62-70,73-74,87-88
+frontend/src/marionette/views/UserAvatarView.test.ts
+  s_c8d5a0f84a3d1f::t_e6a8f47b758c25 109-139
+frontend/src/marionette/views/UserAvatarView.ts
+  s_c8d5a0f84a3d1f::t_acd91802436f36 102-103,105-107
+frontend/src/models/user.test.ts
+  s_c8d5a0f84a3d1f::t_064b2b3ec43787 74-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eba38a79188d2dffe71f1d6b96636d4aacc1a27b",
+  "prompts": {},
+  "sessions": {
+    "s_c8d5a0f84a3d1f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4847e98-7e11-4a8e-868a-92dcfb02fe06",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
