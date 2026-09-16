@@ -1,9 +1,21 @@
 import type {ITask} from '@/modelTypes/ITask'
+import type {IRelationKind} from '@/types/IRelationKind'
+import type {IUser} from '@/modelTypes/IUser'
 
 import {colorFromHex} from '@/helpers/color/colorFromHex'
 import {SECONDS_A_DAY, SECONDS_A_HOUR, SECONDS_A_WEEK} from '@/constants/date'
 import {objectToSnakeCase} from '@/helpers/case'
 import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
+
+type NullableTaskField = 'created' | 'updated' | 'assignees' | 'attachments' | 'buckets' | 'comments' | 'labels' | 'reminders'
+
+// API null values are retained by native records; existing ITask callers remain valid.
+type SerializableTask = Partial<Omit<ITask, NullableTaskField | 'relatedTasks' | 'reactions'> & {
+	[K in NullableTaskField]: ITask[K] | null
+} & {
+	relatedTasks: Partial<Record<IRelationKind, SerializableTask[] | null>>
+	reactions: { [reaction: string]: IUser[] | null }
+}>
 
 /**
  * Tasks reaching processModel did not necessarily go through the TaskModel
@@ -31,7 +43,7 @@ function repeatAfterToSeconds(repeatAfter: ITask['repeatAfter'] | undefined): nu
 	}
 }
 
-export function serializeTask(updatedModel: ITask) {
+export function serializeTask(updatedModel: SerializableTask) {
 	const model = {
 		...updatedModel,
 		dueDate: toISOStringOrNull(updatedModel.dueDate),
@@ -42,6 +54,10 @@ export function serializeTask(updatedModel: ITask) {
 		created: toISOStringOrNull(updatedModel.created),
 		updated: toISOStringOrNull(updatedModel.updated),
 		reminderDates: null,
+		reminders: (updatedModel.reminders ?? []).filter(r => r !== null).map(r => ({
+			...r,
+			reminder: toISOStringOrNull(r.reminder),
+		})),
 	}
 
 	model.title = model.title?.trim()
@@ -49,33 +65,24 @@ export function serializeTask(updatedModel: ITask) {
 	// Ensure that projectId is an int
 	model.projectId = Number(model.projectId)
 
-	// remove all nulls, these would create empty reminders
-	model.reminders = (model.reminders ?? []).filter(r => r !== null)
-	// Make normal timestamps from js dates
-	if (model.reminders.length > 0) {
-		model.reminders.forEach(r => {
-			Object.assign(r, {reminder: toISOStringOrNull(r.reminder)})
-		})
-	}
-
 	model.repeatAfter = repeatAfterToSeconds(model.repeatAfter)
 
 	model.hexColor = colorFromHex(model.hexColor ?? '')
 
-	// Do the same for all related tasks. `model` is only a shallow copy, so this
-	// has to build a new object - assigning into relatedTasks would replace the
-	// related tasks of the task we were passed with their api representation.
-	model.relatedTasks = Object.fromEntries(
-		Object.entries<ITask[]>(model.relatedTasks ?? {})
-			.map(([relationKind, tasks]) => [relationKind, tasks.map(t => serializeTask(t))]),
+	const transformed = objectToSnakeCase({...model, relatedTasks: {}, reactions: {}})
+
+	// Serialize children after key conversion so their emoji reaction keys stay intact.
+	transformed.related_tasks = Object.fromEntries(
+		Object.entries(updatedModel.relatedTasks ?? {}).map(([kind, tasks]) => [
+			kind,
+			tasks === null ? null : tasks.map(task => serializeTask(task)),
+		]),
 	)
 
-	const transformed = objectToSnakeCase(model)
-
-	// We can't convert emojis to skane case, hence we add them back again
+	// We can't convert emojis to snake case, hence we add them back again.
 	transformed.reactions = {}
-	Object.keys(updatedModel.reactions || {}).forEach(reaction => {
-		transformed.reactions[reaction] = updatedModel.reactions[reaction].map(u => objectToSnakeCase(u))
+	Object.entries(updatedModel.reactions ?? {}).forEach(([reaction, users]) => {
+		transformed.reactions[reaction] = users === null ? null : users.map(u => objectToSnakeCase(u))
 	})
 
 	return transformed
