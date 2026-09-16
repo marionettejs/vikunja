@@ -1,0 +1,125 @@
+// The slash-command and emoji popups render outside the Vue tree (Marionette views mounted into the
+// top-layer container), so their styles cannot live in a scoped component block. The generic
+// .items / .emoji-items names are kept for the frozen E2E selectors and paired with a marker class
+// so the global rules cannot leak onto unrelated markup.
+
+.editor-suggestion-popup.items {
+  padding: 0.2rem;
+  position: relative;
+  border-radius: 0.5rem;
+  background: var(--white);
+  color: var(--grey-900);
+  overflow: hidden;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-md);
+
+  .item {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    inline-size: 100%;
+    text-align: start;
+    background: transparent;
+    border-radius: $radius;
+    border: 0;
+    padding: 0.2rem 0.4rem;
+    transition: background-color $transition;
+
+    &.is-selected,
+    &:hover {
+      background: var(--grey-100);
+      cursor: pointer;
+    }
+
+    > svg {
+      box-sizing: border-box;
+      inline-size: 2rem;
+      block-size: 2rem;
+      border: 1px solid var(--grey-300);
+      padding: .5rem;
+      margin-inline-end: .5rem;
+      border-radius: $radius;
+      color: var(--grey-700);
+    }
+  }
+
+  .description {
+    display: flex;
+    flex-direction: column;
+    font-size: .9rem;
+    color: var(--grey-800);
+
+    p:last-child {
+      font-size: .75rem;
+      color: var(--grey-500);
+    }
+  }
+}
+
+.editor-suggestion-popup.emoji-items {
+  padding: 0.2rem;
+  position: relative;
+  border-radius: 0.5rem;
+  background: var(--white);
+  color: var(--grey-900);
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-md);
+  min-inline-size: 240px;
+  max-block-size: 300px;
+  overflow-y: auto;
+
+  .emoji-item {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    inline-size: 100%;
+    text-align: start;
+    background: transparent;
+    border-radius: $radius;
+    border: 0;
+    padding: 0.4rem 0.6rem;
+    transition: background-color $transition;
+
+    &.is-selected,
+    &:hover {
+      background: var(--grey-100);
+      cursor: pointer;
+    }
+
+    &.no-results {
+      color: var(--grey-500);
+      cursor: default;
+    }
+  }
+
+  .emoji-glyph {
+    font-size: 1.4rem;
+    margin-inline-end: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .emoji-info {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    flex: 1;
+
+    p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .emoji-shortcode {
+    font-family: monospace;
+    font-weight: 500;
+    color: var(--grey-800);
+  }
+
+  .emoji-annotation {
+    font-size: 0.75rem;
+    color: var(--grey-500);
+  }
+}

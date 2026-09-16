@@ -1,18 +1,64 @@
 import type {Editor, Range} from '@tiptap/core'
-import {VueRenderer} from '@tiptap/vue-3'
+import {html} from 'lit-html'
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg.js'
+import {icon} from '@fortawesome/fontawesome-svg-core'
+import {
+	faCode,
+	faFont,
+	faHeader,
+	faImage,
+	faListCheck,
+	faListOl,
+	faListUl,
+	faQuoteRight,
+	faRulerHorizontal,
+} from '@fortawesome/free-solid-svg-icons'
 
-import CommandsList from './CommandsList.vue'
+import {SuggestionListView} from '@/marionette/views/SuggestionListView'
+import type {SuggestionListViewInstance} from '@/marionette/views/SuggestionListView'
 import {getPopupContainer} from './popupContainer'
 import {createSuggestionPopup, type SuggestionPopup} from './suggestionPopup'
 
+const COMMAND_ICON_SVG: Record<string, string> = {
+	'fa-code': icon(faCode).html[0],
+	'fa-font': icon(faFont).html[0],
+	'fa-header': icon(faHeader).html[0],
+	'fa-image': icon(faImage).html[0],
+	'fa-list-check': icon(faListCheck).html[0],
+	'fa-list-ol': icon(faListOl).html[0],
+	'fa-list-ul': icon(faListUl).html[0],
+	'fa-quote-right': icon(faQuoteRight).html[0],
+	'fa-ruler-horizontal': icon(faRulerHorizontal).html[0],
+}
+
 type TranslateFunction = (key: string) => string
+
+interface CommandItem {
+	title: string
+	description: string
+	icon: string
+	command: (params: {editor: Editor, range: Range}) => void
+}
 
 interface SuggestionProps {
 	editor: Editor
 	clientRect?: () => DOMRect
-	command: (item: {command: (params: {editor: Editor, range: Range}) => void}) => void
-	items: unknown[]
+	command: (item: CommandItem) => void
+	items: CommandItem[]
 	event?: KeyboardEvent
+}
+
+function commandEntries(items: CommandItem[]) {
+	return items.map(item => ({
+		key: item.title,
+		content: html`
+			${unsafeSVG(COMMAND_ICON_SVG[item.icon] ?? '')}
+			<div class="description">
+				<p>${item.title}</p>
+				<p>${item.description}</p>
+			</div>
+		`,
+	}))
 }
 
 export default function suggestionSetup(t: TranslateFunction) {
@@ -169,18 +215,27 @@ export default function suggestionSetup(t: TranslateFunction) {
 		},
 
 		render: () => {
-			let component: VueRenderer
+			let list: SuggestionListViewInstance | null = null
 			let popup: SuggestionPopup | null = null
+			let currentProps: SuggestionProps | null = null
 
 			return {
 				onStart: (props: SuggestionProps) => {
-					component = new VueRenderer(CommandsList, {
-						// using vue 2:
-						// parent: this,
-						// propsData: props,
-						props,
-						editor: props.editor,
+					currentProps = props
+
+					list = new SuggestionListView({
+						className: 'items editor-suggestion-popup',
+						itemClassName: 'item',
+						emptyLabel: 'No result',
+						entries: commandEntries(props.items),
+						onSelect: index => {
+							const item = currentProps?.items[index]
+							if (item) {
+								currentProps!.command(item)
+							}
+						},
 					})
+					list.render()
 
 					if (!props.clientRect) {
 						return
@@ -188,19 +243,24 @@ export default function suggestionSetup(t: TranslateFunction) {
 
 					popup = createSuggestionPopup(
 						getPopupContainer(props.editor),
-						component.element!,
+						list.el,
 						props.clientRect,
 						props.editor.view.dom,
 					)
 				},
 
 				onUpdate(props: SuggestionProps) {
-					component.updateProps(props)
+					currentProps = props
+					list?.setEntries(commandEntries(props.items))
 					popup?.reposition()
 				},
 
-				onKeyDown(props: SuggestionProps) {
-					if (props.event && props.event.key === 'Escape') {
+				onKeyDown(props: {event?: KeyboardEvent}) {
+					if (!props.event) {
+						return false
+					}
+
+					if (props.event.key === 'Escape') {
 						if (props.event.isComposing) {
 							return false
 						}
@@ -212,13 +272,15 @@ export default function suggestionSetup(t: TranslateFunction) {
 						return true
 					}
 
-					return component.ref?.onKeyDown(props)
+					return list?.onKeyDown(props.event) ?? false
 				},
 
 				onExit() {
 					popup?.destroy()
 					popup = null
-					component.destroy()
+					list?.destroy()
+					list = null
+					currentProps = null
 				},
 			}
 		},
