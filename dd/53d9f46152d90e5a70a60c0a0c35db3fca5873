@@ -1,0 +1,21 @@
+frontend/src/router/index.ts
+  s_e4fe7fd5d6a6e7::t_e968b51b931772 6,271-276
+frontend/tests/e2e/filters/filter-settings-edit-route.spec.ts
+  s_e4fe7fd5d6a6e7::t_81d78297c796e9 1-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dd53d9f46152d90e5a70a60c0a0c35db3fca5873",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
