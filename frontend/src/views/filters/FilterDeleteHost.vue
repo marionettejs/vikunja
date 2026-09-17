@@ -18,6 +18,7 @@ const {deleteFilter, filter, filterService} = useSavedFilter(() => props.project
 let activeModal: InstanceType<typeof ModalCardView> | null = null
 const isSubmitting = ref(false)
 let isMounted = true
+let deletionCompleted = false
 
 function t(key: string): string {
 	return i18n.global.t(key)
@@ -32,7 +33,7 @@ function destroyModal(): void {
 
 function updatePrimaryDisabled(): void {
 	activeModal?.setPrimaryDisabled(
-		isSubmitting.value || filterService.loading || filter.value.id <= 0,
+		deletionCompleted || isSubmitting.value || filterService.loading || filter.value.id <= 0,
 	)
 }
 
@@ -44,9 +45,9 @@ function renderModal(): void {
 		primaryLabel: t('misc.doit'),
 		cancelLabel: t('misc.cancel'),
 		closeLabel: t('misc.closeDialog'),
-		primaryDisabled: isSubmitting.value || filterService.loading || filter.value.id <= 0,
+		primaryDisabled: deletionCompleted || isSubmitting.value || filterService.loading || filter.value.id <= 0,
 		onPrimary: async () => {
-			if (isSubmitting.value || filterService.loading || filter.value.id <= 0) {
+			if (deletionCompleted || isSubmitting.value || filterService.loading || filter.value.id <= 0) {
 				return
 			}
 
@@ -55,7 +56,14 @@ function renderModal(): void {
 			activeModal?.setDismissible(false)
 
 			try {
-				await deleteFilter()
+				const navigationFailure = await deleteFilter()
+				deletionCompleted = true
+				if (navigationFailure && isMounted) {
+					isSubmitting.value = false
+					error(navigationFailure)
+					activeModal?.setDismissible(true)
+					updatePrimaryDisabled()
+				}
 			} catch (e) {
 				isSubmitting.value = false
 				if (!isMounted) {

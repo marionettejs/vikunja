@@ -123,6 +123,27 @@ describe('FilterDeleteHost', () => {
 		expect(modal.setPrimaryDisabled).toHaveBeenLastCalledWith(false)
 	})
 
+	it('reports a navigation failure without allowing the deleted filter to be deleted again', async () => {
+		const failure = new Error('navigation aborted')
+		mockDeleteFilter.mockResolvedValueOnce(failure)
+		wrapper = mount(FilterDeleteHost, {props: {projectId: -2}})
+		await flushPromises()
+
+		const modal = mockModalInstances[0]
+		const state = mockSavedFilterStates[0]
+		state.filter.value = {id: 1}
+		state.filterService.loading = false
+		await flushPromises()
+
+		await modal.options.onPrimary()
+		await modal.options.onPrimary()
+
+		expect(mockDeleteFilter).toHaveBeenCalledTimes(1)
+		expect(mockError).toHaveBeenCalledWith(failure)
+		expect(modal.setDismissible).toHaveBeenLastCalledWith(true)
+		expect(modal.setPrimaryDisabled).toHaveBeenLastCalledWith(true)
+	})
+
 	it('rebuilds translated labels when the locale changes', async () => {
 		wrapper = mount(FilterDeleteHost, {props: {projectId: -2}})
 		await flushPromises()
