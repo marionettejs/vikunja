@@ -1,0 +1,23 @@
+frontend/src/router/index.ts
+  s_e4fe7fd5d6a6e7::t_2be8137bbfdd95 343
+frontend/src/views/filters/FilterDeleteHost.vue
+  s_e4fe7fd5d6a6e7::t_9c821a28430428 2-6,11,14,16-70,72-75
+frontend/tests/e2e/filters/saved-filter-delete.spec.ts
+  s_e4fe7fd5d6a6e7::t_ca62a5b7fadc51 1-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "74c8b358a200a0f736810c392b97dffec9bc775c",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "unknown"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
