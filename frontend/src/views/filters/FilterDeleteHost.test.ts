@@ -49,6 +49,7 @@ vi.mock('@/marionette/views/ModalCardView', () => ({
 		options: any
 		setPrimaryDisabled = vi.fn()
 		setDismissible = vi.fn()
+		render = vi.fn()
 		showChildView = vi.fn()
 		destroy = vi.fn()
 
@@ -89,6 +90,10 @@ describe('FilterDeleteHost', () => {
 		const modal = mockModalInstances[0]
 		const state = mockSavedFilterStates[0]
 		expect(modal.options.primaryDisabled).toBe(true)
+		expect(modal.render).toHaveBeenCalledTimes(1)
+		expect(modal.render.mock.invocationCallOrder[0]).toBeLessThan(
+			modal.showChildView.mock.invocationCallOrder[0],
+		)
 
 		state.filter.value = {id: 1}
 		state.filterService.loading = false

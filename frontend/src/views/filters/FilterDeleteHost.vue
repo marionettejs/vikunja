@@ -75,6 +75,7 @@ function renderModal(): void {
 	if (isSubmitting.value) {
 		modal.setDismissible(false)
 	}
+	modal.render()
 	modal.showChildView('body', new ConfirmTextView({
 		lines: [t('filters.delete.text')],
 	}))
