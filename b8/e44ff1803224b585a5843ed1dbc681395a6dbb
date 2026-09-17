@@ -1,0 +1,27 @@
+frontend/tests/e2e/filters/saved-filter-delete.spec.ts
+  s_e4fe7fd5d6a6e7::t_ca62a5b7fadc51 1-28,30-33,36-37,47-71,73-76,78-85
+  s_e4fe7fd5d6a6e7::t_7d3bcecf09af2e 29,34,72,77
+  s_e4fe7fd5d6a6e7::t_b100d144f398fb 38-42,44
+  s_e4fe7fd5d6a6e7::t_5da3f76007ebca 35,43,45-46
+frontend/src/views/filters/FilterDeleteHost.vue
+  s_e4fe7fd5d6a6e7::t_b058c8f282346f 47,49
+  s_e4fe7fd5d6a6e7::t_9c821a28430428 2-6,11,14,16-46,48,50-70,72-75
+frontend/src/router/index.ts
+  s_e4fe7fd5d6a6e7::t_f98fa73ee14e8f 343
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b8e44ff1803224b585a5843ed1dbc681395a6dbb",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
