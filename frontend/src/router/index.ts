@@ -340,7 +340,7 @@ const router = createRouter({
 		{
 			path: '/projects/:projectId/settings/delete',
 			name: 'filter.settings.delete',
-			component: () => import('@/views/filters/FilterDelete.vue'),
+			component: () => import('@/views/filters/FilterDeleteHost.vue'),
 			meta: {
 				showAsModal: true,
 			},
