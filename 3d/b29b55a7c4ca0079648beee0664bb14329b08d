@@ -1,0 +1,21 @@
+frontend/src/views/filters/FilterDeleteHost.vue
+  s_267e7a791356aa::t_32392d34e7aad8 78
+frontend/src/views/filters/FilterDeleteHost.test.ts
+  s_267e7a791356aa::t_32392d34e7aad8 52,93-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3db29b55a7c4ca0079648beee0664bb14329b08d",
+  "prompts": {},
+  "sessions": {
+    "s_267e7a791356aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08689-8981-7cf3-a3c5-0ee0a88b599c",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
