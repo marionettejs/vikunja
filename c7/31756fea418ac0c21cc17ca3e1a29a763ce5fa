@@ -1,0 +1,23 @@
+frontend/package.json
+  s_e4fe7fd5d6a6e7::t_a5c464e234f7a1 62-63,100
+frontend/pnpm-workspace.yaml
+  s_e4fe7fd5d6a6e7::t_d662adfe5f8618 11-15
+frontend/pnpm-lock.yaml
+  s_e4fe7fd5d6a6e7::t_53141458433732 50-51,53-54,164-165,1844-1845,1853,1869-1870,1873-1874,1877-1878,5106-5107,8971,8973,8977,8979,8981,8983,8985,12302,12304-12305
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c731756fea418ac0c21cc17ca3e1a29a763ce5fa",
+  "prompts": {},
+  "sessions": {
+    "s_e4fe7fd5d6a6e7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3da1009a-cc91-45bd-af25-dc358b23a8d4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
