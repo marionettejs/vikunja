@@ -203,6 +203,14 @@ describe('FilterNewFormView', () => {
 			view.setTitleValid(true)
 			expect(view._titleInput?.disabled).toBe(true)
 		})
+
+		it('uses live validity after construction-time invalid state', () => {
+			const view = createView({titleValid: false, loading: false})
+			view.setTitleValid(true)
+			view.setLoading(true)
+			view.setLoading(false)
+			expect(view._titleInput?.disabled).toBe(false)
+		})
 	})
 
 	describe('description editor toolbar and bubble menu DOM present', () => {

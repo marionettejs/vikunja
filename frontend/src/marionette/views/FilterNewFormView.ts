@@ -47,6 +47,8 @@ interface FilterNewFormViewContext extends ViewInstance {
 	_queryInputView: FilterInputViewInstance | null
 	_editorControls: EditorControls | null
 	_editorGeneration: number
+	_loading: boolean
+	_titleValid: boolean
 	_options(): FilterNewFormViewOptions
 	_initExtensions(): Extensions
 	_createDescriptionEditor(): void
@@ -58,6 +60,7 @@ interface FilterNewFormViewContext extends ViewInstance {
 	_setQuery(value: string): void
 	setLoading(loading: boolean): void
 	setTitleValid(valid: boolean): void
+	_applyDisabled(): void
 	updateLabels(labels: Label[], pending: boolean): void
 }
 
@@ -76,6 +79,8 @@ export const FilterNewFormView = View.extend({
 	_queryInputView: null as FilterInputViewInstance | null,
 	_editorControls: null as EditorControls | null,
 	_editorGeneration: 0,
+	_loading: false,
+	_titleValid: true,
 
 	regions: {
 		toolbar: '[data-region="toolbar"]',
@@ -138,6 +143,8 @@ export const FilterNewFormView = View.extend({
 	},
 
 	onRender(this: FilterNewFormViewContext) {
+		this._loading = this._options().loading
+		this._titleValid = this._options().titleValid
 		this._titleInput = this.el.querySelector('#Title')
 		if (this._titleInput) {
 			this._titleInput.addEventListener('focusout', this._options().onTitleValidate)
@@ -267,20 +274,24 @@ export const FilterNewFormView = View.extend({
 	},
 
 	setLoading(this: FilterNewFormViewContext, loading: boolean): void {
-		const opts = this._options()
-		const disabled = loading || !opts.titleValid
-		if (this._titleInput) {
-			this._titleInput.disabled = disabled
-		}
+		this._loading = loading
+		this._applyDisabled()
 		this._descriptionEditorView?.setEditable(!loading)
 		this._queryInputView?.setEditable(!loading)
 	},
 
+	_applyDisabled(this: FilterNewFormViewContext): void {
+		if (this._titleInput) {
+			this._titleInput.disabled = this._loading
+		}
+	},
+
 	setTitleValid(this: FilterNewFormViewContext, valid: boolean): void {
+		this._titleValid = valid
 		if (this._titleInput) {
 			this._titleInput.setAttribute('aria-invalid', String(!valid))
 			this._titleInput.classList.toggle('is-danger', !valid)
-			this._titleInput.disabled = this._options().loading
+			this._applyDisabled()
 		}
 		const helpEl = this.el.querySelector('.help.is-danger')
 		if (helpEl) {
