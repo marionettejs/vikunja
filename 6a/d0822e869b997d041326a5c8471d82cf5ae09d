@@ -1,0 +1,16 @@
+frontend/src/marionette/views/FilterNewFormView.test.ts
+  h_0f06c286dda36f 206-213
+frontend/src/marionette/views/FilterNewFormView.ts
+  h_0f06c286dda36f 50-51,63,82-83,146-147,277-278,283-288,290,294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6ad0822e869b997d041326a5c8471d82cf5ae09d",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
