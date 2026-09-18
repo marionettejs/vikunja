@@ -25,6 +25,7 @@ export interface FilterDatepickerViewOptions {
 interface FilterDatepickerViewContext extends ViewInstance {
 	_date: string | Date | null
 	_flatpickr: flatpickr.Instance | null
+	_flatpickrEl: HTMLElement | null
 	_helpOpen: boolean
 	_helpModal: ModalCardViewInstance | null
 	_customRangeActive: boolean
@@ -138,7 +139,7 @@ const PanelView = View.extend({
 						</div>
 					</div>
 				</label>
-				<div class="flatpickr-wrapper" data-role="flatpickr-wrapper"></div>
+					<input data-input type="text" tabindex="-1" aria-hidden="true">
 				<p>${data.t('input.datemathHelp.canuse')}</p>
 				<button
 					class="button has-text-primary"
@@ -199,6 +200,7 @@ export const FilterDatepickerView = View.extend({
 
 	_date: null as string | Date | null,
 	_flatpickr: null as flatpickr.Instance | null,
+	_flatpickrEl: null as HTMLElement | null,
 	_helpOpen: false,
 	_helpModal: null as ModalCardViewInstance | null,
 	_customRangeActive: false,
@@ -261,15 +263,19 @@ export const FilterDatepickerView = View.extend({
 	},
 
 	_initFlatpickr(this: FilterDatepickerViewContext) {
-		if (this._flatpickr) {
+		// Mirror vue-flatpickr-component: in wrap mode flatpickr attaches to the
+		// container holding [data-input] and binds [data-toggle] inside it.
+		const container = this._panelView?.el.querySelector('.flatpickr-container') as HTMLElement | null
+		if (!container) {
 			return
 		}
+		if (this._flatpickr && this._flatpickrEl === container) {
+			return
+		}
+		this._destroyFlatpickr()
+		this._flatpickrEl = container
 
 		const opts = this._options()
-		const wrapper = this._panelView?.el.querySelector('[data-role="flatpickr-wrapper"]') as HTMLElement | null
-		if (!wrapper) {
-			return
-		}
 
 		const locale = {...opts.flatpickrLocale} as Record<string, unknown>
 		if (typeof opts.weekStart === 'number') {
@@ -294,7 +300,7 @@ export const FilterDatepickerView = View.extend({
 			},
 		}
 
-		this._flatpickr = flatpickr(wrapper, config)
+		this._flatpickr = flatpickr(container, config)
 
 		this._updateFlatpickrDate()
 	},
@@ -304,6 +310,7 @@ export const FilterDatepickerView = View.extend({
 			this._flatpickr.destroy()
 			this._flatpickr = null
 		}
+		this._flatpickrEl = null
 	},
 
 	_updateFlatpickrDate(this: FilterDatepickerViewContext) {

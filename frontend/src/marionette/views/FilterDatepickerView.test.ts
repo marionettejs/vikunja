@@ -421,7 +421,7 @@ describe('FilterDatepickerView', () => {
 			expect(panel.el.classList.contains('datepicker-with-range')).toBe(true)
 			expect(panel.el.querySelector('.selections')).not.toBeNull()
 			expect(panel.el.querySelector('[data-role="date-input"]')).not.toBeNull()
-			expect(panel.el.querySelector('[data-role="flatpickr-wrapper"]')).not.toBeNull()
+			expect(panel.el.querySelector('input[data-input]')).not.toBeNull()
 		})
 
 		it('delegates set-date clicks to parent', () => {
