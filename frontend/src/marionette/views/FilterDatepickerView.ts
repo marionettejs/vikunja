@@ -50,6 +50,11 @@ interface FilterDatepickerViewContext extends ViewInstance {
 	setOpen(open: boolean): void
 }
 
+export type FilterDatepickerViewInstance = ViewInstance & {
+	setModelValue(value: string | Date | null): void
+	setOpen(open: boolean): void
+}
+
 export interface PanelViewOptions {
 	t: (key: string) => string
 	dateValue: string
