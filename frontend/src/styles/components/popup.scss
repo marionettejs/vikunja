@@ -1,0 +1,16 @@
+.popup {
+	transition: opacity $transition;
+	opacity: 0;
+	visibility: hidden;
+	block-size: 0;
+	overflow: hidden;
+	position: absolute;
+	inset-block-start: 1rem;
+	z-index: 100;
+
+	&.is-open {
+		opacity: 1;
+		visibility: visible;
+		block-size: auto;
+	}
+}
