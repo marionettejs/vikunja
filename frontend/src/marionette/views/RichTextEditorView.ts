@@ -1,4 +1,4 @@
-import {html} from 'lit-html'
+import {html, nothing} from 'lit-html'
 import type {ViewInstance} from 'marionette'
 import {Editor} from '@tiptap/core'
 import type {Extensions} from '@tiptap/core'
@@ -10,12 +10,14 @@ export interface RichTextEditorViewOptions {
 	editable: boolean
 	editorId: string
 	ariaLabel: string
+	role?: string
 	onChange: (html: string) => void
 }
 
 interface TemplateData {
 	editorId: string
 	ariaLabel: string
+	role?: string
 }
 
 export interface RichTextEditorViewInstance extends ViewInstance {
@@ -35,6 +37,7 @@ export const RichTextEditorView = View.extend({
 				class='rich-text-editor__content'
 				id=${data.editorId}
 				aria-label=${data.ariaLabel}
+				role=${data.role ?? nothing}
 			></div>
 		`
 	},
@@ -44,6 +47,7 @@ export const RichTextEditorView = View.extend({
 		return {
 			editorId: opts.editorId,
 			ariaLabel: opts.ariaLabel,
+			role: opts.role,
 		}
 	},
 
