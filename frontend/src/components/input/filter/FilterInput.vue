@@ -106,6 +106,7 @@ const editor = useEditor({
 			get projectId() {
 				return props.projectId
 			},
+			emptyLabel: t('filters.noResults'),
 		}),
 		Extension.create({
 			name: 'enterHandler',

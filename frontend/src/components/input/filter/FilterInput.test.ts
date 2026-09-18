@@ -70,7 +70,6 @@ vi.mock('@tiptap/vue-3', async () => {
 			editorState.options = options
 			return shallowRef(editor)
 		},
-		VueRenderer: class {},
 	}
 })
 
