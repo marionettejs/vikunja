@@ -101,6 +101,7 @@ export const FilterNewFormView = View.extend({
 	template(data: TemplateData) {
 		const {t, loading, titleValid, initialTitle, LABEL_TITLE, LABEL_DESCRIPTION, LABEL_QUERY, PLACEHOLDER_TITLE, ERROR_TITLE_REQUIRED} = data
 		return html`
+			<p>${t('filters.create.description')}</p>
 			<div class="field">
 				<label class="label" for="Title">${t(LABEL_TITLE)}</label>
 				<div class="control">

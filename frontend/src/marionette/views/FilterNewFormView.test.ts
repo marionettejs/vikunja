@@ -79,6 +79,7 @@ describe('FilterNewFormView', () => {
 				'filters.attributes.titlePlaceholder': 'Enter title...',
 				'filters.attributes.descriptionPlaceholder': 'Enter description...',
 				'filters.create.titleRequired': 'Title is required',
+				'filters.create.description': 'Create a new filter to organize your tasks',
 				'input.editor.label': 'Description editor',
 			}
 			return translations[key] ?? key
@@ -143,6 +144,11 @@ describe('FilterNewFormView', () => {
 		it('renders title with initial value', () => {
 			const view = createView({initialTitle: 'My Filter'})
 			expect(view._titleInput?.value).toBe('My Filter')
+		})
+
+		it('renders the intro description text', () => {
+			const view = createView()
+			expect(view.el.textContent).toContain('Create a new filter to organize your tasks')
 		})
 
 		it('initializes description editor and query input child views', () => {
