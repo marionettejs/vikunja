@@ -1,0 +1,16 @@
+frontend/src/marionette/views/PopupView.test.ts
+  h_0f06c286dda36f 217,220-232
+frontend/src/marionette/views/PopupView.ts
+  h_0f06c286dda36f 177
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1310062957fa1854a7b26427a5f8cfe6bb3d85ac",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
