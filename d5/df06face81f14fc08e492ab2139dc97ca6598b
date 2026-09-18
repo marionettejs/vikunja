@@ -1,0 +1,20 @@
+frontend/src/marionette/views/PopupView.test.ts
+  h_0f06c286dda36f 1-323
+frontend/src/marionette/views/PopupView.ts
+  h_0f06c286dda36f 1-194
+frontend/src/styles/components/_index.scss
+  h_0f06c286dda36f 7
+frontend/src/styles/components/popup.scss
+  h_0f06c286dda36f 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d5df06face81f14fc08e492ab2139dc97ca6598b",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
