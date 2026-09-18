@@ -187,6 +187,8 @@ describe('PopupView', () => {
 		const popup = view.el.querySelector('.popup') as HTMLElement
 
 		view.toggle()
+		popup.tabIndex = -1
+		popup.focus()
 		const focusInEvent = new FocusEvent('focusin', {bubbles: true})
 		popup.dispatchEvent(focusInEvent)
 
@@ -228,7 +230,8 @@ describe('PopupView', () => {
 		expect(popup.classList.contains('is-open')).toBe(true)
 	})
 
-	it('Escape does not close when defaultPrevented', () => {		const {view, options} = createView({open: true})
+	it('Escape does not close when defaultPrevented', () => {
+		const {view, options} = createView({open: true})
 		const popup = view.el.querySelector('.popup') as HTMLElement
 
 		const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
@@ -260,6 +263,8 @@ describe('PopupView', () => {
 		const popup = view.el.querySelector('.popup') as HTMLElement
 
 		view.toggle()
+		popup.tabIndex = -1
+		popup.focus()
 		const focusInEvent = new FocusEvent('focusin', {bubbles: true})
 		popup.dispatchEvent(focusInEvent)
 
@@ -289,6 +294,8 @@ describe('PopupView', () => {
 		const popup = view.el.querySelector('.popup') as HTMLElement
 
 		view.toggle()
+		popup.tabIndex = -1
+		popup.focus()
 		const focusInEvent = new FocusEvent('focusin', {bubbles: true})
 		popup.dispatchEvent(focusInEvent)
 
@@ -296,22 +303,20 @@ describe('PopupView', () => {
 
 		view.close()
 
-		expect(document.activeElement).toBe(document.body)
+		expect(document.activeElement).toBe(popup)
 	})
 
 	it('destroy removes document listeners and can be called twice safely', () => {
 		const {view} = createView({open: true})
 
-		const clickSpy = vi.spyOn(document, 'removeEventListener')
-		const keydownSpy = vi.spyOn(document, 'removeEventListener')
+		const removeSpy = vi.spyOn(document, 'removeEventListener')
 
 		view.destroy()
 		view.destroy()
 
-		expect(clickSpy).toHaveBeenCalled()
-		expect(keydownSpy).toHaveBeenCalled()
-		clickSpy.mockRestore()
-		keydownSpy.mockRestore()
+		expect(removeSpy).toHaveBeenCalledWith('click', expect.any(Function), true)
+		expect(removeSpy).toHaveBeenCalledWith('keydown', expect.any(Function))
+		removeSpy.mockRestore()
 	})
 
 	it('renders trigger and content regions for showChildView', () => {

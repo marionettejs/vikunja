@@ -99,6 +99,8 @@ export const PopupView = View.extend({
 		this._notifyOpenChange()
 		if (!wasOpen) {
 			this._lastFocused = document.activeElement as HTMLElement | null
+		} else {
+			this._restoreFocus()
 		}
 		this._applyOpenState()
 		return this._open
