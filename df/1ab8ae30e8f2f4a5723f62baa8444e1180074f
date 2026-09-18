@@ -1,0 +1,28 @@
+frontend/src/marionette/views/FilterInputView.ts
+  h_0f06c286dda36f 17,51,354-365
+frontend/src/marionette/views/FilterNewFormView.test.ts
+  h_0f06c286dda36f 1-304
+frontend/src/marionette/views/FilterNewFormView.ts
+  h_0f06c286dda36f 1-309
+frontend/src/marionette/views/ModalCardView.test.ts
+  h_0f06c286dda36f 87-99
+frontend/src/marionette/views/ModalCardView.ts
+  h_0f06c286dda36f 1,15-16,45,56-57,72-73
+frontend/src/router/index.ts
+  h_0f06c286dda36f 420
+frontend/src/views/filters/FilterNewHost.test.ts
+  h_0f06c286dda36f 1-287
+frontend/src/views/filters/FilterNewHost.vue
+  h_0f06c286dda36f 1-178
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "df1ab8ae30e8f2f4a5723f62baa8444e1180074f",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
