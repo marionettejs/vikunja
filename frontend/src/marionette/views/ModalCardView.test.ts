@@ -84,6 +84,19 @@ describe('ModalCardView', () => {
 		expect(primaryBtn?.textContent?.trim()).toBe('Accept Me')
 	})
 
+	it('omits the cancel button when hideCancel is true', () => {
+		const {view} = createView({hideCancel: true})
+		expect(view.el.querySelector('.card-footer .button[data-role="cancel"]')).toBeNull()
+		expect(view.el.querySelector('.card-footer .button[data-role="primary"]')).not.toBeNull()
+	})
+
+	it('appends primaryButtonClass to the primary button', () => {
+		const {view} = createView({primaryButtonClass: 'is-primary is-fullwidth'})
+		const primaryBtn = view.el.querySelector('.card-footer .button[data-role="primary"]')
+		expect(primaryBtn?.classList.contains('is-primary')).toBe(true)
+		expect(primaryBtn?.classList.contains('is-fullwidth')).toBe(true)
+	})
+
 	it('attaches the dialog to document.body and opens it as a modal', () => {
 		const showModalSpy = vi.spyOn(HTMLDialogElement.prototype, 'showModal')
 		const {view} = createView()

@@ -14,8 +14,7 @@ import type {Label} from '@/client/generated'
 import {transformFilterStringForApi, transformFilterStringFromApi} from '@/helpers/filters'
 import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
 
-export interface FilterInputViewOptions {
-	projectId?: number
+export interface FilterInputViewOptions {	projectId?: number
 	modelValue?: string
 	onUpdate: (value: string) => void
 	t: (key: string) => string
@@ -49,6 +48,7 @@ interface FilterInputViewContext extends ViewInstance {
 	setModelValue(value: string | undefined): void
 	updateLabels(labels: Label[], pending: boolean): void
 	_updateDateInQuery(newDate: string | Date | null): void
+	setEditable(editable: boolean): void
 	focus(): void
 }
 
@@ -351,4 +351,15 @@ export const FilterInputView = View.extend({
 	focus(this: FilterInputViewContext): void {
 		this._editorView?.getEditor()?.commands.focus()
 	},
+
+	setEditable(this: FilterInputViewContext, editable: boolean): void {
+		this._editorView?.setEditable(editable)
+	},
 }) as new (options: FilterInputViewOptions) => FilterInputViewContext
+
+export type FilterInputViewInstance = ViewInstance & {
+	setModelValue(value: string | undefined): void
+	updateLabels(labels: Label[], pending: boolean): void
+	setEditable(editable: boolean): void
+	focus(): void
+}
