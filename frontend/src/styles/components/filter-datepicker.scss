@@ -1,0 +1,97 @@
+.mn-filter-datepicker {
+	position: relative;
+}
+
+.datepicker-with-range {
+	display: flex;
+	inline-size: 100%;
+	block-size: 100%;
+	position: absolute;
+	background-color: var(--white);
+	border: 1px solid var(--grey-200);
+	border-radius: $radius;
+	box-shadow: $shadow;
+	margin-block-start: 1rem;
+	z-index: 10;
+	overflow: hidden;
+
+	&.is-open {
+		inline-size: 500px;
+		block-size: 320px;
+	}
+}
+
+.selections {
+	inline-size: 30%;
+	display: flex;
+	flex-direction: column;
+	padding-block-start: .5rem;
+	overflow-y: scroll;
+
+	button {
+		display: block;
+		inline-size: 100%;
+		text-align: start;
+		padding: .5rem 1rem;
+		transition: $transition;
+		font-size: .9rem;
+		color: var(--text);
+		background: transparent;
+		border: 0;
+		cursor: pointer;
+
+		&.is-active {
+			color: var(--primary);
+		}
+
+		&:hover,
+		&.is-active {
+			background-color: var(--grey-100);
+		}
+	}
+}
+
+.flatpickr-container {
+	inline-size: 70%;
+	border-inline-start: 1px solid var(--grey-200);
+	padding: 1rem;
+	font-size: .9rem;
+
+	:deep(input.form-control.input) {
+		block-size: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.field .control .button {
+		border: 1px solid var(--input-border-color);
+		block-size: 2.25rem;
+
+		&:hover {
+			border: 1px solid var(--input-hover-border-color);
+		}
+	}
+
+	.label,
+	.input,
+	.button {
+		font-size: .9rem;
+	}
+}
+
+:deep(.flatpickr-calendar) {
+	margin: 0 auto 8px;
+	box-shadow: none;
+}
+
+.how-it-works-modal {
+	font-size: 1rem;
+}
+
+.how-it-works-modal p {
+	display: inline-block !important;
+}
+
+.how-it-works-modal .button {
+	display: inline;
+}
