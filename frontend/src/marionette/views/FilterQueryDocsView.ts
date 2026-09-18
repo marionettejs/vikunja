@@ -66,6 +66,7 @@ export const FilterQueryDocsView = View.extend({
 
 		return html`
 			<button
+				type="button"
 				class="base-button base-button--type-button has-text-primary filter-docs-toggle"
 			>
 				${t('filters.query.help.link')}

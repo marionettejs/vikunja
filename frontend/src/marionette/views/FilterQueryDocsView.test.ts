@@ -30,6 +30,8 @@ describe('FilterQueryDocsView', () => {
 		const toggle = view.el.querySelector<HTMLButtonElement>('.filter-docs-toggle')
 		expect(toggle).not.toBeNull()
 		expect(toggle?.textContent?.trim()).toBe('filters.query.help.link')
+		// The docs may live inside a form (FilterEdit); the toggle must not submit it.
+		expect(toggle?.getAttribute('type')).toBe('button')
 	})
 
 	it('click toggles open then closed', () => {
