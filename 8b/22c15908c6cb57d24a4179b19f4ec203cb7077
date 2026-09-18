@@ -1,0 +1,20 @@
+frontend/src/marionette/views/FilterDatepickerView.test.ts
+  h_0f06c286dda36f 1-443
+frontend/src/marionette/views/FilterDatepickerView.ts
+  h_0f06c286dda36f 1-512
+frontend/src/styles/components/_index.scss
+  h_0f06c286dda36f 8
+frontend/src/styles/components/filter-datepicker.scss
+  h_0f06c286dda36f 1-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "8b22c15908c6cb57d24a4179b19f4ec203cb7077",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
