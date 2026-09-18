@@ -174,7 +174,7 @@ export const PopupView = View.extend({
 	},
 
 	_handleEscape(this: PopupViewContext, event: KeyboardEvent) {
-		if (!this._open || event.defaultPrevented) {
+		if (event.key !== 'Escape' || !this._open || event.defaultPrevented) {
 			return
 		}
 

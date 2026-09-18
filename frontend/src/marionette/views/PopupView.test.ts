@@ -214,8 +214,21 @@ describe('PopupView', () => {
 		expect(options2.onOpenChange).toHaveBeenCalledWith(false)
 	})
 
-	it('Escape does not close when defaultPrevented', () => {
+	it('non-Escape keys neither close nor preventDefault', () => {
 		const {view, options} = createView({open: true})
+		const popup = view.el.querySelector('.popup') as HTMLElement
+		const input = document.createElement('input')
+		popup.appendChild(input)
+
+		const keyEvent = new KeyboardEvent('keydown', {key: 'a', bubbles: true, cancelable: true})
+		input.dispatchEvent(keyEvent)
+
+		expect(options.onOpenChange).not.toHaveBeenCalled()
+		expect(keyEvent.defaultPrevented).toBe(false)
+		expect(popup.classList.contains('is-open')).toBe(true)
+	})
+
+	it('Escape does not close when defaultPrevented', () => {		const {view, options} = createView({open: true})
 		const popup = view.el.querySelector('.popup') as HTMLElement
 
 		const escapeEvent = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
