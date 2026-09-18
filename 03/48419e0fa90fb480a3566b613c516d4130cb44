@@ -1,0 +1,24 @@
+frontend/src/marionette/views/FilterDatepickerView.ts
+  h_0f06c286dda36f 53-57
+frontend/src/marionette/views/FilterInputView.test.ts
+  h_0f06c286dda36f 1-462
+frontend/src/marionette/views/FilterInputView.ts
+  h_0f06c286dda36f 1-354
+frontend/src/marionette/views/RichTextEditorView.ts
+  h_0f06c286dda36f 1,13,20,40,50
+frontend/src/styles/components/_index.scss
+  h_0f06c286dda36f 9
+frontend/src/styles/components/filter-input.scss
+  h_0f06c286dda36f 1-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0348419e0fa90fb480a3566b613c516d4130cb44",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
