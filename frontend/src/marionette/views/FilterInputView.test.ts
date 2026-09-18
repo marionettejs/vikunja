@@ -235,11 +235,10 @@ describe('FilterInputView', () => {
 			const view = createView({modelValue: 'labels = bug'})
 			const editor = getEditor(view)
 
+			editor?.commands.setTextSelection(5)
 			view.setModelValue('labels = bug, feature')
 
-			const newPos = editor?.state.selection.from ?? 0
-			const docSize = editor?.state.doc.content.size ?? 0
-			expect(newPos).toBeLessThanOrEqual(docSize)
+			expect(editor?.state.selection.from).toBe(5)
 		})
 
 		it('skips external update that echoes our own emit (lastEmittedValue guard)', () => {
@@ -394,12 +393,17 @@ describe('FilterInputView', () => {
 		it('uses JSON setContent without emitUpdate', () => {
 			const view = createView({modelValue: 'dueDate = 2024-01-15'})
 			const editor = getEditor(view)
+			const onUpdate = vi.mocked((view.options as FilterInputViewOptions).onUpdate)
+			onUpdate.mockClear()
 
 			view._currentOldDatepickerValue = '2024-01-15'
 			view._updateDateInQuery('2024-02-20')
 
-			const doc = editor?.state.doc
-			expect(doc?.type.name).toBe('doc')
+			// With emitUpdate:false the internal setContent triggers no update;
+			// the single emit carries the processed query text.
+			expect(onUpdate).toHaveBeenCalledTimes(1)
+			expect(onUpdate).toHaveBeenCalledWith('due_date = 2024-02-20')
+			expect(editor?.getText()).toBe('dueDate = 2024-02-20')
 		})
 	})
 
