@@ -1,0 +1,20 @@
+frontend/src/components/input/filter/FilterAutocomplete.marionette.test.ts
+  h_0f06c286dda36f 42
+frontend/src/components/input/filter/FilterAutocomplete.ts
+  h_0f06c286dda36f 157,235,424,433
+frontend/src/styles/components/_index.scss
+  h_0f06c286dda36f 6
+frontend/src/styles/components/filter-autocomplete.scss
+  h_0f06c286dda36f 1-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b08215b6ae6ab10b3cc2e0f0ba908252a7608d63",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
