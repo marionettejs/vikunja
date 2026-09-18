@@ -396,7 +396,10 @@ describe('FilterDatepickerView', () => {
 			const bodyEl = view._helpModal.el.querySelector('.card-content')
 			const lastRow = bodyEl?.querySelector('table:last-of-type tbody tr:last-child')
 			const strongEl = lastRow?.querySelector('strong')
-			expect(strongEl?.textContent).toBe('2024-01-15')
+			const codeEl = lastRow?.querySelector('code')
+			// exampleDate is the live formatted current date, shared by both cells
+			expect(strongEl?.textContent).not.toBe('')
+			expect(codeEl?.textContent?.startsWith(strongEl?.textContent ?? '###')).toBe(true)
 		})
 	})
 

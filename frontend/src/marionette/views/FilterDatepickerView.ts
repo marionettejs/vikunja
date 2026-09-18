@@ -6,6 +6,7 @@ import {ModalCardView, type ModalCardViewOptions} from './ModalCardView'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import {DATE_VALUES} from '@/components/date/dateRanges'
+import {formatDateShort} from '@/helpers/time/formatDate'
 import {parseDateOrString} from '@/helpers/time/parseDateOrString'
 import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
 
@@ -413,7 +414,7 @@ export const FilterDatepickerView = View.extend({
 		const expressionStr = t('input.datemathHelp.expression')
 		const similarStr = t('input.datemathHelp.similar')
 		const datePlusMonthStr = t('input.datemathHelp.examples.datePlusMonth')
-		const exampleDate = t('input.datemathHelp.examples.exampleDate')
+		const exampleDate = formatDateShort(new Date())
 
 		const exprParts = expressionStr.split('{0}').map((part, i) => {
 			if (i === 0) return part
