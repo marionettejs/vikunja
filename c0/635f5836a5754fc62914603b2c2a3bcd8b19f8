@@ -1,0 +1,16 @@
+frontend/src/marionette/views/FilterDatepickerView.test.ts
+  h_0f06c286dda36f 399-402
+frontend/src/marionette/views/FilterDatepickerView.ts
+  h_0f06c286dda36f 9,417
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c0635f5836a5754fc62914603b2c2a3bcd8b19f8",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
