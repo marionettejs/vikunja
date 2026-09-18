@@ -154,6 +154,7 @@ export default Extension.create<FilterAutocompleteOptions>({
 		let popupElement: HTMLElement | null = null
 		let listView: SuggestionListViewInstance | null = null
 		let avatarViews: UserAvatarViewInstance[] = []
+		let currentItems: AutocompleteItem[] = []
 		let currentAutocompleteContext: AutocompleteContext | null = null
 		let cleanupFloating: (() => void) | null = null
 		let suppressNextAutocomplete = false
@@ -231,6 +232,7 @@ export default Extension.create<FilterAutocompleteOptions>({
 			if (listView) {
 				listView.setEntries([])
 			}
+			currentItems = []
 			destroyAvatars()
 		}
 
@@ -419,6 +421,7 @@ export default Extension.create<FilterAutocompleteOptions>({
 			}
 
 			const entries = buildEntries(items)
+			currentItems = items
 
 			if (!listView) {
 				listView = new SuggestionListView({
@@ -427,7 +430,7 @@ export default Extension.create<FilterAutocompleteOptions>({
 					emptyLabel: this.options.emptyLabel,
 					entries,
 					onSelect: (index: number) => {
-						const selectedItem = items[index]
+						const selectedItem = currentItems[index]
 						if (!selectedItem) {
 							return
 						}
