@@ -417,7 +417,7 @@ const router = createRouter({
 		{
 			path: '/filters/new',
 			name: 'filters.create',
-			component: () => import('@/views/filters/FilterNew.vue'),
+			component: () => import('@/views/filters/FilterNewHost.vue'),
 			meta: {
 				showAsModal: true,
 			},

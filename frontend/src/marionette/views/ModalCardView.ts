@@ -1,4 +1,4 @@
-import {html} from 'lit-html'
+import {html, nothing} from 'lit-html'
 import type {ViewInstance} from 'marionette'
 import {View} from '../index'
 
@@ -12,6 +12,8 @@ export interface ModalCardViewOptions {
 	onPrimary: () => void
 	onClose: () => void
 	primaryDisabled?: boolean
+	primaryButtonClass?: string
+	hideCancel?: boolean
 }
 
 export const ModalCardView = View.extend({
@@ -40,7 +42,7 @@ export const ModalCardView = View.extend({
 		this._dismissible = Boolean(dismissible)
 	},
 
-	template(data: {titleId: string, title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean}) {
+	template(data: {titleId: string, title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean, primaryButtonClass?: string, hideCancel?: boolean}) {
 		return html`
 			<div class='card'>
 				<header class='card-header'>
@@ -51,8 +53,8 @@ export const ModalCardView = View.extend({
 				</header>
 				<div class='card-content'></div>
 				<footer class='card-footer'>
-					<button class='button' data-role='cancel'>${data.cancelLabel}</button>
-					<button class='button' data-role='primary' ?disabled='${data.primaryDisabled}'>${data.primaryLabel}</button>
+					${!data.hideCancel ? html`<button class='button' data-role='cancel'>${data.cancelLabel}</button>` : nothing}
+					<button class='button ${data.primaryButtonClass ?? ''}' data-role='primary' ?disabled='${data.primaryDisabled}'>${data.primaryLabel}</button>
 				</footer>
 			</div>
 		`
@@ -67,6 +69,8 @@ export const ModalCardView = View.extend({
 			cancelLabel: opts.cancelLabel,
 			closeLabel: opts.closeLabel,
 			primaryDisabled: Boolean(opts.primaryDisabled),
+			primaryButtonClass: opts.primaryButtonClass,
+			hideCancel: Boolean(opts.hideCancel),
 		}
 	},
 
