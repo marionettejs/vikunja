@@ -97,6 +97,27 @@ describe('ModalCardView', () => {
 		expect(primaryBtn?.classList.contains('is-fullwidth')).toBe(true)
 	})
 
+	it('renders no tertiary button by default', () => {
+		const {view} = createView({})
+		expect(view.el.querySelector('.card-footer .button[data-role="tertiary"]')).toBeNull()
+	})
+
+	it('renders tertiary button and calls onTertiary on click', () => {
+		const onTertiary = vi.fn()
+		const {view} = createView({tertiaryLabel: 'Delete', onTertiary})
+		const tertiaryBtn = view.el.querySelector('.card-footer .button[data-role="tertiary"]') as HTMLElement | null
+		expect(tertiaryBtn).not.toBeNull()
+		expect(tertiaryBtn?.textContent?.trim()).toBe('Delete')
+		tertiaryBtn?.dispatchEvent(new MouseEvent('click', {bubbles: true}))
+		expect(onTertiary).toHaveBeenCalledTimes(1)
+	})
+
+	it('applies cancelButtonClass to the cancel button', () => {
+		const {view} = createView({cancelButtonClass: 'is-outlined'})
+		const cancelBtn = view.el.querySelector('.card-footer .button[data-role="cancel"]')
+		expect(cancelBtn?.classList.contains('is-outlined')).toBe(true)
+	})
+
 	it('attaches the dialog to document.body and opens it as a modal', () => {
 		const showModalSpy = vi.spyOn(HTMLDialogElement.prototype, 'showModal')
 		const {view} = createView()
