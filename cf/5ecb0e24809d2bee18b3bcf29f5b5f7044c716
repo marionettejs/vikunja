@@ -1,0 +1,19 @@
+frontend/src/views/sharing/LinkSharingAuthHost.vue
+  s_59c2326e863268::t_e71db5339c653d 2,38,51-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cf5ecb0e24809d2bee18b3bcf29f5b5f7044c716",
+  "prompts": {},
+  "sessions": {
+    "s_59c2326e863268": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9ef72d53-96d3-486e-b2de-a40aa86be37b",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
