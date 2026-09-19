@@ -1,0 +1,22 @@
+frontend/src/marionette/views/FilterEditFormView.test.ts
+  h_0f06c286dda36f 187
+frontend/src/marionette/views/FilterNewFormView.ts
+  h_0f06c286dda36f 181
+frontend/src/marionette/views/ModalCardView.ts
+  h_0f06c286dda36f 79
+frontend/src/views/filters/FilterEditHost.test.ts
+  h_0f06c286dda36f 180-182
+frontend/src/views/filters/FilterEditHost.vue
+  h_0f06c286dda36f 176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "985867dc195e0fef32a6549131f208c0e6a7b1b8",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
