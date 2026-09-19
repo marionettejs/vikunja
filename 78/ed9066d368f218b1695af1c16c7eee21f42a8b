@@ -1,0 +1,14 @@
+frontend/src/marionette/views/RegisterFormView.ts
+  h_0f06c286dda36f 224,239,256,567,570-571
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "78ed9066d368f218b1695af1c16c7eee21f42a8b",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
