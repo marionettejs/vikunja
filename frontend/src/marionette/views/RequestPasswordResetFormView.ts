@@ -11,6 +11,7 @@ export interface RequestPasswordResetFormViewOptions {
 	isSuccess: boolean
 	onSubmit: (email: string) => Promise<void>
 	onLogin: () => void
+	onEmailChange?: () => void
 }
 
 interface TemplateData {
@@ -273,6 +274,7 @@ export const RequestPasswordResetFormView = View.extend({
 	},
 
 	_handleEmailKeyup(this: RequestPasswordResetFormViewContext) {
+		this._options().onEmailChange?.()
 		if (this._validateAfterFirst) {
 			this._emailValidateFn?.()
 		} else {

@@ -23,6 +23,7 @@ const isSuccess = ref(false)
 let formView: RequestPasswordResetFormViewInstance | null = null
 let isMounted = false
 let renderGeneration = 0
+let submitInFlight = false
 
 function destroyFormView(): void {
 	if (formView) {
@@ -31,7 +32,17 @@ function destroyFormView(): void {
 	}
 }
 
+function handleEmailChange(): void {
+	errorMessage.value = ''
+	formView?.setErrorMessage('')
+}
+
 async function handleSubmit(email: string) {
+	if (submitInFlight) {
+		return
+	}
+	submitInFlight = true
+	formView?.setLoading(true)
 	errorMessage.value = ''
 
 	try {
@@ -41,6 +52,9 @@ async function handleSubmit(email: string) {
 	} catch (e: unknown) {
 		errorMessage.value = getErrorText(e)
 		formView?.setErrorMessage(errorMessage.value)
+	} finally {
+		submitInFlight = false
+		formView?.setLoading(isLoading.value)
 	}
 }
 
@@ -74,6 +88,7 @@ async function renderFormView(): Promise<void> {
 		isSuccess: isSuccess.value,
 		onSubmit: handleSubmit,
 		onLogin: handleLogin,
+		onEmailChange: handleEmailChange,
 	}) as RequestPasswordResetFormViewInstance
 
 	formEl.appendChild(formView.el)
