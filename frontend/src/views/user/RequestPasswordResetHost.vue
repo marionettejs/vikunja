@@ -22,6 +22,7 @@ const isSuccess = ref(false)
 
 let formView: RequestPasswordResetFormViewInstance | null = null
 let isMounted = false
+let renderGeneration = 0
 
 function destroyFormView(): void {
 	if (formView) {
@@ -48,9 +49,18 @@ function handleLogin(): void {
 }
 
 async function renderFormView(): Promise<void> {
+	const generation = ++renderGeneration
+	const draft = formView ? {
+		email: (formView.el.querySelector('#email') as HTMLInputElement)?.value ?? '',
+	} : null
+
 	destroyFormView()
 
 	await nextTick()
+
+	if (!isMounted || generation !== renderGeneration) {
+		return
+	}
 
 	const formEl = document.getElementById('request-password-reset-form-host')
 	if (!formEl) {
@@ -68,6 +78,13 @@ async function renderFormView(): Promise<void> {
 
 	formEl.appendChild(formView.el)
 	formView.render()
+
+	if (draft && draft.email) {
+		const emailInput = formView.el.querySelector('#email') as HTMLInputElement | null
+		if (emailInput) {
+			emailInput.value = draft.email
+		}
+	}
 }
 
 onMounted(async () => {

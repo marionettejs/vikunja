@@ -150,18 +150,27 @@ export const RequestPasswordResetFormView = View.extend({
 					<p class="help is-danger" id="email-error" data-role="email-help" role="alert" hidden>${t(ERROR_EMAIL_INVALID)}</p>
 				</div>
 
-				<button
-					type="submit"
-					class="button is-primary is-fullwidth"
-					data-role="submit"
-					?disabled="${loading}"
-				>
-					<span data-role="submit-spinner" hidden>
-						<span class="icon is-small"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
-						${t('user.auth.authenticating')}
-					</span>
-					<span data-role="submit-label">${t(BUTTON_RESET_PASSWORD)}</span>
-				</button>
+				<div class="is-flex">
+					<button
+						type="submit"
+						class="button is-primary"
+						data-role="submit"
+						?disabled="${loading}"
+					>
+						<span data-role="submit-spinner" hidden>
+							<span class="icon is-small"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i></span>
+							${t('user.auth.authenticating')}
+						</span>
+						<span data-role="submit-label">${t(BUTTON_RESET_PASSWORD)}</span>
+					</button>
+					<a
+						href="#"
+						class="button is-outlined"
+						data-role="login"
+					>
+						${t(LOGIN)}
+					</a>
+				</div>
 			</form>
 		`
 	},
@@ -273,7 +282,8 @@ export const RequestPasswordResetFormView = View.extend({
 
 	_validateEmailSync(this: RequestPasswordResetFormViewContext): boolean {
 		const email = this._emailInput?.value ?? ''
-		this._emailValid = isEmail(email) && email !== ''
+		const nativeValid = this._emailInput?.checkValidity() ?? true
+		this._emailValid = isEmail(email) && nativeValid
 		this._applyEmailValidity()
 		return this._emailValid
 	},
