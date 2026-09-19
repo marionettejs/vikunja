@@ -1,0 +1,16 @@
+frontend/src/marionette/views/LoginFormView.test.ts
+  h_0f06c286dda36f 171-173,177,179-180,185-186,189,196-197,201,203-204,209-210,213,257,344,371,373-374,379-380,383,387
+frontend/src/marionette/views/LoginFormView.ts
+  h_0f06c286dda36f 54,57-64,68,70-74,78-82,122,125-132,136,138-140,189,202-203,206,208-210,216,218,225,228,245,247,249,254,260,264,268,271-284,286,307,310-311,328,348-349,355,360-361,367,370-382,395,398-405,412-463,481-489,497,499,521,525,560,570-571,575-579,583-586,591-593,597,617
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "496418a58a8089a3bc84e4fc040db5f81dbebb39",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
