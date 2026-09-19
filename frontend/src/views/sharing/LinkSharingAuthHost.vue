@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {onMounted, onUnmounted, ref, watch, nextTick} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {i18n} from '@/i18n'
 import {useTitle} from '@vueuse/core'
@@ -35,7 +35,7 @@ function destroyPasswordView(): void {
 	}
 }
 
-function renderPasswordView(): void {
+async function renderPasswordView(): Promise<void> {
 	destroyPasswordView()
 
 	const view = new LinkSharingPasswordView({
@@ -48,6 +48,12 @@ function renderPasswordView(): void {
 	}) as LinkSharingPasswordViewInstance
 	passwordView = view
 	view.render()
+	// Wait for the v-if container to enter the DOM before appending.
+	await nextTick()
+	if (!isMounted) {
+		destroyPasswordView()
+		return
+	}
 	const container = document.getElementById('password-view-container')
 	if (container) {
 		container.appendChild(view.el)
