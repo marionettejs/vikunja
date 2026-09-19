@@ -221,7 +221,7 @@ export const RegisterFormView = View.extend({
 				<div class="message success has-text-centered" role="status" data-role="success-text"></div>
 			</div>
 
-			<form id="registerform" ?hidden="${!registrationEnabled}">
+			<form id="registerform" novalidate ?hidden="${!registrationEnabled}">
 				<div class="field">
 					<label class="label" for="username">${t(LABEL_USERNAME)}</label>
 					<div class="control">
@@ -236,7 +236,7 @@ export const RegisterFormView = View.extend({
 							?disabled="${loading}"
 						>
 					</div>
-					<p class="help is-danger" id="username-error" data-role="username-help" hidden>${t(ERROR_USERNAME_REQUIRED)}</p>
+					<p class="help is-danger" id="username-error" data-role="username-help" role="alert" hidden>${t(ERROR_USERNAME_REQUIRED)}</p>
 				</div>
 
 				<div class="field">
@@ -253,7 +253,7 @@ export const RegisterFormView = View.extend({
 							?disabled="${loading}"
 						>
 					</div>
-					<p class="help is-danger" id="email-error" data-role="email-help" hidden>${t(ERROR_EMAIL_INVALID)}</p>
+					<p class="help is-danger" id="email-error" data-role="email-help" role="alert" hidden>${t(ERROR_EMAIL_INVALID)}</p>
 				</div>
 
 				<div class="field">
@@ -564,8 +564,11 @@ export const RegisterFormView = View.extend({
 	},
 
 	_handlePasswordKeyup(this: RegisterFormViewContext) {
+		delete this._fieldErrors.password
 		if (this._validatePasswordAfterFirst) {
 			this._passwordValidateFn?.()
+		} else {
+			this._applyPasswordValidity()
 		}
 	},
 
