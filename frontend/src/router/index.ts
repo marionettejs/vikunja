@@ -22,7 +22,7 @@ import LinkSharingAuth from '@/views/sharing/LinkSharingAuth.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
 import UpcomingTasks from '@/views/tasks/ShowTasks.vue'
 
-import NotFoundComponent from '@/views/404.vue'
+import NotFoundComponent from '@/views/NotFoundHost.vue'
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
