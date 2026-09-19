@@ -17,7 +17,7 @@ import {useBaseStore} from '@/stores/base'
 import {useConfigStore} from '@/stores/config'
 
 import LoginHost from '@/views/user/LoginHost.vue'
-import Register from '@/views/user/Register.vue'
+import RegisterHost from '@/views/user/RegisterHost.vue'
 import LinkSharingAuthHost from '@/views/sharing/LinkSharingAuthHost.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
 import UpcomingTasks from '@/views/tasks/ShowTasks.vue'
@@ -87,9 +87,7 @@ const router = createRouter({
 		{
 			path: '/register',
 			name: 'user.register',
-			// FIXME: use dynamic imports
-			// component: () => import('@/views/user/Register.vue'),
-			component: Register,
+			component: RegisterHost,
 			meta: {
 				title: 'user.auth.createAccount',
 			},
