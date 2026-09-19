@@ -137,7 +137,7 @@ export const FilterEditFormView = View.extend({
 					<div class="control" data-region="description-editor"></div>
 				</div>
 
-				<div class="field">
+				<div class="field filters">
 					<label class="label">${t(LABEL_QUERY)}</label>
 					<div class="control" data-region="query-input"></div>
 				</div>

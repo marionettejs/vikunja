@@ -125,6 +125,7 @@ describe('FilterEditFormView', () => {
 			expect(view.el.querySelector('[data-region="toolbar"]')).not.toBeNull()
 			expect(view.el.querySelector('[data-region="description-editor"]')).not.toBeNull()
 			expect(view.el.querySelector('[data-region="query-input"]')).not.toBeNull()
+			expect(view.el.querySelector('.filters .filter-input')).not.toBeNull()
 		})
 
 		it('autofocuses the title input on render', () => {
