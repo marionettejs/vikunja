@@ -34,7 +34,7 @@ const isDesktop = isDesktopApp()
 
 const confirmedEmailSuccess = ref(false)
 const errorMessage = ref('')
-const needsTotpPasscode = ref(false)
+const needsTotpPasscode = ref(authStore.needsTotpPasscode)
 
 let formView: LoginFormViewInstance | null = null
 let isMounted = false
@@ -89,7 +89,7 @@ async function renderFormView(): Promise<void> {
 		return
 	}
 
-	if (!localAuthEnabled.value && !ldapAuthEnabled.value) {
+	if (!localAuthEnabled.value && !ldapAuthEnabled.value && !openidConnect.value.enabled) {
 		return
 	}
 
@@ -124,14 +124,14 @@ async function renderFormView(): Promise<void> {
 	formView.render()
 }
 
-async function checkAutoRedirect(): Promise<void> {
+async function checkAutoRedirect(justLoggedOut: boolean): Promise<void> {
 	const autoRedirectProvider = getAutoRedirectProvider({
 		localAuthEnabled: localAuthEnabled.value,
 		ldapAuthEnabled: ldapAuthEnabled.value,
 		openIdEnabled: openidConnect.value.enabled,
 		providers: openidConnect.value.providers ?? [],
 		isDesktopApp: isDesktop,
-		justLoggedOut: sessionStorage.getItem(JUST_LOGGED_OUT_KEY) !== null,
+		justLoggedOut,
 		hasCopyableRedirect: route.hash.startsWith(REDIRECT_HASH_PREFIX),
 	})
 
@@ -164,7 +164,7 @@ async function initPage(): Promise<void> {
 		sessionStorage.removeItem(JUST_LOGGED_OUT_KEY)
 	}
 
-	await checkAutoRedirect()
+	await checkAutoRedirect(justLoggedOut)
 }
 
 onMounted(async () => {
@@ -187,6 +187,13 @@ watch(
 			formView.setErrorMessage(errorMessage.value)
 			formView.setConfirmedEmailSuccess(confirmedEmailSuccess.value)
 		}
+	},
+)
+
+watch(
+	() => authStore.needsTotpPasscode,
+	(needs) => {
+		needsTotpPasscode.value = needs
 	},
 )
 
@@ -216,23 +223,3 @@ watch(
 		/>
 	</div>
 </template>
-
-<style lang="scss" scoped>
-.reset-password-link {
-	display: inline-block;
-}
-
-.label-with-link {
-	display: flex;
-	justify-content: space-between;
-	margin-block-end: .5rem;
-
-	.label {
-		margin-block-end: 0;
-	}
-}
-
-.inline-link {
-	text-decoration: underline;
-}
-</style>

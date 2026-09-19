@@ -253,7 +253,7 @@ describe('username validation', () => {
 			vi.advanceTimersByTime(150)
 
 			expect(usernameInput.classList.contains('is-danger')).toBe(false)
-			expect(usernameInput.getAttribute('aria-invalid')).toBe('false')
+			expect(usernameInput.hasAttribute('aria-invalid')).toBe(false)
 			expect(view.el.querySelector('[data-role="username-help"]')?.hasAttribute('hidden')).toBe(true)
 		})
 
@@ -322,26 +322,23 @@ describe('password field', () => {
 			const view = createView()
 			const passwordInput = view._passwordInput!
 
-			passwordInput.value = 'short'
+			passwordInput.value = 'password123'
+			passwordInput.dispatchEvent(new Event('input', {bubbles: true}))
 			passwordInput.dispatchEvent(new Event('focusout', {bubbles: true}))
 
-			// First focusout enables validation, second triggers it
+			vi.advanceTimersByTime(150)
+
+			expect(passwordInput.classList.contains('is-danger')).toBe(false)
+
+			passwordInput.value = ''
+			passwordInput.dispatchEvent(new Event('input', {bubbles: true}))
 			passwordInput.dispatchEvent(new Event('focusout', {bubbles: true}))
 
 			vi.advanceTimersByTime(150)
 
 			expect(passwordInput.classList.contains('is-danger')).toBe(true)
-			const help = passwordInput.closest('.field')?.querySelector('.help.is-danger')
+			const help = passwordInput.closest('.field')?.querySelector('[data-role="password-help"]')
 			expect(help?.textContent).toBe('Please provide a password.')
-
-			passwordInput.value = 'password123'
-			passwordInput.dispatchEvent(new Event('input', {bubbles: true}))
-			passwordInput.dispatchEvent(new Event('keyup', {bubbles: true}))
-
-			vi.advanceTimersByTime(150)
-
-			expect(passwordInput.classList.contains('is-danger')).toBe(false)
-			expect(passwordInput.closest('.field')?.querySelector('.help.is-danger')?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('submits form on Enter key in password field', () => {
@@ -413,7 +410,7 @@ describe('password field', () => {
 
 			view._totpInput!.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}))
 
-			expect(onSubmit).toHaveBeenCalled()
+			expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({totpPasscode: '123456'}))
 		})
 	})
 

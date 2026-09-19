@@ -222,10 +222,9 @@ export const LoginFormView = View.extend({
 							placeholder="${t(PLACEHOLDER_USERNAME)}"
 							required
 							?disabled="${loading}"
-							aria-invalid="false"
 						>
 					</div>
-					<p class="help is-danger" data-role="username-help" hidden>${t(ERROR_USERNAME_REQUIRED)}</p>
+					<p class="help is-danger" id="username-error" data-role="username-help" hidden>${t(ERROR_USERNAME_REQUIRED)}</p>
 				</div>
 
 				<div class="field">
@@ -251,7 +250,6 @@ export const LoginFormView = View.extend({
 							placeholder="${t(PLACEHOLDER_PASSWORD)}"
 							required
 							?disabled="${loading}"
-							aria-invalid="false"
 						>
 						<button
 							type="button"
@@ -265,7 +263,7 @@ export const LoginFormView = View.extend({
 							</span>
 						</button>
 					</div>
-					<p class="help is-danger" role="alert" data-role="password-help" hidden></p>
+					<p class="help is-danger" role="alert" id="password-error" data-role="password-help" hidden></p>
 				</div>
 
 				<div class="field" data-role="totp-field" hidden>
@@ -324,7 +322,7 @@ export const LoginFormView = View.extend({
 				` : nothing}
 			</form>
 
-			${hasOpenIdProviders && showLocalForm ? html`
+			${hasOpenIdProviders ? html`
 				<div class="mbs-4">
 					${openidProviders.map(provider => html`
 						<button
@@ -380,7 +378,9 @@ export const LoginFormView = View.extend({
 		this.setConfirmedEmailSuccess(opts.confirmedEmailSuccess)
 		this.setNeedsTotpPasscode(opts.needsTotpPasscode)
 
-		if (this._usernameInput) {
+		if (this._needsTotpPasscode && this._totpInput) {
+			this._totpInput.focus()
+		} else if (this._usernameInput) {
 			this._usernameInput.focus()
 		}
 	},
@@ -413,7 +413,13 @@ export const LoginFormView = View.extend({
 			return
 		}
 		this._usernameInput.classList.toggle('is-danger', !this._usernameValid)
-		this._usernameInput.setAttribute('aria-invalid', String(!this._usernameValid))
+		if (!this._usernameValid) {
+			this._usernameInput.setAttribute('aria-invalid', 'true')
+			this._usernameInput.setAttribute('aria-describedby', 'username-error')
+		} else {
+			this._usernameInput.removeAttribute('aria-invalid')
+			this._usernameInput.removeAttribute('aria-describedby')
+		}
 		this._usernameHelp?.toggleAttribute('hidden', this._usernameValid)
 	},
 
@@ -421,7 +427,13 @@ export const LoginFormView = View.extend({
 		const invalid = this._passwordValid !== true
 		if (this._passwordInput) {
 			this._passwordInput.classList.toggle('is-danger', invalid)
-			this._passwordInput.setAttribute('aria-invalid', String(invalid))
+			if (invalid) {
+				this._passwordInput.setAttribute('aria-invalid', 'true')
+				this._passwordInput.setAttribute('aria-describedby', 'password-error')
+			} else {
+				this._passwordInput.removeAttribute('aria-invalid')
+				this._passwordInput.removeAttribute('aria-describedby')
+			}
 		}
 		if (this._passwordHelp) {
 			if (invalid && typeof this._passwordValid === 'string') {
@@ -474,11 +486,8 @@ export const LoginFormView = View.extend({
 	},
 
 	_validatePassword(this: LoginFormViewContext) {
-		if (this._validateAfterFirst) {
-			this._passwordValidateFn?.()
-		} else {
-			this._validateAfterFirst = true
-		}
+		this._passwordValidateFn?.()
+		this._validateAfterFirst = true
 	},
 
 	_togglePasswordVisibility(this: LoginFormViewContext) {
@@ -509,7 +518,7 @@ export const LoginFormView = View.extend({
 		}
 
 		const username = this._usernameInput?.value ?? ''
-		const password = this._passwordValue
+		const password = this._passwordInput?.value || this._passwordValue
 		const longToken = this._rememberCheckbox?.checked ?? false
 
 		if (username === '' || password === '') {
