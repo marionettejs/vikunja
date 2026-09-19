@@ -1,0 +1,20 @@
+frontend/src/marionette/views/LoginFormView.test.ts
+  h_0f06c286dda36f 1-522
+frontend/src/marionette/views/LoginFormView.ts
+  h_0f06c286dda36f 1-532
+frontend/src/router/index.ts
+  h_0f06c286dda36f 19,66
+frontend/src/views/user/LoginHost.vue
+  h_0f06c286dda36f 1-238
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d65d9d1eab5c430bfdf8bf242dcbb2336a9eadff",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
