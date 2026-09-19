@@ -1,0 +1,22 @@
+frontend/src/marionette/views/LoginFormView.test.ts
+  h_0f06c286dda36f 256,325-326,331,333,335,339-341,413
+frontend/src/marionette/views/LoginFormView.ts
+  h_0f06c286dda36f 227,266,325,381-383,416-422,430-436,489-490,521
+frontend/src/styles/components/_index.scss
+  h_0f06c286dda36f 10
+frontend/src/styles/components/login.scss
+  h_0f06c286dda36f 1-37
+frontend/src/views/user/LoginHost.vue
+  h_0f06c286dda36f 37,92,127,134,167,193-199,225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "08ad6799f56430553d8e35c8b7fe131043e7ef30",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
