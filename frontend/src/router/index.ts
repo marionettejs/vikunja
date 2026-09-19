@@ -18,6 +18,7 @@ import {useConfigStore} from '@/stores/config'
 
 import LoginHost from '@/views/user/LoginHost.vue'
 import RegisterHost from '@/views/user/RegisterHost.vue'
+import RequestPasswordResetHost from '@/views/user/RequestPasswordResetHost.vue'
 import LinkSharingAuthHost from '@/views/sharing/LinkSharingAuthHost.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
 import UpcomingTasks from '@/views/tasks/ShowTasks.vue'
@@ -71,7 +72,7 @@ const router = createRouter({
 		{
 			path: '/get-password-reset',
 			name: 'user.password-reset.request',
-			component: () => import('@/views/user/RequestPasswordReset.vue'),
+			component: RequestPasswordResetHost,
 			meta: {
 				title: 'user.auth.resetPassword',
 			},
