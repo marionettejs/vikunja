@@ -170,7 +170,7 @@ describe('FilterEditFormView', () => {
 			view.setTitleValid(true)
 
 			expect(view._titleInput?.classList.contains('is-danger')).toBe(false)
-			expect(view._titleInput?.getAttribute('aria-invalid')).toBe('false')
+			expect(view._titleInput?.hasAttribute('aria-invalid')).toBe(false)
 			expect(view.el.querySelector('.help.is-danger')).toBeNull()
 		})
 

@@ -120,11 +120,11 @@ export const FilterEditFormView = View.extend({
 							id="Title"
 							class="input ${!titleValid ? 'is-danger' : ''}"
 							type="text"
-							placeholder="${t(PLACEHOLDER_TITLE)}"
-							value="${initialTitle}"
-							?disabled="${loading}"
-							?aria-invalid="${!titleValid}"
-						>
+						placeholder="${t(PLACEHOLDER_TITLE)}"
+						value="${initialTitle}"
+						?disabled="${loading}"
+						aria-invalid="${!titleValid ? 'true' : nothing}"
+					>
 					</div>
 					${!titleValid ? html`
 						<p class="help is-danger">${t(ERROR_TITLE_REQUIRED)}</p>
@@ -190,7 +190,7 @@ export const FilterEditFormView = View.extend({
 		return createEditorExtensions({
 			t: opts.t,
 			isEditing: () => true,
-			isEditEnabled: () => !opts.loading,
+			isEditEnabled: () => !this._loading,
 			placeholder: () => opts.t(PLACEHOLDER_DESCRIPTION),
 			contentHasChanged: () => false,
 			bubbleSave: () => {},
@@ -301,7 +301,11 @@ export const FilterEditFormView = View.extend({
 	setTitleValid(this: FilterEditFormViewContext, valid: boolean): void {
 		this._titleValid = valid
 		if (this._titleInput) {
-			this._titleInput.setAttribute('aria-invalid', String(!valid))
+			if (!valid) {
+				this._titleInput.setAttribute('aria-invalid', 'true')
+			} else {
+				this._titleInput.removeAttribute('aria-invalid')
+			}
 			this._titleInput.classList.toggle('is-danger', !valid)
 			this._applyDisabled()
 		}
