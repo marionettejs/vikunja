@@ -1,0 +1,25 @@
+frontend/src/marionette/views/RegisterFormView.test.ts
+  s_0b2518106a33a7::t_fde6439b739731 1-519
+frontend/src/marionette/views/RegisterFormView.ts
+  s_0b2518106a33a7::t_55e07a9d11a408 1-691
+frontend/src/router/index.ts
+  s_0b2518106a33a7::t_9fcdb087c3d471 20,90
+frontend/src/views/user/RegisterHost.vue
+  s_0b2518106a33a7::t_bc15e2cb8e7a4b 1-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6f7675ea315422409b187b12586989c36d48c9d9",
+  "prompts": {},
+  "sessions": {
+    "s_0b2518106a33a7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b78c-30de-7fc1-8943-96b2fce3589f",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
