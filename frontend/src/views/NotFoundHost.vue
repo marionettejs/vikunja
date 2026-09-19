@@ -5,7 +5,6 @@ import NotFoundView from '@/marionette/views/NotFoundView'
 
 const container = ref<HTMLElement | null>(null)
 let view: InstanceType<typeof NotFoundView> | null = null
-let isUnmounted = false
 
 function updateDocumentTitle(): void {
 	document.title = `${i18n.global.t('404.title')} | Vikunja`
@@ -42,7 +41,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-	isUnmounted = true
 	if (view) {
 		view.destroy()
 		view = null
