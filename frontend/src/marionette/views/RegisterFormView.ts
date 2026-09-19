@@ -580,6 +580,8 @@ export const RegisterFormView = View.extend({
 	_handlePasswordInput(this: RegisterFormViewContext, event: Event) {
 		const target = event.target as HTMLInputElement
 		this._passwordValue = target.value
+		delete this._fieldErrors.password
+		this._applyPasswordValidity()
 	},
 
 	_handleSubmit(this: RegisterFormViewContext, event: Event) {
