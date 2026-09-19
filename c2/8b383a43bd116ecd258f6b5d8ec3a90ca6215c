@@ -1,0 +1,21 @@
+frontend/src/marionette/views/RequestPasswordResetFormView.ts
+  s_85aebd1623278c::t_2280330caa6a05 14,277
+frontend/src/views/user/RequestPasswordResetHost.vue
+  s_85aebd1623278c::t_e564792a625d95 26,35-39,41-45,55-57,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c28b383a43bd116ecd258f6b5d8ec3a90ca6215c",
+  "prompts": {},
+  "sessions": {
+    "s_85aebd1623278c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09566-a835-71d3-9051-74118051e3a8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
