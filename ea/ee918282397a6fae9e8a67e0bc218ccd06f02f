@@ -1,0 +1,20 @@
+frontend/src/marionette/views/RequestPasswordResetFormView.test.ts
+  h_0f06c286dda36f 1-343
+frontend/src/marionette/views/RequestPasswordResetFormView.ts
+  h_0f06c286dda36f 1-350
+frontend/src/router/index.ts
+  h_0f06c286dda36f 21,75
+frontend/src/views/user/RequestPasswordResetHost.vue
+  h_0f06c286dda36f 1-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "eaee918282397a6fae9e8a67e0bc218ccd06f02f",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
