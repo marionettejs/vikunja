@@ -16,7 +16,7 @@ import {useAuthStore} from '@/stores/auth'
 import {useBaseStore} from '@/stores/base'
 import {useConfigStore} from '@/stores/config'
 
-import Login from '@/views/user/Login.vue'
+import LoginHost from '@/views/user/LoginHost.vue'
 import Register from '@/views/user/Register.vue'
 import LinkSharingAuthHost from '@/views/sharing/LinkSharingAuthHost.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
@@ -63,7 +63,7 @@ const router = createRouter({
 		{
 			path: '/login',
 			name: 'user.login',
-			component: Login,
+			component: LoginHost,
 			meta: {
 				title: 'user.auth.login',
 			},
