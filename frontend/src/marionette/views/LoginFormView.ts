@@ -192,7 +192,7 @@ export const LoginFormView = View.extend({
 			LABEL_TOTP, PLACEHOLDER_TOTP,
 			LABEL_REMEMBER, BUTTON_LOGIN,
 			NO_ACCOUNT_YET, CREATE_ACCOUNT,
-			CONFIRM_EMAIL_SUCCESS, SHOW_PASSWORD, HIDE_PASSWORD,
+			CONFIRM_EMAIL_SUCCESS, SHOW_PASSWORD,
 		} = data
 
 		const showLocalForm = localAuthEnabled || ldapAuthEnabled
