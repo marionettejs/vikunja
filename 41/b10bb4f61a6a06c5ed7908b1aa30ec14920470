@@ -1,0 +1,14 @@
+frontend/src/views/user/RequestPasswordResetHost.vue
+  h_0f06c286dda36f 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "41b10bb4f61a6a06c5ed7908b1aa30ec14920470",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
