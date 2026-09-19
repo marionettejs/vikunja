@@ -1,0 +1,16 @@
+frontend/src/views/AboutHost.test.ts
+  h_0f06c286dda36f 13,118,129,145
+frontend/tests/e2e/misc/about.spec.ts
+  h_0f06c286dda36f 13-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "dcc1b71226295480aa75459fafe8a21ad656f909",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
