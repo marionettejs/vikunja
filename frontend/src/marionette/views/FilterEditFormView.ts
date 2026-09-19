@@ -8,7 +8,7 @@ import {createEditorExtensions} from '@/components/input/editor/editorExtensions
 import type {Extensions} from '@tiptap/core'
 import type {Label} from '@/client/generated'
 
-export interface FilterNewFormViewOptions {
+export interface FilterEditFormViewOptions {
 	t: (key: string) => string
 	labels: Label[]
 	labelsPending: boolean
@@ -22,6 +22,7 @@ export interface FilterNewFormViewOptions {
 	onTitleValidate: () => void
 	onDescriptionChange: (description: string) => void
 	onQueryChange: (query: string) => void
+	onSave: () => void
 	loading: boolean
 	titleValid: boolean
 	initialTitle: string
@@ -41,7 +42,7 @@ interface TemplateData {
 	ERROR_TITLE_REQUIRED: string
 }
 
-interface FilterNewFormViewContext extends ViewInstance {
+interface FilterEditFormViewContext extends ViewInstance {
 	_titleInput: HTMLInputElement | null
 	_descriptionEditorView: RichTextEditorViewInstance | null
 	_queryInputView: FilterInputViewInstance | null
@@ -49,19 +50,20 @@ interface FilterNewFormViewContext extends ViewInstance {
 	_editorGeneration: number
 	_loading: boolean
 	_titleValid: boolean
-	_options(): FilterNewFormViewOptions
+	_options(): FilterEditFormViewOptions
 	_initExtensions(): Extensions
 	_createDescriptionEditor(): void
 	_createQueryInput(): void
 	_destroyDescriptionEditor(): void
 	_destroyQueryInput(): void
-	_setTitle(value: string): void
-	_setDescription(value: string): void
-	_setQuery(value: string): void
+	_applyDisabled(): void
+	setTitle(value: string): void
+	setDescription(value: string): void
+	setQuery(value: string): void
 	setLoading(loading: boolean): void
 	setTitleValid(valid: boolean): void
-	_applyDisabled(): void
 	updateLabels(labels: Label[], pending: boolean): void
+	onFormSubmit(event: Event): void
 }
 
 const LABEL_TITLE = 'filters.attributes.title'
@@ -71,8 +73,8 @@ const PLACEHOLDER_TITLE = 'filters.attributes.titlePlaceholder'
 const PLACEHOLDER_DESCRIPTION = 'filters.attributes.descriptionPlaceholder'
 const ERROR_TITLE_REQUIRED = 'filters.create.titleRequired'
 
-export const FilterNewFormView = View.extend({
-	className: 'filter-new-form',
+export const FilterEditFormView = View.extend({
+	className: 'filter-edit-form',
 
 	_titleInput: null as HTMLInputElement | null,
 	_descriptionEditorView: null as RichTextEditorViewInstance | null,
@@ -88,7 +90,11 @@ export const FilterNewFormView = View.extend({
 		queryInput: '[data-region="query-input"]',
 	},
 
-	templateContext(this: FilterNewFormViewContext): TemplateData {
+	events: {
+		'submit form': 'onFormSubmit',
+	},
+
+	templateContext(this: FilterEditFormViewContext): TemplateData {
 		const opts = this._options()
 		return {
 			t: opts.t,
@@ -106,53 +112,55 @@ export const FilterNewFormView = View.extend({
 	template(data: TemplateData) {
 		const {t, loading, titleValid, initialTitle, LABEL_TITLE, LABEL_DESCRIPTION, LABEL_QUERY, PLACEHOLDER_TITLE, ERROR_TITLE_REQUIRED} = data
 		return html`
-			<p>${t('filters.create.description')}</p>
-			<div class="field">
-				<label class="label" for="Title">${t(LABEL_TITLE)}</label>
-				<div class="control">
-					<input
-						id="Title"
-						class="input ${!titleValid ? 'is-danger' : ''}"
-						type="text"
+			<form>
+				<div class="field">
+					<label class="label" for="Title">${t(LABEL_TITLE)}</label>
+					<div class="control">
+						<input
+							id="Title"
+							class="input ${!titleValid ? 'is-danger' : ''}"
+							type="text"
 						placeholder="${t(PLACEHOLDER_TITLE)}"
 						value="${initialTitle}"
 						?disabled="${loading}"
-						?aria-invalid="${!titleValid}"
+						aria-invalid="${!titleValid ? 'true' : nothing}"
 					>
+					</div>
+					${!titleValid ? html`
+						<p class="help is-danger">${t(ERROR_TITLE_REQUIRED)}</p>
+					` : nothing}
 				</div>
-				${!titleValid ? html`
-					<p class="help is-danger">${t(ERROR_TITLE_REQUIRED)}</p>
-				` : nothing}
-			</div>
 
-			<div class="field">
-				<label class="label">${t(LABEL_DESCRIPTION)}</label>
-				<div class="control" data-region="toolbar"></div>
-				<div class="control" data-region="description-editor"></div>
-			</div>
+				<div class="field">
+					<label class="label">${t(LABEL_DESCRIPTION)}</label>
+					<div class="control" data-region="toolbar"></div>
+					<div class="control" data-region="description-editor"></div>
+				</div>
 
-			<div class="field">
-				<label class="label">${t(LABEL_QUERY)}</label>
-				<div class="control" data-region="query-input"></div>
-			</div>
+				<div class="field filters">
+					<label class="label">${t(LABEL_QUERY)}</label>
+					<div class="control" data-region="query-input"></div>
+				</div>
+				<button
+					type="submit"
+					class="is-hidden"
+					tabindex="-1"
+				></button>
+			</form>
 		`
 	},
 
-	initialize(this: FilterNewFormViewContext) {
-		this._initExtensions()
-	},
-
-	onRender(this: FilterNewFormViewContext) {
+	onRender(this: FilterEditFormViewContext) {
 		this._loading = this._options().loading
 		this._titleValid = this._options().titleValid
 		this._titleInput = this.el.querySelector('#Title')
 		if (this._titleInput) {
+			this._titleInput.value = this._options().initialTitle
 			this._titleInput.addEventListener('focusout', this._options().onTitleValidate)
 			this._titleInput.addEventListener('input', (e) => {
 				const target = e.target as HTMLInputElement
 				this._options().onTitleChange(target.value)
 			})
-			// Autofocus
 			this._titleInput.focus()
 		}
 
@@ -160,7 +168,7 @@ export const FilterNewFormView = View.extend({
 		this._createQueryInput()
 	},
 
-	onBeforeDestroy(this: FilterNewFormViewContext) {
+	onBeforeDestroy(this: FilterEditFormViewContext) {
 		if (this._titleInput) {
 			this._titleInput.removeEventListener('focusout', this._options().onTitleValidate)
 			this._titleInput = null
@@ -169,11 +177,11 @@ export const FilterNewFormView = View.extend({
 		this._destroyQueryInput()
 	},
 
-	_options(this: FilterNewFormViewContext): FilterNewFormViewOptions {
-		return this.options as FilterNewFormViewOptions
+	_options(this: FilterEditFormViewContext): FilterEditFormViewOptions {
+		return this.options as FilterEditFormViewOptions
 	},
 
-	_initExtensions(this: FilterNewFormViewContext): Extensions {
+	_initExtensions(this: FilterEditFormViewContext): Extensions {
 		const opts = this._options()
 		return createEditorExtensions({
 			t: opts.t,
@@ -188,7 +196,7 @@ export const FilterNewFormView = View.extend({
 		})
 	},
 
-	_createDescriptionEditor(this: FilterNewFormViewContext) {
+	_createDescriptionEditor(this: FilterEditFormViewContext) {
 		const opts = this._options()
 		const extensions = this._initExtensions()
 
@@ -199,7 +207,7 @@ export const FilterNewFormView = View.extend({
 			extensions,
 			content: opts.initialDescription,
 			editable: !opts.loading,
-			editorId: `filter-new-description-editor-${generation}`,
+			editorId: `filter-edit-description-editor-${generation}`,
 			ariaLabel: opts.t('input.editor.label'),
 			onChange: (html: string) => {
 				if (generation !== this._editorGeneration) return
@@ -214,21 +222,21 @@ export const FilterNewFormView = View.extend({
 			this._editorControls = createEditorControls({
 				getEditor: () => editor,
 				t: opts.t,
-				pluginKeyPrefix: `filterNewDescription${generation}`,
+				pluginKeyPrefix: `filterEditDescription${generation}`,
 				isActive: () => generation === this._editorGeneration,
 			})
 			this.showChildView('toolbar', this._editorControls.toolbarView)
 		}
 	},
 
-	_destroyDescriptionEditor(this: FilterNewFormViewContext) {
+	_destroyDescriptionEditor(this: FilterEditFormViewContext) {
 		this._editorControls?.destroy()
 		this._editorControls = null
 		this._descriptionEditorView?.destroy()
 		this._descriptionEditorView = null
 	},
 
-	_createQueryInput(this: FilterNewFormViewContext) {
+	_createQueryInput(this: FilterEditFormViewContext) {
 		const opts = this._options()
 
 		this._queryInputView = new FilterInputView({
@@ -251,45 +259,49 @@ export const FilterNewFormView = View.extend({
 		this.showChildView('queryInput', this._queryInputView)
 	},
 
-	_destroyQueryInput(this: FilterNewFormViewContext) {
+	_destroyQueryInput(this: FilterEditFormViewContext) {
 		this._queryInputView?.destroy()
 		this._queryInputView = null
 	},
 
-	_setTitle(this: FilterNewFormViewContext, value: string) {
+	setTitle(this: FilterEditFormViewContext, value: string): void {
 		if (this._titleInput && this._titleInput.value !== value) {
 			this._titleInput.value = value
 		}
 	},
 
-	_setDescription(this: FilterNewFormViewContext, value: string) {
+	setDescription(this: FilterEditFormViewContext, value: string): void {
 		const editor = this._descriptionEditorView?.getEditor()
 		if (editor && editor.getHTML() !== value) {
 			editor.commands.setContent(value, {emitUpdate: false})
 		}
 	},
 
-	_setQuery(this: FilterNewFormViewContext, value: string) {
+	setQuery(this: FilterEditFormViewContext, value: string): void {
 		this._queryInputView?.setModelValue(value)
 	},
 
-	setLoading(this: FilterNewFormViewContext, loading: boolean): void {
+	_applyDisabled(this: FilterEditFormViewContext): void {
+		if (this._titleInput) {
+			this._titleInput.disabled = this._loading
+		}
+	},
+
+	setLoading(this: FilterEditFormViewContext, loading: boolean): void {
 		this._loading = loading
 		this._applyDisabled()
 		this._descriptionEditorView?.setEditable(!loading)
 		this._queryInputView?.setEditable(!loading)
 	},
 
-	_applyDisabled(this: FilterNewFormViewContext): void {
-		if (this._titleInput) {
-			this._titleInput.disabled = this._loading
-		}
-	},
-
-	setTitleValid(this: FilterNewFormViewContext, valid: boolean): void {
+	setTitleValid(this: FilterEditFormViewContext, valid: boolean): void {
 		this._titleValid = valid
 		if (this._titleInput) {
-			this._titleInput.setAttribute('aria-invalid', String(!valid))
+			if (!valid) {
+				this._titleInput.setAttribute('aria-invalid', 'true')
+			} else {
+				this._titleInput.removeAttribute('aria-invalid')
+			}
 			this._titleInput.classList.toggle('is-danger', !valid)
 			this._applyDisabled()
 		}
@@ -308,10 +320,15 @@ export const FilterNewFormView = View.extend({
 		}
 	},
 
-	updateLabels(this: FilterNewFormViewContext, labels: Label[], pending: boolean): void {
+	updateLabels(this: FilterEditFormViewContext, labels: Label[], pending: boolean): void {
 		this._queryInputView?.updateLabels(labels, pending)
 	},
-}) as new (options: FilterNewFormViewOptions) => FilterNewFormViewContext & {
+
+	onFormSubmit(this: FilterEditFormViewContext, event: Event): void {
+		event.preventDefault()
+		this._options().onSave()
+	},
+}) as new (options: FilterEditFormViewOptions) => FilterEditFormViewContext & {
 	setTitle: (value: string) => void
 	setDescription: (value: string) => void
 	setQuery: (value: string) => void
