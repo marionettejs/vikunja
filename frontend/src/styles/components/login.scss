@@ -1,8 +1,10 @@
-.login-form .reset-password-link {
+.login-form .reset-password-link,
+.request-password-reset-form .reset-password-link {
 	display: inline-block;
 }
 
-.login-form .label-with-link {
+.login-form .label-with-link,
+.request-password-reset-form .label-with-link {
 	display: flex;
 	justify-content: space-between;
 	margin-block-end: .5rem;
@@ -12,26 +14,31 @@
 	}
 }
 
-.login-form .inline-link {
+.login-form .inline-link,
+.request-password-reset-form .inline-link {
 	text-decoration: underline;
 }
 
-.login-form .message-wrapper {
+.login-form .message-wrapper,
+.request-password-reset-form .message-wrapper {
 	border-radius: $radius;
 	background: var(--white);
 }
 
-.login-form .message {
+.login-form .message,
+.request-password-reset-form .message {
 	padding: .75rem 1rem;
 	border-radius: $radius;
 }
 
-.login-form .danger {
+.login-form .danger,
+.request-password-reset-form .danger {
 	border: 1px solid var(--danger);
 	background: hsla(var(--danger-h), var(--danger-s), var(--danger-l), .05);
 }
 
-.login-form .success {
+.login-form .success,
+.request-password-reset-form .success {
 	border: 1px solid var(--success);
 	background: hsla(var(--success-h), var(--success-s), var(--success-l), .05);
 }
