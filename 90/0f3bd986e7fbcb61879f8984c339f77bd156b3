@@ -1,0 +1,32 @@
+frontend/src/marionette/views/ColorPickerView.test.ts
+  h_0f06c286dda36f 1-213
+frontend/src/marionette/views/ColorPickerView.ts
+  h_0f06c286dda36f 1-158
+frontend/src/marionette/views/LabelCreateFormView.test.ts
+  h_0f06c286dda36f 1-250
+frontend/src/marionette/views/LabelCreateFormView.ts
+  h_0f06c286dda36f 1-178
+frontend/src/marionette/views/LabelListView.test.ts
+  h_0f06c286dda36f 1-427
+frontend/src/marionette/views/LabelListView.ts
+  h_0f06c286dda36f 1-498
+frontend/src/router/index.ts
+  h_0f06c286dda36f 407,412
+frontend/src/views/labels/LabelNewHost.vue
+  h_0f06c286dda36f 1-92
+frontend/src/views/labels/LabelsIndexHost.vue
+  h_0f06c286dda36f 1-75
+frontend/tests/e2e/labels/label-crud.spec.ts
+  h_0f06c286dda36f 1-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "900f3bd986e7fbcb61879f8984c339f77bd156b3",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
