@@ -1,0 +1,14 @@
+frontend/src/views/user/RegisterHost.vue
+  h_0f06c286dda36f 32,90-96,101-104,124-143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b173023284283025bd03f3678cc1b24129982d8a",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
