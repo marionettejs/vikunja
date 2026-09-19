@@ -1,0 +1,16 @@
+frontend/src/marionette/views/LoginFormView.test.ts
+  h_0f06c286dda36f 390-403
+frontend/src/marionette/views/LoginFormView.ts
+  h_0f06c286dda36f 459-467
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "27bf14f43f9939a0bdaffb56ea3939739b999f07",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
