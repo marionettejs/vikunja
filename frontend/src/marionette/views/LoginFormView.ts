@@ -279,7 +279,6 @@ export const LoginFormView = View.extend({
 							inputmode="numeric"
 							autocomplete="one-time-code"
 							placeholder="${t(PLACEHOLDER_TOTP)}"
-							required
 							?disabled="${loading}"
 						>
 					</div>
@@ -457,6 +456,15 @@ export const LoginFormView = View.extend({
 
 	_applyTotpVisibility(this: LoginFormViewContext): void {
 		this._totpField?.toggleAttribute('hidden', !this._needsTotpPasscode)
+		// A required input blocks native form submission even while hidden,
+		// so only require it when visible (the original renders it with v-if).
+		if (this._totpInput) {
+			if (this._needsTotpPasscode) {
+				this._totpInput.setAttribute('required', '')
+			} else {
+				this._totpInput.removeAttribute('required')
+			}
+		}
 	},
 
 

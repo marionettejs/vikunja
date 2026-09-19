@@ -387,6 +387,20 @@ describe('password field', () => {
 			expect(field()?.hasAttribute('hidden')).toBe(true)
 		})
 
+		it('does not block native form validation while TOTP is hidden', () => {
+			const view = createView({needsTotpPasscode: false})
+			const form = view._form!
+			expect(view._totpInput?.hasAttribute('required')).toBe(false)
+			view._usernameInput!.value = 'testuser'
+			view._passwordInput!.value = 'password123'
+			expect(form.checkValidity()).toBe(true)
+		})
+
+		it('requires TOTP input while TOTP is visible', () => {
+			const view = createView({needsTotpPasscode: true})
+			expect(view._totpInput?.hasAttribute('required')).toBe(true)
+		})
+
 		it('submits form on Enter key in TOTP field', () => {
 			const view = createView({needsTotpPasscode: true})
 			const onSubmit = vi.fn()
