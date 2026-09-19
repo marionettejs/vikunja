@@ -29,6 +29,7 @@ const fieldErrors = ref<Record<string, string>>({})
 
 let formView: RegisterFormViewInstance | null = null
 let isMounted = false
+let renderGeneration = 0
 
 function destroyFormView(): void {
 	if (formView) {
@@ -86,9 +87,20 @@ function handleLogin(): void {
 }
 
 async function renderFormView(): Promise<void> {
+	const generation = ++renderGeneration
+	const draft = formView ? {
+		username: (formView.el.querySelector('#username') as HTMLInputElement)?.value ?? '',
+		email: (formView.el.querySelector('#email') as HTMLInputElement)?.value ?? '',
+		password: (formView.el.querySelector('#password') as HTMLInputElement)?.value ?? '',
+	} : null
+
 	destroyFormView()
 
 	await nextTick()
+
+	if (!isMounted || generation !== renderGeneration) {
+		return
+	}
 
 	const formEl = document.getElementById('register-form-host')
 	if (!formEl) {
@@ -109,6 +121,26 @@ async function renderFormView(): Promise<void> {
 
 	formEl.appendChild(formView.el)
 	formView.render()
+
+	if (draft) {
+		const usernameInput = formView.el.querySelector('#username') as HTMLInputElement | null
+		if (usernameInput) {
+			usernameInput.value = draft.username
+		}
+		const emailInput = formView.el.querySelector('#email') as HTMLInputElement | null
+		if (emailInput) {
+			emailInput.value = draft.email
+		}
+		const passwordInput = formView.el.querySelector('#password') as HTMLInputElement | null
+		if (passwordInput) {
+			passwordInput.value = draft.password
+			passwordInput.dispatchEvent(new Event('input', {bubbles: true}))
+		}
+		if (draft.username || draft.email || draft.password) {
+			fieldErrors.value = {}
+			formView.setFieldErrors({})
+		}
+	}
 }
 
 async function initPage(): Promise<void> {
