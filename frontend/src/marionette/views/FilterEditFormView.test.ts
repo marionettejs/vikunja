@@ -1,0 +1,275 @@
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import type {ViewInstance} from 'marionette'
+import StarterKit from '@tiptap/starter-kit'
+import type {RichTextEditorViewInstance} from './RichTextEditorView'
+import type {EditorControls} from './createEditorControls'
+import type {Label} from '@/client/generated'
+
+vi.mock('@/components/input/editor/editorExtensions', () => ({
+	createEditorExtensions: () => [StarterKit],
+}))
+
+vi.mock('@/composables/useLabels', () => ({
+	useLabels: () => ({
+		labels: [] as Label[],
+		isPending: false,
+		filterLabelsByQuery: vi.fn(),
+		getLabelByExactTitle: vi.fn(),
+		getLabelById: vi.fn(),
+	}),
+}))
+
+vi.mock('@/stores/projects', () => ({
+	useProjectStore: () => ({
+		searchProject: vi.fn(() => []),
+	}),
+}))
+
+import {FilterEditFormView} from './FilterEditFormView'
+import type {FilterEditFormViewOptions} from './FilterEditFormView'
+
+type FilterEditFormViewInstance = ViewInstance & {
+	_titleInput: HTMLInputElement | null
+	_descriptionEditorView: RichTextEditorViewInstance | null
+	_queryInputView: any
+	_editorControls: EditorControls | null
+	_options(): FilterEditFormViewOptions
+	setLoading(loading: boolean): void
+	setTitleValid(valid: boolean): void
+	updateLabels(labels: Label[], pending: boolean): void
+}
+
+const createMockLabel = (id: number, title: string): Label => ({
+	id,
+	title,
+	hex_color: '3b82f6',
+	description: '',
+	created: new Date().toISOString(),
+	updated: new Date().toISOString(),
+})
+
+describe('FilterEditFormView', () => {
+	let views: FilterEditFormViewInstance[] = []
+
+	const mockLabels: Label[] = [
+		createMockLabel(1, 'bug'),
+		createMockLabel(2, 'feature'),
+	]
+
+	function createView(overrides: Partial<FilterEditFormViewOptions> = {}): FilterEditFormViewInstance {
+		const onTitleChange = vi.fn()
+		const onTitleValidate = vi.fn()
+		const onDescriptionChange = vi.fn()
+		const onQueryChange = vi.fn()
+		const onSave = vi.fn()
+		const t = vi.fn((key: string) => {
+			const translations: Record<string, string> = {
+				'filters.attributes.title': 'Title',
+				'filters.attributes.description': 'Description',
+				'filters.title': 'Query',
+				'filters.attributes.titlePlaceholder': 'Enter title...',
+				'filters.attributes.descriptionPlaceholder': 'Enter description...',
+				'filters.create.titleRequired': 'Title is required',
+				'input.editor.label': 'Description editor',
+			}
+			return translations[key] ?? key
+		})
+
+		const options: FilterEditFormViewOptions = {
+			t,
+			labels: mockLabels,
+			labelsPending: false,
+			getLabelByExactTitle: (title: string) => mockLabels.find(l => l.title === title),
+			getLabelById: (id: number) => mockLabels.find(l => l.id === id),
+			findProjectByExactname: (title: string) => ({id: 1, title}),
+			getProjectTitle: (id: number) => `Project ${id}`,
+			flatpickrLocale: {firstDayOfWeek: 1},
+			weekStart: 1,
+			onTitleChange,
+			onTitleValidate,
+			onDescriptionChange,
+			onQueryChange,
+			onSave,
+			loading: false,
+			titleValid: true,
+			initialTitle: '',
+			initialDescription: '',
+			initialQuery: '',
+			...overrides,
+		}
+
+		const view = new FilterEditFormView(options) as FilterEditFormViewInstance
+		views.push(view)
+		document.body.appendChild(view.el)
+		view.render()
+		return view
+	}
+
+	beforeEach(() => {
+		views = []
+		document.body.innerHTML = ''
+	})
+
+	afterEach(() => {
+		for (const view of views) {
+			view.destroy()
+		}
+		views = []
+		document.body.innerHTML = ''
+	})
+
+	describe('initialization', () => {
+		it('renders title, description editor, and query input regions', () => {
+			const view = createView()
+			expect(view.el.querySelector('#Title')).not.toBeNull()
+			expect(view.el.querySelector('[data-region="toolbar"]')).not.toBeNull()
+			expect(view.el.querySelector('[data-region="description-editor"]')).not.toBeNull()
+			expect(view.el.querySelector('[data-region="query-input"]')).not.toBeNull()
+		})
+
+		it('autofocuses the title input on render', () => {
+			const view = createView()
+			expect(document.activeElement).toBe(view._titleInput)
+		})
+
+		it('renders title with initial value', () => {
+			const view = createView({initialTitle: 'My Filter'})
+			expect(view._titleInput?.value).toBe('My Filter')
+		})
+
+		it('renders a hidden submit button', () => {
+			const view = createView()
+			const submit = view.el.querySelector('button[type="submit"]') as HTMLButtonElement | null
+			expect(submit).not.toBeNull()
+			expect(submit?.tabIndex).toBe(-1)
+		})
+
+		it('initializes description editor and query input child views', () => {
+			const view = createView()
+			expect(view._descriptionEditorView).not.toBeNull()
+			expect(view._queryInputView).not.toBeNull()
+		})
+	})
+
+	describe('title error classes toggle via setTitleValid', () => {
+		it('adds is-danger class and help text when invalid', () => {
+			const view = createView({titleValid: true})
+			view.setTitleValid(false)
+
+			expect(view._titleInput?.classList.contains('is-danger')).toBe(true)
+			expect(view._titleInput?.getAttribute('aria-invalid')).toBe('true')
+			expect(view.el.querySelector('.help.is-danger')).not.toBeNull()
+			expect(view.el.querySelector('.help.is-danger')?.textContent).toBe('Title is required')
+		})
+
+		it('removes is-danger class and help text when valid', () => {
+			const view = createView({titleValid: false})
+			expect(view._titleInput?.classList.contains('is-danger')).toBe(true)
+
+			view.setTitleValid(true)
+
+			expect(view._titleInput?.classList.contains('is-danger')).toBe(false)
+			expect(view._titleInput?.getAttribute('aria-invalid')).toBe('false')
+			expect(view.el.querySelector('.help.is-danger')).toBeNull()
+		})
+
+		it('keeps title input enabled when invalid but not loading', () => {
+			const view = createView({titleValid: true, loading: false})
+			view.setTitleValid(false)
+			expect(view._titleInput?.disabled).toBe(false)
+		})
+
+		it('uses live validity after construction-time invalid state', () => {
+			const view = createView({titleValid: false, loading: false})
+			view.setTitleValid(true)
+			view.setLoading(true)
+			view.setLoading(false)
+			expect(view._titleInput?.disabled).toBe(false)
+		})
+	})
+
+	describe('description editor toolbar and bubble menu DOM present', () => {
+		it('mounts toolbar view in toolbar region', () => {
+			const view = createView()
+			const toolbarRegion = view.el.querySelector('[data-region="toolbar"]')
+			expect(toolbarRegion).not.toBeNull()
+			expect(view._editorControls).not.toBeNull()
+			expect(toolbarRegion?.querySelectorAll('button').length).toBeGreaterThan(0)
+		})
+
+		it('creates editor controls with bubble menu mounted to document.body', () => {
+			createView()
+			expect(document.body.querySelector('.mn-editor-bubble')).not.toBeNull()
+		})
+	})
+
+	describe('query input present', () => {
+		it('initializes FilterInputView in query input region', () => {
+			const view = createView()
+			const queryRegion = view.el.querySelector('[data-region="query-input"]')
+			expect(queryRegion).not.toBeNull()
+			expect(view._queryInputView).not.toBeNull()
+		})
+	})
+
+	describe('setLoading disables fields', () => {
+		it('disables title input when loading', () => {
+			const view = createView({loading: false})
+			view.setLoading(true)
+			expect(view._titleInput?.disabled).toBe(true)
+		})
+
+		it('sets description editor editable state', () => {
+			const view = createView({loading: false})
+			const setEditableSpy = vi.spyOn(view._descriptionEditorView!, 'setEditable')
+			view.setLoading(true)
+			expect(setEditableSpy).toHaveBeenCalledWith(false)
+		})
+
+		it('sets query input editable state', () => {
+			const view = createView({loading: false})
+			const setEditableSpy = vi.spyOn(view._queryInputView!, 'setEditable')
+			view.setLoading(true)
+			expect(setEditableSpy).toHaveBeenCalledWith(false)
+		})
+	})
+
+	describe('updateLabels passes through to FilterInputView', () => {
+		it('calls FilterInputView.updateLabels with new labels', () => {
+			const view = createView()
+			const updateLabelsSpy = vi.spyOn(view._queryInputView!, 'updateLabels')
+			const newLabels: Label[] = [createMockLabel(3, 'urgent')]
+
+			view.updateLabels(newLabels, true)
+
+			expect(updateLabelsSpy).toHaveBeenCalledWith(newLabels, true)
+		})
+	})
+
+	describe('form submit calls onSave', () => {
+		it('invokes onSave on form submit', () => {
+			const onSave = vi.fn()
+			const view = createView({onSave})
+			const form = view.el.querySelector('form') as HTMLFormElement
+			form.dispatchEvent(new Event('submit', {bubbles: true, cancelable: true}))
+			expect(onSave).toHaveBeenCalledTimes(1)
+		})
+	})
+
+	describe('teardown destroys all child views', () => {
+		it('destroys description editor view', () => {
+			const view = createView()
+			const editorView = view._descriptionEditorView!
+			const destroySpy = vi.spyOn(editorView, 'destroy')
+			view.destroy()
+			expect(destroySpy).toHaveBeenCalled()
+		})
+
+		it('destroys editor controls', () => {
+			const view = createView()
+			expect(view._editorControls).not.toBeNull()
+			view.destroy()
+			expect(view._editorControls).toBeNull()
+		})
+	})
+})

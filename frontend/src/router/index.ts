@@ -331,7 +331,7 @@ const router = createRouter({
 		{
 			path: '/projects/:projectId/settings/edit',
 			name: 'filter.settings.edit',
-			component: () => import('@/views/filters/FilterEdit.vue'),
+			component: () => import('@/views/filters/FilterEditHost.vue'),
 			meta: {
 				showAsModal: true,
 			},

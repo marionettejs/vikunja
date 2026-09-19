@@ -14,6 +14,9 @@ export interface ModalCardViewOptions {
 	primaryDisabled?: boolean
 	primaryButtonClass?: string
 	hideCancel?: boolean
+	cancelButtonClass?: string
+	tertiaryLabel?: string
+	onTertiary?: () => void
 }
 
 export const ModalCardView = View.extend({
@@ -42,7 +45,7 @@ export const ModalCardView = View.extend({
 		this._dismissible = Boolean(dismissible)
 	},
 
-	template(data: {titleId: string, title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean, primaryButtonClass?: string, hideCancel?: boolean}) {
+	template(data: {titleId: string, title: string, primaryLabel: string, cancelLabel: string, closeLabel: string, primaryDisabled?: boolean, primaryButtonClass?: string, hideCancel?: boolean, cancelButtonClass?: string, tertiaryLabel?: string}) {
 		return html`
 			<div class='card'>
 				<header class='card-header'>
@@ -53,7 +56,8 @@ export const ModalCardView = View.extend({
 				</header>
 				<div class='card-content'></div>
 				<footer class='card-footer'>
-					${!data.hideCancel ? html`<button class='button' data-role='cancel'>${data.cancelLabel}</button>` : nothing}
+					${data.tertiaryLabel ? html`<button class='button is-text is-inverted underline-none has-no-shadow' data-role='tertiary'>${data.tertiaryLabel}</button>` : nothing}
+					${!data.hideCancel ? html`<button class='button ${data.cancelButtonClass ?? ''}' data-role='cancel'>${data.cancelLabel}</button>` : nothing}
 					<button class='button ${data.primaryButtonClass ?? ''}' data-role='primary' ?disabled='${data.primaryDisabled}'>${data.primaryLabel}</button>
 				</footer>
 			</div>
@@ -71,6 +75,8 @@ export const ModalCardView = View.extend({
 			primaryDisabled: Boolean(opts.primaryDisabled),
 			primaryButtonClass: opts.primaryButtonClass,
 			hideCancel: Boolean(opts.hideCancel),
+			cancelButtonClass: opts.cancelButtonClass,
+			tertiaryLabel: opts.tertiaryLabel,
 		}
 	},
 
@@ -80,6 +86,7 @@ export const ModalCardView = View.extend({
 		'click [data-role="close"]': 'onCloseClick',
 		'click [data-role="cancel"]': 'onCancelClick',
 		'click [data-role="primary"]': 'onPrimaryClick',
+		'click [data-role="tertiary"]': 'onTertiaryClick',
 	},
 
 	initialize() {
@@ -137,6 +144,13 @@ export const ModalCardView = View.extend({
 			return
 		}
 		opts.onPrimary()
+	},
+
+	onTertiaryClick(event: Event) {
+		event.preventDefault()
+		event.stopPropagation()
+		const opts = this.options as ModalCardViewOptions
+		opts.onTertiary?.()
 	},
 
 	dismiss() {
