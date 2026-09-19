@@ -1,0 +1,22 @@
+frontend/src/marionette/views/NotFoundView.test.ts
+  h_0f06c286dda36f 1-85
+frontend/src/marionette/views/NotFoundView.ts
+  h_0f06c286dda36f 1-31
+frontend/src/router/index.ts
+  h_0f06c286dda36f 25
+frontend/src/views/NotFoundHost.test.ts
+  h_0f06c286dda36f 1-145
+frontend/src/views/NotFoundHost.vue
+  h_0f06c286dda36f 2-29,31-50,52-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e3896f6c1778ecff9cea0dfb2601e4a6d36feb7f",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
