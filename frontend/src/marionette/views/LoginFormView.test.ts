@@ -168,42 +168,49 @@ describe('LoginFormView', () => {
 	describe('email confirmation success message', () => {
 		it('renders success message when confirmedEmailSuccess is true', () => {
 			const view = createView({confirmedEmailSuccess: true})
-			expect(view.el.querySelector('.notification.is-success')).not.toBeNull()
+			const message = view.el.querySelector('[data-role="success-message"]') as HTMLElement | null
+			expect(message).not.toBeNull()
+			expect(message?.hasAttribute('hidden')).toBe(false)
 			expect(view.el.textContent).toContain('You successfully confirmed your email!')
 		})
 
-		it('does not render success message when confirmedEmailSuccess is false', () => {
+		it('hides success message when confirmedEmailSuccess is false', () => {
 			const view = createView({confirmedEmailSuccess: false})
-			expect(view.el.querySelector('.notification.is-success')).toBeNull()
+			const message = view.el.querySelector('[data-role="success-message"]') as HTMLElement | null
+			expect(message?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('updates success message via setConfirmedEmailSuccess', () => {
 			const view = createView({confirmedEmailSuccess: false})
-			expect(view.el.querySelector('.notification.is-success')).toBeNull()
+			const message = () => view.el.querySelector('[data-role="success-message"]') as HTMLElement | null
+			expect(message()?.hasAttribute('hidden')).toBe(true)
 
 			view.setConfirmedEmailSuccess(true)
-			expect(view.el.querySelector('.notification.is-success')).not.toBeNull()
+			expect(message()?.hasAttribute('hidden')).toBe(false)
 		})
 	})
 
 	describe('error message', () => {
 		it('renders error message when errorMessage is set', () => {
 			const view = createView({errorMessage: 'Wrong username or password.'})
-			expect(view.el.querySelector('.notification.is-danger')).not.toBeNull()
+			const message = view.el.querySelector('[data-role="error-message"]') as HTMLElement | null
+			expect(message?.hasAttribute('hidden')).toBe(false)
 			expect(view.el.textContent).toContain('Wrong username or password.')
 		})
 
-		it('does not render error message when empty', () => {
+		it('hides error message when empty', () => {
 			const view = createView({errorMessage: ''})
-			expect(view.el.querySelector('.notification.is-danger')).toBeNull()
+			const message = view.el.querySelector('[data-role="error-message"]') as HTMLElement | null
+			expect(message?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('updates error message via setErrorMessage', () => {
 			const view = createView({errorMessage: ''})
-			expect(view.el.querySelector('.notification.is-danger')).toBeNull()
+			const message = () => view.el.querySelector('[data-role="error-message"]') as HTMLElement | null
+			expect(message()?.hasAttribute('hidden')).toBe(true)
 
 			view.setErrorMessage('New error')
-			expect(view.el.querySelector('.notification.is-danger')).not.toBeNull()
+			expect(message()?.hasAttribute('hidden')).toBe(false)
 			expect(view.el.textContent).toContain('New error')
 		})
 	})
@@ -247,7 +254,7 @@ describe('username validation', () => {
 
 			expect(usernameInput.classList.contains('is-danger')).toBe(false)
 			expect(usernameInput.getAttribute('aria-invalid')).toBe('false')
-			expect(view.el.querySelector('.help.is-danger')).toBeNull()
+			expect(view.el.querySelector('[data-role="username-help"]')?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('submits form on Enter key in username field', () => {
@@ -334,7 +341,7 @@ describe('password field', () => {
 			vi.advanceTimersByTime(150)
 
 			expect(passwordInput.classList.contains('is-danger')).toBe(false)
-			expect(passwordInput.closest('.field')?.querySelector('.help.is-danger')).toBeNull()
+			expect(passwordInput.closest('.field')?.querySelector('.help.is-danger')?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('submits form on Enter key in password field', () => {
@@ -361,21 +368,23 @@ describe('password field', () => {
 			expect(view._totpInput?.getAttribute('autocomplete')).toBe('one-time-code')
 		})
 
-		it('does not render TOTP field when needsTotpPasscode is false', () => {
+		it('hides TOTP field when needsTotpPasscode is false', () => {
 			const view = createView({needsTotpPasscode: false})
-			expect(view._totpInput).toBeNull()
+			expect(view._totpInput).not.toBeNull()
+			expect(view.el.querySelector('[data-role="totp-field"]')?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('updates TOTP field visibility via setNeedsTotpPasscode', () => {
 			const view = createView({needsTotpPasscode: false})
-			expect(view._totpInput).toBeNull()
+			const field = () => view.el.querySelector('[data-role="totp-field"]') as HTMLElement | null
+			expect(field()?.hasAttribute('hidden')).toBe(true)
 
 			view.setNeedsTotpPasscode(true)
-			expect(view._totpInput).not.toBeNull()
+			expect(field()?.hasAttribute('hidden')).toBe(false)
 			expect(document.activeElement).toBe(view._totpInput)
 
 			view.setNeedsTotpPasscode(false)
-			expect(view._totpInput).toBeNull()
+			expect(field()?.hasAttribute('hidden')).toBe(true)
 		})
 
 		it('submits form on Enter key in TOTP field', () => {
