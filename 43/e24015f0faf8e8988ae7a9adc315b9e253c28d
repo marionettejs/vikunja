@@ -1,0 +1,20 @@
+frontend/src/router/index.ts
+  h_0f06c286dda36f 438
+frontend/src/views/AboutHost.test.ts
+  h_0f06c286dda36f 1,8,10-11,14-40,56-57,66,73,79,81,85,87,100,103,105-117,120,125-130,133,141-146,149-151,153-159,161-163,165-171,173-176,178
+frontend/src/views/AboutHost.vue
+  h_0f06c286dda36f 2-3,6,9,11-83,86-89
+frontend/tests/e2e/misc/about.spec.ts
+  h_0f06c286dda36f 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "43e24015f0faf8e8988ae7a9adc315b9e253c28d",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
