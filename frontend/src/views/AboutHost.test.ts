@@ -10,6 +10,7 @@ import {useConfigStore} from '@/stores/config'
 import {ModalCardView} from '@/marionette/views/ModalCardView'
 import AboutVersionView from '@/marionette/views/AboutVersionView'
 import en from '@/i18n/lang/en.json'
+import {VERSION as frontendVersion} from '@/version.json'
 
 interface MockModalShape {
 	options: Record<string, unknown>
@@ -114,7 +115,7 @@ describe('AboutHost.vue', () => {
 
 		expect(AboutVersionView).toHaveBeenCalledTimes(1)
 		const versionOptions = (AboutVersionView as unknown as ReturnType<typeof vi.fn>).mock.calls[0][0]
-		expect(versionOptions.lines).toEqual(['Version: dev'])
+		expect(versionOptions.lines).toEqual([`Version: ${frontendVersion}`])
 	})
 
 	it('renders two version lines when config version differs from frontend version', async () => {
@@ -125,7 +126,7 @@ describe('AboutHost.vue', () => {
 		expect(AboutVersionView).toHaveBeenCalledTimes(2)
 		const versionOptions = (AboutVersionView as unknown as ReturnType<typeof vi.fn>).mock.calls[1][0]
 		expect(versionOptions.lines).toEqual([
-			'Frontend version: dev',
+			`Frontend version: ${frontendVersion}`,
 			'API version: 2.5.0',
 		])
 	})
@@ -141,7 +142,7 @@ describe('AboutHost.vue', () => {
 		expect(AboutVersionView).toHaveBeenCalledTimes(3)
 		const versionOptions = (AboutVersionView as unknown as ReturnType<typeof vi.fn>).mock.calls[2][0]
 		expect(versionOptions.lines).toEqual([
-			'Frontend-Version (de): dev',
+			`Frontend-Version (de): ${frontendVersion}`,
 			'API-Version (de): 2.5.0',
 		])
 	})

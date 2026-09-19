@@ -10,7 +10,9 @@ test.describe('About dialog', () => {
 	})
 
 	test('shows version information', async ({authenticatedPage: page}) => {
-		await expect(page.locator('.card-content p').first()).toBeVisible()
+		const firstLine = page.locator('.card-content p').first()
+		await expect(firstLine).toBeVisible()
+		await expect(firstLine).not.toBeEmpty()
 	})
 
 	test('closes on footer button click and navigates back', async ({authenticatedPage: page}) => {
