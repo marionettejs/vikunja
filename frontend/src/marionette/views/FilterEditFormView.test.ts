@@ -184,6 +184,7 @@ describe('FilterEditFormView', () => {
 			const view = createView({titleValid: false, loading: false})
 			view.setTitleValid(true)
 			view.setLoading(true)
+			expect(view._titleInput?.disabled).toBe(true)
 			view.setLoading(false)
 			expect(view._titleInput?.disabled).toBe(false)
 		})

@@ -150,10 +150,6 @@ export const FilterEditFormView = View.extend({
 		`
 	},
 
-	initialize(this: FilterEditFormViewContext) {
-		this._initExtensions()
-	},
-
 	onRender(this: FilterEditFormViewContext) {
 		this._loading = this._options().loading
 		this._titleValid = this._options().titleValid

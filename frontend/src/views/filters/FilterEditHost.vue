@@ -173,7 +173,7 @@ watch(
 )
 
 watch(
-	() => [filter.value.id, filter.value.title, filter.value.description] as const,
+	() => filter.value.id,
 	() => {
 		populateForm()
 	},

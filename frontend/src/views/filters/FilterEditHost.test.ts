@@ -177,9 +177,9 @@ describe('FilterEditHost', () => {
 		state.titleValid.value = true
 		await flushPromises()
 
-		const first = modal.options.onPrimary()
-		const second = modal.options.onPrimary()
-		await Promise.all([first, second])
+		modal.options.onPrimary()
+		modal.options.onPrimary()
+		await flushPromises()
 
 		expect(mockSaveFilterWithValidation).toHaveBeenCalledTimes(1)
 	})

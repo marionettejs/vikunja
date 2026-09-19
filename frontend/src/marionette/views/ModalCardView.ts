@@ -76,7 +76,7 @@ export const ModalCardView = View.extend({
 			primaryButtonClass: opts.primaryButtonClass,
 			hideCancel: Boolean(opts.hideCancel),
 			cancelButtonClass: opts.cancelButtonClass,
-			tertiaryLabel: opts.tertiaryLabel,
+			tertiaryLabel: opts.tertiaryLabel && opts.onTertiary ? opts.tertiaryLabel : undefined,
 		}
 	},
 

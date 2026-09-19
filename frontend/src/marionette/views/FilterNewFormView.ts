@@ -178,7 +178,7 @@ export const FilterNewFormView = View.extend({
 		return createEditorExtensions({
 			t: opts.t,
 			isEditing: () => true,
-			isEditEnabled: () => !opts.loading,
+			isEditEnabled: () => !this._loading,
 			placeholder: () => opts.t(PLACEHOLDER_DESCRIPTION),
 			contentHasChanged: () => false,
 			bubbleSave: () => {},
