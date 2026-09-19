@@ -2,7 +2,7 @@
 import {onMounted, onUnmounted, watch, ref, nextTick, computed, shallowReactive} from 'vue'
 import {useRouter} from 'vue-router'
 import {i18n} from '@/i18n'
-import {PasswordResetService} from '@/services/passwordReset'
+import PasswordResetService from '@/services/passwordReset'
 import {RequestPasswordResetFormView, type RequestPasswordResetFormViewInstance} from '@/marionette/views/RequestPasswordResetFormView'
 import {getErrorText} from '@/message'
 
