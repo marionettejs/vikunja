@@ -18,7 +18,7 @@ import {useConfigStore} from '@/stores/config'
 
 import Login from '@/views/user/Login.vue'
 import Register from '@/views/user/Register.vue'
-import LinkSharingAuth from '@/views/sharing/LinkSharingAuth.vue'
+import LinkSharingAuthHost from '@/views/sharing/LinkSharingAuthHost.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
 import UpcomingTasks from '@/views/tasks/ShowTasks.vue'
 
@@ -207,8 +207,8 @@ const router = createRouter({
 			path: '/share/:share/auth',
 			name: 'link-share.auth',
 			// FIXME: use dynamic imports
-			// component: () => import('@/views/sharing/LinkSharingAuth.vue'),
-			component: LinkSharingAuth,
+			// component: () => import('@/views/sharing/LinkSharingAuthHost.vue'),
+			component: LinkSharingAuthHost,
 		},
 		{
 			path: '/tasks/:id',
