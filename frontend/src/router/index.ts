@@ -19,6 +19,7 @@ import {useConfigStore} from '@/stores/config'
 import LoginHost from '@/views/user/LoginHost.vue'
 import RegisterHost from '@/views/user/RegisterHost.vue'
 import RequestPasswordResetHost from '@/views/user/RequestPasswordResetHost.vue'
+import OAuthAuthorizeHost from '@/views/user/OAuthAuthorizeHost.vue'
 import LinkSharingAuthHost from '@/views/sharing/LinkSharingAuthHost.vue'
 import OpenIdAuth from '@/views/user/OpenIdAuth.vue'
 import UpcomingTasks from '@/views/tasks/ShowTasks.vue'
@@ -429,7 +430,7 @@ const router = createRouter({
 		{
 			path: '/oauth/authorize',
 			name: 'oauth.authorize',
-			component: () => import('@/views/user/OAuthAuthorize.vue'),
+			component: OAuthAuthorizeHost,
 		},
 		{
 			path: '/about',
