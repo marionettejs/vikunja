@@ -206,7 +206,7 @@ onUnmounted(() => {
 			id="password-view-container"
 		/>
 		<Message
-			v-if="errorMessage !== ''"
+			v-if="errorMessage !== '' && !authenticateWithPassword"
 			variant="danger"
 			class="mbs-4"
 		>
