@@ -1,0 +1,21 @@
+frontend/src/marionette/views/OAuthAuthorizeView.test.ts
+  s_85aebd1623278c::t_bec51306f8483e 1-178
+frontend/src/marionette/views/OAuthAuthorizeView.ts
+  s_85aebd1623278c::t_243a9e749ce891 1-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3f64355df5bbb60eba05e773412f03baf7447233",
+  "prompts": {},
+  "sessions": {
+    "s_85aebd1623278c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09566-a835-71d3-9051-74118051e3a8",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
