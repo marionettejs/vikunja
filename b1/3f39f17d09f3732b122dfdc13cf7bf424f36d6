@@ -1,0 +1,20 @@
+frontend/src/marionette/views/LinkSharingPasswordView.test.ts
+  h_0f06c286dda36f 1-156
+frontend/src/marionette/views/LinkSharingPasswordView.ts
+  h_0f06c286dda36f 1-158
+frontend/src/router/index.ts
+  h_0f06c286dda36f 21,210-211
+frontend/src/views/sharing/LinkSharingAuthHost.vue
+  h_0f06c286dda36f 1-210
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b13f39f17d09f3732b122dfdc13cf7bf424f36d6",
+  "prompts": {},
+  "humans": {
+    "h_0f06c286dda36f": {
+      "author": "Paul Falgout <paul.falgout@roundingwell.com>"
+    }
+  }
+}
