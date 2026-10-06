@@ -4,33 +4,33 @@ import type {IEmailUpdate} from '@/modelTypes/IEmailUpdate'
 
 export default class EmailUpdateService extends AbstractService<IEmailUpdate> {
 	// The email update endpoints only exist on /api/v2, hence the absolute URLs.
-	async update(model: IEmailUpdate) {
+	async update(model: IEmailUpdate, signal?: AbortSignal) {
 		const cancel = this.setLoading()
 		try {
 			// v2 rejects unknown properties, so never send the whole model (AbstractModel adds maxPermission)
 			await this.http.put(apiV2Url('user/settings/email'), {
 				newEmail: model.newEmail,
 				password: model.password,
-			})
+			}, {signal})
 			return model
 		} finally {
 			cancel()
 		}
 	}
 
-	async cancel() {
+	async cancel(signal?: AbortSignal) {
 		const cancel = this.setLoading()
 		try {
-			await this.http.delete(apiV2Url('user/settings/email'))
+			await this.http.delete(apiV2Url('user/settings/email'), {signal})
 		} finally {
 			cancel()
 		}
 	}
 
-	async resend() {
+	async resend(signal?: AbortSignal) {
 		const cancel = this.setLoading()
 		try {
-			await this.http.post(apiV2Url('user/settings/email/resend'))
+			await this.http.post(apiV2Url('user/settings/email/resend'), undefined, {signal})
 		} finally {
 			cancel()
 		}

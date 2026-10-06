@@ -1,6 +1,6 @@
 .field.has-addons.no-input-mobile {
   .control:first-child {
-    width: 100%;
+    inline-size: 100%;
 
 		@media screen and (max-width: $tablet) {
 				display: none;
@@ -8,7 +8,7 @@
   }
 
   .button {
-    height: 40px;
+    block-size: 40px;
 
 		@media screen and (max-width: $tablet) {
 			border-radius: $radius !important;

@@ -24,11 +24,12 @@ export default class ApiTokenService extends AbstractService<IApiToken> {
 		return new ApiTokenModel(data)
 	}
 	
-	async getAvailableRoutes() {
+	async getAvailableRoutes(signal?: AbortSignal) {
 		const cancel = this.setLoading()
 
 		try {
-			const response = await this.http.get('/routes')
+			const response = await this.http.get('/routes', {signal})
+			signal?.throwIfAborted()
 			return response.data
 		} finally {
 			cancel()

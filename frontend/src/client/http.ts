@@ -74,7 +74,7 @@ export function configureApiClient(): void {
 
 		if (replacementToken === retryRequest.token) {
 			try {
-				await refreshToken(true)
+				await refreshToken(true, retryRequest.token)
 			} catch {
 				return response
 			}

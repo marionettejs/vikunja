@@ -7,8 +7,8 @@ export default class AdminOverviewService extends AbstractService<IAdminOverview
 		return new AdminOverviewModel(data)
 	}
 
-	async getOverview() {
-		const {data} = await this.http.get('/admin/overview')
+	async getOverview(signal?: AbortSignal) {
+		const {data} = await this.http.get('/admin/overview', {signal})
 		return this.modelGetFactory(data)
 	}
 }

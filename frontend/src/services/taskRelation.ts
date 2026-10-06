@@ -10,7 +10,7 @@ export default class TaskRelationService extends AbstractService<ITaskRelation> 
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TaskRelationModel>[0]) {
 		return new TaskRelationModel(data)
 	}
 }

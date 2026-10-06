@@ -57,7 +57,7 @@ cd frontend && pnpm lint:fix && pnpm lint:styles:fix
 
 Fix any errors the lint commands report, then try comitting again.
 
-You only need to run the lint for the backend when changing backend code, and the lint for the frontend only when changing frontend code. Similarly, only run style linting when modifying CSS/SCSS files or Vue component styles.
+You only need to run the lint for the backend when changing backend code, and the lint for the frontend only when changing frontend code. Similarly, only run style linting when modifying CSS/SCSS files.
 
 ## API Development
 
@@ -82,7 +82,7 @@ Use the **Conventional Commits** style when committing changes (for example, `fe
 
 ## Frontend Development Guidelines
 
-The web client lives in `frontend/` and uses Vue 3 + TypeScript. Formatting and style are enforced by `frontend/eslint.config.js` and `frontend/.editorconfig` — obey what they specify.
+The web client lives in `frontend/` and uses Marionette 5.0.0-rc.2 + TypeScript. Formatting and style are enforced by `frontend/eslint.config.js` and `frontend/.editorconfig` — obey what they specify.
 
 ## Translations
 

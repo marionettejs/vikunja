@@ -11,28 +11,30 @@ export default class TotpService extends AbstractService<ITotp> {
 		this.paths.get = this.urlPrefix
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TotpModel>[0]) {
 		return new TotpModel(data)
 	}
 
-	enroll() {
-		return this.post(`${this.urlPrefix}/enroll`, {})
+	enroll(signal?: AbortSignal) {
+		return this.post(`${this.urlPrefix}/enroll`, new TotpModel(), signal)
 	}
 
-	enable(model) {
-		return this.post(`${this.urlPrefix}/enable`, model)
+	enable(model: {passcode: string}, signal?: AbortSignal) {
+		return this.http.post(`${this.urlPrefix}/enable`, model, {signal})
 	}
 
-	disable(model) {
-		return this.post(`${this.urlPrefix}/disable`, model)
+	disable(model: {password: string}, signal?: AbortSignal) {
+		return this.http.post(`${this.urlPrefix}/disable`, model, {signal})
 	}
 
-	async qrcode() {
+	async qrcode(signal?: AbortSignal) {
 		const response = await this.http({
 			url: `${this.urlPrefix}/qrcode`,
 			method: 'GET',
 			responseType: 'blob',
+			signal,
 		})
+		signal?.throwIfAborted()
 		return new Blob([response.data])
 	}
 }

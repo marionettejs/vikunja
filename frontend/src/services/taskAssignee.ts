@@ -10,7 +10,7 @@ export default class TaskAssigneeService extends AbstractService<ITaskAssignee> 
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TaskAssigneeModel>[0]) {
 		return new TaskAssigneeModel(data)
 	}
 }

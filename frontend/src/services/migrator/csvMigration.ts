@@ -87,7 +87,7 @@ export const SUPPORTED_DATE_FORMATS = [
 	'2006-01-02 15:04:05',
 ] as const
 
-export default class CSVMigrationService extends AbstractService {
+export default class CSVMigrationService extends AbstractService<MigrationStatus, MigrationStatus, DetectionResult> {
 	constructor() {
 		super({})
 	}
@@ -100,25 +100,26 @@ export default class CSVMigrationService extends AbstractService {
 		return false
 	}
 
-	async detect(file: File): Promise<DetectionResult> {
+	async detect(file: File, signal?: AbortSignal): Promise<DetectionResult> {
 		return this.uploadFile(
 			'/migration/csv/detect',
 			file,
 			'import',
+			signal,
 		)
 	}
 
-	async preview(file: File, config: ImportConfig): Promise<PreviewResult> {
+	async preview(file: File, config: ImportConfig, signal?: AbortSignal): Promise<PreviewResult> {
 		const data = new FormData()
 		data.append('import', file)
 		data.append('config', JSON.stringify(config))
-		return this.uploadFormData('/migration/csv/preview', data)
+		return this.uploadFormData('/migration/csv/preview', data, signal) as unknown as Promise<PreviewResult>
 	}
 
-	async migrate(file: File, config: ImportConfig): Promise<{ message: string }> {
+	async migrate(file: File, config: ImportConfig, signal?: AbortSignal): Promise<{ message: string }> {
 		const data = new FormData()
 		data.append('import', file)
 		data.append('config', JSON.stringify(config))
-		return this.uploadFormData('/migration/csv/migrate', data)
+		return this.uploadFormData('/migration/csv/migrate', data, signal) as unknown as Promise<{message:string}>
 	}
 }

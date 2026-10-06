@@ -24,7 +24,7 @@ export function fetchAttachmentBlobUrl(attachment: Pick<IAttachment, 'id' | 'tas
 		return pending
 	}
 
-	const request = blobService.getBlobUrl(attachment, size)
+	const request = blobService.getAttachmentBlobUrl(attachment, size)
 		.then(url => {
 			blobUrlCache.set(key, url)
 			pendingBlobRequests.delete(key)
@@ -46,11 +46,11 @@ export function clearAttachmentBlobCache() {
 	pendingBlobRequests.clear()
 }
 
-export async function uploadFile(taskId: number, file: File, onSuccess?: (url: string) => void): Promise<IAttachment[]> {
+export async function uploadFile(taskId: number, file: File, onSuccess?: (url: string) => void, signal?: AbortSignal): Promise<IAttachment[]> {
 	const attachmentService = new AttachmentService()
 	const files = [file]
 
-	return await uploadFiles(attachmentService, taskId, files, onSuccess)
+	return await uploadFiles(attachmentService, taskId, files, onSuccess, signal)
 }
 
 export async function uploadFiles(
@@ -58,9 +58,11 @@ export async function uploadFiles(
 	taskId: number,
 	files: File[] | FileList,
 	onSuccess?: (attachmentUrl: string) => void,
+	signal?: AbortSignal,
 ): Promise<IAttachment[]> {
 	const attachmentModel = new AttachmentModel({taskId})
-	const response = await attachmentService.create(attachmentModel, files)
+	const response = await attachmentService.upload(attachmentModel, files, signal)
+	signal?.throwIfAborted()
 	console.debug(`Uploaded attachments for task ${taskId}, response was`, response)
 
 	const uploaded: IAttachment[] = []

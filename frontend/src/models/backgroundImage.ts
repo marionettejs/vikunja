@@ -5,10 +5,7 @@ export default class BackgroundImageModel extends AbstractModel<IBackgroundImage
 	id = 0
 	url = ''
 	thumb = ''
-	info: {
-		author: string
-		authorName: string
-	} = {}
+	info: IBackgroundImage['info'] = {}
 	blurHash = ''
 
 	constructor(data: Partial<IBackgroundImage>) {

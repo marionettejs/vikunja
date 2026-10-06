@@ -1,11 +1,10 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "extends": "./tsconfig.base.json",
   "include": [
     "env.d.ts",
     "env.config.d.ts",
     "src/**/*.d.ts",
     "src/**/*",
-    "src/**/*.vue",
     "src/**/*.json",
     "tailwind.config.js"
   ],

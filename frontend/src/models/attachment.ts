@@ -50,9 +50,9 @@ export function previewKind(attachment: IAttachment): PreviewKind | null {
 export default class AttachmentModel extends AbstractModel<IAttachment> implements IAttachment {
 	id = 0
 	taskId = 0
-	createdBy: IUser = UserModel
-	file: IFile = FileModel
-	created: Date = null
+	createdBy: IUser = new UserModel()
+	file: IFile = new FileModel({})
+	created: Date = new Date(0)
 
 	constructor(data: Partial<IAttachment>) {
 		super()

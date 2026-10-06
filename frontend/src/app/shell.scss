@@ -1,0 +1,580 @@
+.native-app {
+  .native-shell-mount {
+    display: contents;
+  }
+  .native-content-auth {
+    position: relative;
+    z-index: 1;
+
+    .menu-hide-button {
+      position: fixed;
+      inset-block-start: 0.5rem;
+      inset-inline-end: 0.5rem;
+      z-index: 31;
+      inline-size: 3rem;
+      block-size: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: var(--grey-400);
+      line-height: 1;
+      transition: all $transition;
+
+      @media screen and (min-width: $tablet) {
+        display: none;
+      }
+
+      &:hover,
+      &:focus {
+        color: var(--grey-600);
+      }
+    }
+
+    .app-container {
+      min-block-size: calc(100vh - 65px);
+
+      @media screen and (max-width: $tablet) {
+        padding-block-start: $navbar-height;
+      }
+    }
+
+    .app-content {
+      --sidebar-width: #{$navbar-width};
+
+      display: flow-root;
+      z-index: 10;
+      position: relative;
+      padding: 1.5rem 0.5rem 0;
+      // TODO refactor: DRY `transition-timing-function` with `./Navigation.vue`.
+      transition: margin-inline-start $transition-duration;
+
+      @media screen and (max-width: $tablet) {
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+        min-block-size: calc(100vh - 4rem);
+      }
+
+      @media screen and (min-width: $tablet) {
+        padding: $navbar-height + 1.5rem 1.5rem 0 1.5rem;
+      }
+
+      &.is-menu-enabled {
+        @media screen and (min-width: $tablet) {
+          margin-inline-start: var(--sidebar-width);
+        }
+      }
+
+      // Used to make sure the spinner is always in the middle while loading
+      > .loader-container {
+        min-block-size: calc(100vh - #{$navbar-height + 1.5rem + 1rem});
+      }
+
+      // FIXME: This should be somehow defined inside Card.vue
+      .card {
+        background: var(--white);
+      }
+    }
+
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset-block-start: 0;
+      inset-block-end: 0;
+      inset-inline-start: 0;
+      inset-inline-end: 0;
+      block-size: 100vh;
+      inline-size: 100vw;
+      background: hsla(var(--grey-100-hsl), 0.8);
+      z-index: 5;
+      opacity: 0;
+      transition: all $transition;
+
+      @media screen and (max-width: $tablet) {
+        display: block;
+        opacity: 1;
+      }
+    }
+
+    .keyboard-shortcuts-button {
+      position: fixed;
+      inset-block-end: calc(1rem - 4px);
+      inset-inline-end: 1rem;
+      z-index: 4500; // The modal has a z-index of 4000
+      color: var(--grey-500);
+      transition: color $transition;
+
+      @media screen and (max-width: $tablet) {
+        display: none;
+      }
+    }
+  }
+
+  .logo {
+    display: block;
+
+    padding-inline-start: 1rem;
+    margin-inline-end: 1rem;
+    margin-block-end: 1rem;
+
+    @media screen and (min-width: $tablet) {
+      display: none;
+    }
+  }
+
+  .menu-container {
+    --sidebar-width: #{$navbar-width};
+
+    display: flex;
+    flex-direction: column;
+    background: var(--site-background);
+    color: $vikunja-nav-color;
+    padding: 1rem 0;
+    transition: transform $transition-duration ease-in;
+    position: fixed;
+    inset-block-start: $navbar-height;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    transform: translateX(-100%);
+    inline-size: var(--sidebar-width);
+    overflow-y: auto;
+
+    [dir="rtl"] & {
+      transform: translateX(100%);
+    }
+
+    @media screen and (max-width: $tablet) {
+      inset-block-start: 0;
+      inline-size: 70vw;
+      z-index: 20;
+    }
+
+    &.is-active {
+      transform: translateX(0);
+      transition: transform $transition-duration ease-out;
+    }
+
+    &.is-resizing {
+      transition: none;
+    }
+  }
+
+  .resize-handle {
+    position: absolute;
+    inset-block-start: 0;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    inline-size: 4px;
+    cursor: ew-resize;
+    background: transparent;
+    transition: background-color $transition-duration ease;
+    touch-action: none;
+
+    &:hover,
+    &:active {
+      background-color: var(--primary);
+    }
+  }
+
+  .top-menu .menu-list {
+    li {
+      font-weight: 600;
+      font-family: $vikunja-font;
+    }
+
+    .list-menu-link,
+    li > a {
+      padding-inline-start: 2rem;
+      display: inline-block;
+
+      .icon {
+        padding-block-end: 0.25rem;
+      }
+    }
+  }
+
+  .menu + .menu {
+    padding-block-start: math.div($navbar-padding, 2);
+  }
+
+  $user-dropdown-width-mobile: 5rem;
+
+  .navbar {
+    --navbar-button-min-width: 40px;
+    --navbar-gap-width: 1rem;
+    --navbar-icon-size: 1.25rem;
+
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    z-index: 30;
+
+    display: flex;
+    justify-content: space-between;
+    gap: var(--navbar-gap-width);
+    min-block-size: $navbar-height;
+
+    background: var(--site-background);
+
+    @media screen and (min-width: $tablet) {
+      padding-inline-start: 2rem;
+      align-items: stretch;
+    }
+
+    &.menu-active {
+      @media screen and (max-width: $tablet) {
+        z-index: 0;
+      }
+    }
+
+    // FIXME: notifications should provide a slot for the icon instead, so that we can style it as we want
+    .trigger-button {
+      color: var(--grey-400);
+      font-size: var(--navbar-icon-size);
+    }
+  }
+
+  .logo-link {
+    display: none;
+
+    @media screen and (min-width: $tablet) {
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      margin-inline-end: 0.5rem;
+    }
+  }
+
+  .menu-button {
+    margin-inline-end: auto;
+    align-self: stretch;
+    flex: 0 0 auto;
+
+    @media screen and (max-width: $tablet) {
+      margin-inline-start: 1rem;
+    }
+  }
+
+  .project-title-wrapper {
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+
+    // this makes the truncated text of the project title work
+    // inside the flexbox parent
+    min-inline-size: 0;
+
+    @media screen and (min-width: $tablet) {
+      padding-inline: var(--navbar-gap-width);
+    }
+  }
+
+  .navbar .project-title {
+    font-size: 1rem;
+    // We need the following for overflowing ellipsis to work
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    @media screen and (min-width: $tablet) {
+      font-size: 1.75rem;
+    }
+  }
+
+  .project-title-dropdown {
+    align-self: stretch;
+
+    .project-title-button {
+      flex-grow: 1;
+    }
+  }
+
+  .project-title-button {
+    align-self: stretch;
+    min-inline-size: var(--navbar-button-min-width);
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    font-size: var(--navbar-icon-size);
+    color: var(--grey-400);
+  }
+
+  .navbar-end {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: stretch;
+
+    > * {
+      min-inline-size: var(--navbar-button-min-width);
+    }
+  }
+
+  .username-dropdown-trigger {
+    padding-inline-start: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    gap: 0.5rem;
+
+    [dir="rtl"] & {
+      flex-direction: row-reverse;
+    }
+
+    @media screen and (max-width: $tablet) {
+      padding-inline-end: 0.5rem;
+    }
+
+    @media screen and (min-width: $tablet) {
+      padding-inline-end: 0.75rem;
+    }
+  }
+
+  .username-dropdown-trigger .username {
+    font-family: $vikunja-font;
+
+    @media screen and (max-width: $tablet) {
+      display: none;
+    }
+  }
+
+  .dropdown-icon {
+    transition: transform $transition;
+  }
+
+  .username-dropdown-trigger .avatar {
+    border-radius: 100%;
+    vertical-align: middle;
+    block-size: 40px;
+    margin-inline-end: 0;
+  }
+
+  .no-auth-wrapper {
+    background: var(--site-background) url("@/assets/llama.svg?url") no-repeat
+      fixed bottom left;
+    min-block-size: 100vh;
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+
+    @media screen and (max-width: $fullhd) {
+      padding-block-end: 15rem;
+    }
+  }
+
+  .noauth-container {
+    max-inline-size: $desktop;
+    inline-size: 100%;
+    min-block-size: 60vh;
+    display: flex;
+    background-color: var(--white);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+
+    @media screen and (min-width: $desktop) {
+      border-radius: $radius;
+    }
+  }
+
+  .noauth-container > .image {
+    inline-size: 50%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    @media screen and (max-width: $tablet) {
+      display: none;
+    }
+
+    @media screen and (min-width: $tablet) {
+      background: url("@/assets/no-auth-image.jpg") no-repeat bottom/cover;
+      position: relative;
+
+      &.has-message {
+        justify-content: space-between;
+      }
+
+      // Darken mainly the lower part of the photo where the white heading sits so
+      // the text keeps a reliable contrast ratio across the whole image.
+      &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        inset-inline-end: 0;
+        inset-block-end: 0;
+        background-image: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.7) 0%,
+          rgba(0, 0, 0, 0.4) 35%,
+          rgba(0, 0, 0, 0.15) 100%
+        );
+      }
+
+      > * {
+        position: relative;
+      }
+    }
+  }
+
+  .noauth-container > .content {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 2rem 2rem 1.5rem;
+
+    @media screen and (max-width: $desktop) {
+      inline-size: 100%;
+      max-inline-size: 450px;
+      margin-inline: auto;
+    }
+
+    @media screen and (min-width: $desktop) {
+      inline-size: 50%;
+    }
+  }
+
+  .logo {
+    max-inline-size: 100%;
+    margin: 1rem 0;
+  }
+
+  .image-title {
+    color: hsl(0deg, 0%, 100%);
+    font-size: 2.5rem;
+  }
+}
+
+// Public BaseButton.vue reset, previously loaded through the Vue bootstrap.
+.native-app {
+  :where(.base-button--type-button) {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    background-color: transparent;
+    text-align: center;
+    appearance: none;
+  }
+  :where(.base-button) {
+    cursor: pointer;
+    display: inline-block;
+    color: inherit;
+    font: inherit;
+    user-select: none;
+    pointer-events: auto;
+    &:focus,
+    &.is-focused {
+      outline: transparent;
+    }
+    &[disabled] {
+      cursor: default;
+    }
+  }
+}
+
+.native-app [data-notices] {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 300px;
+  z-index: 9999;
+  padding: 0;
+
+  // Retained presentation from the pinned notification dependency; no Vue runtime.
+  .notification-title {font-weight: 600;}
+  .vue-notification {
+    display: block;
+ box-sizing: border-box;
+ text-align: start;
+ font-size: 12px;
+ padding: 10px;
+ margin: 0 5px 5px;
+ color: #ffffff;
+ background: #44a4fc;
+ border-inline-start: 5px solid #187fe7;
+    &.error {
+      background: #e54d42;
+      border-inline-start-color: #b82e24;
+    }
+    &.success {
+      background: #68cd86;
+      border-inline-start-color: #42a85f;
+    }
+  }
+}
+
+.native-app .navbar-end {
+  [data-account],
+  .dropdown,
+  .dropdown-trigger {
+    display: flex;
+    align-items: stretch;
+  }
+}
+.native-app .menu-show-button {
+  min-block-size: 3rem;
+  inline-size: 3rem;
+  position: relative;
+  &::before,
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    block-size: 3px;
+    inline-size: 2rem;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    background-color: var(--grey-400);
+    border-radius: 2px;
+    transition: all $transition;
+  }
+  &::before {
+    inset-block-start: 50%;
+    transform: translateX(-50%) translateY(-0.4rem);
+  }
+  &::after {
+    inset-block-end: 50%;
+    transform: translateX(-50%) translateY(0.4rem);
+  }
+  &:hover,
+  &:focus {
+    &::before,
+    &::after {
+      background-color: var(--grey-600);
+    }
+    &::before {
+      transform: translateX(-50%) translateY(-0.5rem);
+    }
+    &::after {
+      transform: translateX(-50%) translateY(0.5rem);
+    }
+  }
+}
+
+.native-app .menu-bottom-link {
+  color: var(--grey-300);
+  text-align: center;
+  display: block;
+  padding-block: 1rem;
+  font-size: 0.8rem;
+}
+
+// Region hosts preserve the header flex layout of the pinned Vue frame.
+.native-app .navbar-end {
+ [data-search], [data-timer], [data-notifications], [data-account] {display: contents;}
+ .notifications {min-inline-size: var(--navbar-button-min-width);}
+ .header-search {
+ inline-size: var(--navbar-button-min-width);
+ flex: 0 0 var(--navbar-button-min-width);
+ padding: 0;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ min-inline-size: var(--navbar-button-min-width);
+ font-size: var(--navbar-icon-size);
+ color: var(--grey-400);
+}
+}

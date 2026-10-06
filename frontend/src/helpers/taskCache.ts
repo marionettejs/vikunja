@@ -1,14 +1,10 @@
-import {shallowRef} from 'vue'
+const changed = new Set<() => void>(), identity = new Set<() => void>()
+export function observeTasks(onChanged: () => void, onIdentity: () => void) { changed.add(onChanged); identity.add(onIdentity); return () => { changed.delete(onChanged); identity.delete(onIdentity) } }
 
 import type {ITask} from '@/modelTypes/ITask'
 
 const cache = new Map<number, Promise<ITask>>()
 
-// Bumped on eviction: mounted consumers refetch, keeping the stale task visible meanwhile.
-export const taskCacheVersion = shallowRef(0)
-
-// Bumped when the authenticated identity changes: consumers must drop what they show.
-export const taskCacheIdentityVersion = shallowRef(0)
 
 export function getCachedTask(id: number): Promise<ITask> | undefined {
 	return cache.get(id)
@@ -27,10 +23,10 @@ export function deleteCachedTask(id: number, task: Promise<ITask>) {
 
 export function invalidateCachedTask(id: number) {
 	cache.delete(id)
-	taskCacheVersion.value++
+	for (const callback of changed) callback()
 }
 
 export function clearTaskCache() {
 	cache.clear()
-	taskCacheIdentityVersion.value++
+	for (const callback of identity) callback()
 }

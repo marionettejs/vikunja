@@ -1,3 +1,42 @@
+# Vikunja — Marionette v5 RC2 migration
+
+This repository is the Marionette organization’s independent migration of [Vikunja](https://github.com/go-vikunja/vikunja), the open-source task manager. Thank you to the Vikunja maintainers and contributors for making this application open source and for the work behind its features, design and documentation. Please consider [supporting Vikunja](https://vikunja.io/support/).
+
+The goal is to replace the Vue frontend with **Marionette 5.0.0-rc.2**, while preserving Vikunja’s appearance and user-visible behavior. The Go backend, upstream assets, translations, models and services are retained where reusable. This is an experimental migration and development case study, independent of the upstream project; upstream endorsement is not implied.
+
+## Migration status
+
+The current RC2 implementation contains no Vue runtime, imports or dependencies in its shipped frontend. This is not a completion claim. The last full code checkpoint passed 686 unit tests, 477 of 480 acceptance cases and 13 of 15 production probes. Remaining failures include bot re-enable, two mobile scroll markers and two cold-offline document loads. Visual differences and ownership review gates remain; licensed-backend features, Electron and operating-system IME are not fully verified.
+
+A frozen original Vue version and historical tests are kept as references. The clean RC2 branch starts from pinned Vue upstream. See the [migration record](migration/README.md), [route/feature inventory](migration/rc2-full-route-inventory.md), [architecture review](migration/rc2-architecture-review.md), [acceptance ledger](migration/rc2-parity-ledger.md) and [production comparison](migration/rc2-benchmark-results.md) and [benchmark protocol](migration/rc2-benchmark-protocol.md). Benchmarks measure bounded workloads and do not certify parity or general performance superiority.
+
+## Run and verify this branch
+
+Use Node 24 or newer and the pnpm version pinned in `frontend/package.json`; the Go version is declared in `go.mod`. Follow [Vikunja’s development setup](https://vikunja.io/docs/development/) for backend configuration and Mage installation. Use a local development/test backend rather than production data.
+
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+Configure the local API address in the frontend’s API settings. For a production frontend build, run `pnpm build` from `frontend/`.
+
+```bash
+# From frontend/
+pnpm typecheck
+pnpm lint
+pnpm lint:styles
+pnpm test:unit --run
+
+# From the repository root; Mage manages an isolated test backend
+mage test:e2e '--config=../migration/acceptance/architecture-logo.config.ts'
+```
+
+The focused command runs representative logo, reader, draft and visual checks. The full `migration/acceptance/playwright.config.ts` suite additionally requires the local OpenID provider and public-team fixture configuration described in [the acceptance ledger](migration/rc2-parity-ledger.md); licensed cases require an enabled test backend. Save test output and preserve failed assertions/results. Original frontend test suites remain available through their existing configuration. Upstream project information, attribution and license notices are preserved below; those upstream links describe Vikunja itself rather than a production release of this migration.
+
+---
+
 <img src="https://vikunja.io/images/vikunja-logo.svg" alt="" style="display: block;width: 50%;margin: 0 auto;" width="50%"/>
 
 [![Build Status](https://github.com/go-vikunja/vikunja/actions/workflows/ci.yml/badge.svg)](https://github.com/go-vikunja/vikunja/actions/workflows/ci.yml)

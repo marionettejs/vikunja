@@ -1,0 +1,1852 @@
+{
+  "reference_vue_commit": "5d22d730aa35b0666d0849099c12a1e638baabc9",
+  "archive": "Original sources and tests are preserved in the frozen baseline Git tree.",
+  "runtime_collisions": [],
+  "removed_files": [
+    {
+      "path": "frontend/src/pinia.ts",
+      "sha256": "361d2537c6f7a117c890c4fc387c2c9933dc8f7dc502bf4617aa898f53502182",
+      "test": false
+    },
+    {
+      "path": "frontend/src/sentry.ts",
+      "sha256": "5f4d9b696b5dd7cc9bc76cf059455c7ad7846eb6d3fb06a82787cd2751ad3a9c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/histoire.setup.ts",
+      "sha256": "6d9ba595cc6c5b4846f4581267e89513ab72ec5905f1bef2e889b5fb4cd313bd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/App.test.ts",
+      "sha256": "55163ec50500c64ff857b2cce6718fa8308a4f785215a8b74e18de2b60c15aaf",
+      "test": true
+    },
+    {
+      "path": "frontend/src/App.vue",
+      "sha256": "e8aff9ecdd7b98c7994797d26fe9c2c3f7c1baeb67334c3f86b94b483d53dc45",
+      "test": false
+    },
+    {
+      "path": "frontend/src/models/user.test.ts",
+      "sha256": "261d3e75739166c2c96662085da7dca1266bb632b6bc69a55508df6a58bb7440",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/auth.ts",
+      "sha256": "7dfd48614733d989b08c0b877eecf52448458d8fb2ddeab90c54a2473c4d6b78",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/tasks.test.ts",
+      "sha256": "4a34815bb6ba1f3d188030655b15c06e67f9b597b4698349336f03a705124632",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/timeTracking.ts",
+      "sha256": "335c0a67c16dbc641f5e684bbd0b310adb935c233595c04fd6fca0e15c75f74b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/tasks.ts",
+      "sha256": "753750b67950beeb000a9c5299bf30140ab5b5008324791c10c9bf1e60d3e0e0",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/config.ts",
+      "sha256": "5e2dc9821f267fc413ac7822931c530323d768c99e242ee7af1e5a099c3fda0e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/projects.test.ts",
+      "sha256": "3b9e0df48a73971463a1f6ea356537bbe8b38a2e3785b5b7a89f13596c5f242c",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/projects.ts",
+      "sha256": "14c22e319d5a507ce944823b65366adaa6156eb2d8129b7582af19849673b2c9",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/viewFilters.test.ts",
+      "sha256": "b91a14a83ec7fdff3411c71e6c0c569833eacd1b59fee4c1ba2c02bbeed3f148",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/config.test.ts",
+      "sha256": "dbacd940bc94edaf858a30eb64745e52b7b39b370edcb0928a00bb94be6471ba",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/viewFilters.ts",
+      "sha256": "407bcb974ea467a206f4f53f17bcd6cf94932a8de82dc512e3665cbcbf5e8760",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/timeTracking.test.ts",
+      "sha256": "91fc7c0af3ba18cec89ca56d85009683e0bd5e8e19783f80e459d329e4816988",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/auth.linkShare.test.ts",
+      "sha256": "fc6489589f886c1e3e4793b4d178e1cc28907867e076dfb623716beff291a863",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/base.ts",
+      "sha256": "3d35108c27b41669eb573366eb8624e56b2c4fc9708becdc71221d4755a59475",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/kanban.ts",
+      "sha256": "9edc3d18247618c8a24e0efe885f0c91c2a9e5a6a863aaf9f78864687519c1e7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/stores/kanban.test.ts",
+      "sha256": "45a4ec6cda609f94bd85e95dc12677f6f58c0d3aa11f9d7ec53504e9dd00538b",
+      "test": true
+    },
+    {
+      "path": "frontend/src/stores/auth.renewToken.test.ts",
+      "sha256": "95c332d335efcfc6666a5760c3f25178f0feb2efe3466c11956cf87c480cd051",
+      "test": true
+    },
+    {
+      "path": "frontend/src/marionette/list-widgets.ts",
+      "sha256": "dcd661b080f71cc7e504101c6f6022ac2e7f2b15ca74d7ad52291f6b63e4c4ba",
+      "test": false
+    },
+    {
+      "path": "frontend/src/marionette/vue-boundary.ts",
+      "sha256": "22b3c9b088b432c811815d0abd5faf23f39203da715948535bba0aa8e44d5b20",
+      "test": false
+    },
+    {
+      "path": "frontend/src/marionette/authenticated-shell.test.ts",
+      "sha256": "9a46b70fd439498a02a05dde738c44e8f3b49c63bdc5f4f73de828ebd4cabe86",
+      "test": true
+    },
+    {
+      "path": "frontend/src/marionette/authenticated-shell.ts",
+      "sha256": "c17e2482e88c4a7e3cd8e081b02ec51904ef7463a50641ed6fd4a36e19b4df18",
+      "test": false
+    },
+    {
+      "path": "frontend/src/marionette/task-description.test.ts",
+      "sha256": "29d422a55ca5823b0d32b05ec9d22b1ada96d2f38f19dddde5019f47bf089765",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/parseTaskIdFromUrl.test.ts",
+      "sha256": "edc4b46bae223f41deb02fa5234ae3235dbdd237dbcc3d5d36f6a2c36029934c",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/createAsyncComponent.ts",
+      "sha256": "093800931133f26fa8cd380e4b228f9790efe1b39b598a089b28a654605a45a5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/helpers/useFlatpickrLanguage.ts",
+      "sha256": "80e3886ba1210ee37b5950339ae9c3978fafb50f2d590c06e622527df9d84dee",
+      "test": false
+    },
+    {
+      "path": "frontend/src/services/savedFilter.ts",
+      "sha256": "6b9bad049000e5fce4e6234f1f6521ca3ae3020e503a259a88a083c72ffd847d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/types/global-components.d.ts",
+      "sha256": "21b110731456f7bfe906582900ada6c52cc231afe96cdea323ecb30a6c1df165",
+      "test": false
+    },
+    {
+      "path": "frontend/src/types/vue-fontawesome.ts",
+      "sha256": "ec4282df6b0146ed27053a129062db7f9cf9e7fd5375bb485bba82114a303b90",
+      "test": false
+    },
+    {
+      "path": "frontend/src/i18n/useDayjsLanguageSync.ts",
+      "sha256": "2065918627a15664006ca4767fe77166596975d8c0d2ba231ef6b8ee24fe0028",
+      "test": false
+    },
+    {
+      "path": "frontend/src/i18n/index.ts",
+      "sha256": "52d2f2ac613f69b35b329ce9dcc47298ce677bd567cca4409dfa7f8ccc9945d5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/router/index.test.ts",
+      "sha256": "1a944b9fd85704e6baa87662f116b2dd9802a60c9a2b52f151bf0e84ca8353a5",
+      "test": true
+    },
+    {
+      "path": "frontend/src/router/index.ts",
+      "sha256": "8ab3cd652c01ac9a0f52174904e49d2117a7e48abf8790848bd6235d1e9f9e65",
+      "test": false
+    },
+    {
+      "path": "frontend/src/directives/testid.ts",
+      "sha256": "88dd7ee7f3b28ab979bd0863519bf0cc3353e5307228e3214cf75d8c559d2820",
+      "test": false
+    },
+    {
+      "path": "frontend/src/directives/focus.ts",
+      "sha256": "dcc5944ff88cd1073982bbf2158a6059ea7e1b2ae642a8aed5fa8cc779626aa1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/directives/shortcut.ts",
+      "sha256": "4862b8427143080c47e2efec510a30e981e2cab3027f2f58d8b468c1c55f59e4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/directives/tooltip.ts",
+      "sha256": "590746138bd9d4ac2b3df602555da851a04587e6355a8d4bdc0f14ac96bb0eee",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/About.vue",
+      "sha256": "bb9f51b25f24bb896737ef84f5701130e40456643ddb6f33d1161d2310c07e59",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/Home.vue",
+      "sha256": "cba66cf97b78fd31ed1d25c44514d747012e4bc19b4cf19dad217a6c0bf7f3cd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/404.vue",
+      "sha256": "baebc8212d38cd62391706f9103cede0ca3d99affd10ef18c52b4d21a79768a4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useSidebarResize.ts",
+      "sha256": "57e9436ea4478ce8c9e335da0ed63aa660dcf26a8aaa15ae7359a9662f80b3fa",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useOnline.ts",
+      "sha256": "cd236c56afa7b33e95c07f63873b9ce1cb15f76715cfffe11f3f517c039c9ddf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useDaytimeSalutation.test.ts",
+      "sha256": "7484752d480d57edc12e1b8a16450129131ee9214466e13fd896c5e981d6a760",
+      "test": true
+    },
+    {
+      "path": "frontend/src/composables/useDateDisplay.ts",
+      "sha256": "954fa0a75c744f2ecac8ae962c38fc62e845161c6adc12c7556666abb35936f7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTaskDragToProject.ts",
+      "sha256": "5ad806357d3ec4aa695a782887072669651e7275f20928f50cf795c6eb472405",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useAutoHeightTextarea.ts",
+      "sha256": "09eef6a54d742a2de7689dd7dea1de43bf74300a6798256429a1fd653fb8f510",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTaskList.test.ts",
+      "sha256": "32051284f69efa681f10bef0a9be5fd24dd211d77705a8bb9b1d920807d05ac2",
+      "test": true
+    },
+    {
+      "path": "frontend/src/composables/useTitle.ts",
+      "sha256": "100a5f235853e17370c029713cf00813dc62f622be75b984663f61ec2f32c9d2",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useBodyClass.ts",
+      "sha256": "9b2869c5a6aaa94c12d6ac0f91073da35810db798d5ba4da15b2255733badb69",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useGanttBar.ts",
+      "sha256": "a03b30033f708032dfaa6578429c0f2c29abc0715eaee6853479b3634ad3912f",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useProjectBackground.ts",
+      "sha256": "7cb05f69fffc1e677c3e6f75ca7e5e22b1e7b14a821384df56fef21fe04ba0e5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useRouteWithModal.ts",
+      "sha256": "610024d7b82bda0007967cc90b42a8761215ede52145cca85cabc8545dab398b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useCopyToClipboard.ts",
+      "sha256": "196c60f69651e24ac46c06da68f72a0858e130313f8e36d0835252bea61249a7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTaskDetailShortcuts.ts",
+      "sha256": "86bda1ea75350e8d3bea2de52c78ae3e9359afbdb1410d99d6cc0f6fd503c615",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTimeFormat.ts",
+      "sha256": "8f379c439cc8b8feed04712f9ce0bac49fd65263f4a4a49432c27fdfd1f0971d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTaskList.ts",
+      "sha256": "0ceb18b248e4768e3adc6226372d075bc224aed89ea3cf458358a7ee2664721a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useGlobalNow.ts",
+      "sha256": "120183d2120a190438c16c3056f876aad57b9be8ff417a66f47d9fd0619b4b5a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useRenewTokenOnFocus.ts",
+      "sha256": "03524feea0ef10c1839bc482f02e7a9ee85a54bf15ea920589d4eb76d99977ee",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTaskDragToProject.test.ts",
+      "sha256": "6c7af607fc623982851da640b8f975bff43179fbdec3fc8b056a6f162fd26a4c",
+      "test": true
+    },
+    {
+      "path": "frontend/src/composables/useColorScheme.ts",
+      "sha256": "bcf87d1148948fe90b118b9c405553b7e9341fadb247e3bc61a520662293b504",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useRedirectToLastVisited.ts",
+      "sha256": "07108dcb4a9f95545210734047daad149235fc77970326f607211a69d5372655",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useLabels.ts",
+      "sha256": "64a345d5c04e21d017342633c90914f1ee478b652dc3754b5735646a8d509052",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useRouteFilters.ts",
+      "sha256": "99ae9c51d602582a2edba0bbb520d43c4b16b0fdb9dafedc4a81c45dc05936d1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useDaytimeSalutation.ts",
+      "sha256": "a211fb7cdba2142ab54a8aa8c0280c209270a53c0f57f5615959c6c819fc98e0",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useTimeTrackingFavicon.ts",
+      "sha256": "69e2c96d9b2a8d7b5e6ccffaad92106a492fd1c60f47d4406280327e050d95e0",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useWebSocket.ts",
+      "sha256": "6f8230328e04be7f448b0462a74dc3aedad2ffafa416a9208622aa172b6f8345",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useMenuActive.ts",
+      "sha256": "468b92d7e9a2e1c3db14d13d9c7b6859e2aa80a27eca45ab07964e941f88b4bd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/quickAddMagic.test.ts",
+      "sha256": "7bab5a7b6bca53aa0657d981e2eec41c9e3bcf472f518b1f8e728395dddbc7bc",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithValues.vue",
+      "sha256": "73c1690e85cc9206ead65ac58722664821d5abc8bcd8966ab8ba6bbe38524b51",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithRange.vue",
+      "sha256": "ddabd71382722d719cbf4b8d17e1020de869e0933f2acb15e6cd51a8bcd682fb",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/date/DatemathHelp.vue",
+      "sha256": "400e1e927589c4f7eeae3eaa91dfa4046768c63bd9fc94daf3c39ecc37d54bff",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/date/DatemathHelp.story.vue",
+      "sha256": "cd81ca321ddf5663e0e31e1bd49301ce7ab49a34bea3f623b523cc7c5b1e1dc1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithRange.test.ts",
+      "sha256": "af06f298aa6648cb96a8bc8d0a6f292afe5b6a8d8e355d50277ba63e7753131f",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/sharing/LinkSharing.vue",
+      "sha256": "28a7a5224c85c96804f1d1bdabb64c93cf83a563c1f3771141f6466eeae6319c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/sharing/UserTeam.vue",
+      "sha256": "af20791cdc9cd42f1627637a79c46d4700506a33b90994e280734051cf71c855",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/DemoMode.vue",
+      "sha256": "1c4bde49ebabf582ae29b429370414bbcfdc01e0360144778abf792fda66632c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/AppHeader.vue",
+      "sha256": "1d45ccc417e4c359b7c5c5ebd419b6c904a3e42df42f23615c69c13130a87057",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/Logo.vue",
+      "sha256": "00b765c61050f8b6217970a78a873e1ea54d60d776419a76cea74c8218e03125",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/MenuButton.vue",
+      "sha256": "1cc50d1475c99c4b388f009e5a76398a8a8e98946b7241748daa919f29f17d77",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/ProjectsNavigationItem.vue",
+      "sha256": "cd6948cc707a22c65db8ec57875e6bfbe45f7097d628e777c7867b3c7ae91fef",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/Navigation.vue",
+      "sha256": "334fe44974ab9b1fa5dd70a3eb0b4d3247d70e2d974abac36d2d0dfa3d899a42",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/ImportHint.vue",
+      "sha256": "73bb3db3ecad863ea3a46fa35cfed048444d9d9d28f2a92ad770dfb11bab6d3d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/ContentAuth.vue",
+      "sha256": "5477b26cfb274930e08fc4e39c58cd45be798d45f6f54fff15910ab4bacd0b04",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/UpdateNotification.vue",
+      "sha256": "b62b097727c3ae52a1b52bb03f67bc472b6fde370636813621ddaebe043cb44a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/ProjectsNavigation.vue",
+      "sha256": "31a2451f6a88c40ccc7733aab1ccc38af73eb165e52347d243438323031566fb",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/PoweredByLink.vue",
+      "sha256": "488d3af6de2225b10de940f4fea9ead49a671ae9a009b824b3a74733175e1faf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/AddToHomeScreen.vue",
+      "sha256": "fa9ca9d0c8bb882a4f9558df7a8a0776b66134f058118653ccb0e2745eae19fe",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/home/ContentLinkShare.vue",
+      "sha256": "65ae7a9d3224de4449d2267721dc7373b026df7a2cd04a996520f1110730ad2c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/token/ApiTokenForm.test.ts",
+      "sha256": "168cc12c06898db09f6e3e779fcdb3a6455b357fe676230e2449acb9fe38e2fc",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/token/ApiTokenForm.vue",
+      "sha256": "b02da375ad8f1a46f36bdcbf7d697097b3400aeb5c8ae94392c2c9739a634348",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/base/BaseCheckbox.vue",
+      "sha256": "77949b36004a731f8fddedf36ed02fa685a58dce100c09225c6fd362a0796f1b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/base/Expandable.vue",
+      "sha256": "ad2ee6734e9da9f5da0725e167c893c5be04aa22409293e2057938af166e84a9",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/base/BaseButton.vue",
+      "sha256": "9090d75521580f7aa6595724993f18d5684bf5cc6fd164ce66e0da535fdb4715",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/base/BaseButton.story.vue",
+      "sha256": "40a77c76fea3c82acfaf2b096a4307934d05e24442808be5472eae0255c88f61",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/base/BasePagination.vue",
+      "sha256": "d98753907a72d42164c3f7fef2178ed87c6d4ec078fa8dbe2a695ca75fa4fc50",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRow.vue",
+      "sha256": "ed61c100521ee98578a1238323cc36ec205753336b1e6da85143dc95f7e7a578",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttVerticalGridLines.vue",
+      "sha256": "ff876c2a4654421dfcf6d9e7bffafb64a37b5982d0574ebd85fbfafbf5355091",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChartBody.vue",
+      "sha256": "6ed4cf83f3d61d686df092bd5a76badb5360954792ac5d8cc7bb960b414dd3ef",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttTimelineHeader.vue",
+      "sha256": "faa49736e9c29926e605f51e0b4875a2aaaf66cdceca0d31bb50c6e13e944ef8",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRelationArrows.vue",
+      "sha256": "e8b39bd93ef8097000e75e6b48066f3b937bd0739bb8e9249816cf86691a2369",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChart.test.ts",
+      "sha256": "d1a9287b7f01e98acb913c20fe5b2ec3ab1c9a9eb60fb72d01d611c1d3ae835d",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChart.vue",
+      "sha256": "bacbd2297bc5767a6aeba8bb978b4aeda8d1196c1ed5c84ef725ed674c5184b2",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRowBars.vue",
+      "sha256": "0ee073cf05b6926a2245ca60e6123a12575ff7f7607ab857c63c798432730b7c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/AddTask.vue",
+      "sha256": "cc97ddf78eb2024a8dc6bd719dd463a3be95dc7c66230b69550a99b17f616f76",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/TaskForm.vue",
+      "sha256": "e83dfb0d2224aa14d57aa635106a45328ba21facd70d92aeeac208229f93c81c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickActions.vue",
+      "sha256": "75bfc9a52523cd2a241d7e21cc0c1a65905560c31bb3463c0a925a205cda8081",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickActions.test.ts",
+      "sha256": "73ffc363a0496cde57e0046ed1650552c1b2f1666926ab7b5c2300681a89a5a9",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickAddOverlay.vue",
+      "sha256": "99c91c526c896b96adef4467437f7b29d1d1c1f356b311bddd6074341ea28c90",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/Button.test.ts",
+      "sha256": "228c40c2db4190a7992fada4a02f34fb834cc3f5781cbc357bd280a642662a03",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/Multiselect.vue",
+      "sha256": "e7d5dbde345b6e119acf7e2d75454ad33d2cdd0fcb13ac81ae3098c1805fd7c5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/SimpleButton.vue",
+      "sha256": "d4aeba811da05a25ede929d41f30485a65ae4b9afe061fdccfe28dbbfae4c0cd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/Reactions.vue",
+      "sha256": "548b0bfe0809c08b987b1d69781f981086bd25afcf47eb1c5eccb19eb5bb490e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/Password.vue",
+      "sha256": "d77c7bd46861a42fb62cb1ed3b8843a643c09b20ac8a52d57304473e355b62f8",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormSelect.vue",
+      "sha256": "19417552939a403d2c5f0c41b81a81704098978b1065bf7e5b87ddbf5c2818e3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormInput.vue",
+      "sha256": "be52893e0f81f854f1a63807da596cb4eb39f92e69c73b23240c1eca7ee054bc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormCheckbox.vue",
+      "sha256": "31231cb1531187a3d7429451a3e75797ec685dc8e6b01100da807eac9835418a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/AutocompleteDropdown.vue",
+      "sha256": "8e5a2b9e42e14a0e4e5a44797d0e1c4c5cdc6cbde18627445a5d1ce7e822212c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormInput.test.ts",
+      "sha256": "39ea421bf69b5e29dedc029e2ecd9960404d38fe2b7ce425e715e29a91c4f8ee",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/Multiselect.test.ts",
+      "sha256": "4b65c2db6eab7a7a61a44eb4f455efef25bf47572c37ab71b4ac883c93fc4aae",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/Datepicker.vue",
+      "sha256": "7d9e94f4da92967da51c4ed222185603304fe189188eb27a044b9fc45b84a025",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/ColorPicker.vue",
+      "sha256": "f50015d859e2bf3709a85930837161c1cfe2863407547047e34c5f06350951c1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormCheckbox.test.ts",
+      "sha256": "1f2e2d620765adb73b88b51ba91baccbca7c34668f4ebe5edda958a4a343649a",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/Button.story.vue",
+      "sha256": "79cecaff92defcda8dfffd8bdbf6a386e6ffd8ab3bb9542710da7a0baff48ac2",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormSelect.test.ts",
+      "sha256": "0683652cb585ef0e9375797a9e13ed77ffc347fdf5f3f692cb8eeeaa34446b68",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/ColorPicker.story.vue",
+      "sha256": "9e6402b891ef27b81a75f027a1ca977a11882af59ff5e67b41edd1533bdd1d79",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FancyCheckbox.story.vue",
+      "sha256": "727b2c228ab65ed4fe8794a1ad205f8079bdf99dc0c51891ddaa9fde99a881f9",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FancyCheckbox.vue",
+      "sha256": "037ad11c6e0fcd6a7c878c2bd3e9df7ebbe4a75a0c309afa05dbfd650ab5da1a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormField.test.ts",
+      "sha256": "fae2f52469d16f34a0490aca3974a4fea13d54b872f8c1d4ce9078cf4c547c79",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/Button.vue",
+      "sha256": "789ba6e895ea0ce3dda6e6ea0d8e5f716f20c106c76fd83488d7bac6b02c4785",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/FormField.vue",
+      "sha256": "ada1f6875df21f7c6e5c05668c038ac3a067f299d4fca476fa8fecf6b7691162",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/DatepickerInline.vue",
+      "sha256": "fe3237db067e5d18ba35ab41f3cbaed77b20b376168b451aefcf5f9cd21e9900",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/notifications/Notifications.vue",
+      "sha256": "91dd42b96a135ebd60b29df3189054cdce419143bdb3cec9c5436889e3e3c584",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/ProjectWrapper.test.ts",
+      "sha256": "515ceed73a379530b4f7cc09617e03611a7d990844abdea130a124fd74bad0cf",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/project/ProjectSettingsDropdown.vue",
+      "sha256": "c146cd93cf7bc19bf82eeb3c722012aa55728a60b79f663ab83d92e883b2e6e5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/ProjectWrapper.vue",
+      "sha256": "6ca4212bc2ba8992abe51775f5306b55820a790c9a646121a1b8e0983d3f3a52",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Pagination.vue",
+      "sha256": "283bdad1e6d7a0aa54b88339c9911654223e8a54e6addf3c3a3e2412acc78434",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationItem.test.ts",
+      "sha256": "8229842cc37653248eff90f7e1b4a0c06e4752a13d1c9a2313e3cebb3e412ff0",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/misc/UserAvatar.test.ts",
+      "sha256": "6a54537a0062ae981932a8fcde5323ee280e651bcb17b159418bce9cf28b412d",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/misc/Done.vue",
+      "sha256": "4cf8084a9170712158355e776c98129b9cb4eb98457954c881a9179b091a3346",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/UserAvatar.vue",
+      "sha256": "3d326a69bba9f3b7d825c69ad5e06ca462a36ecbe83ec6fccf9bf6eb13f05160",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/OpenQuickActions.vue",
+      "sha256": "553883e9eb4a5a7efb6b63e5565d3e03ff86bbb8c8392552ace78e47a82a2c66",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/SideNavShell.vue",
+      "sha256": "4d717c407a54abe79a791e5c794968f1b022e04763ad055481e5013291853040",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/NoAuthWrapper.vue",
+      "sha256": "358fab7c50824dcb528c6f893396803aaa488ad9a17bae91884a90963932abab",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ColorBubble.vue",
+      "sha256": "fd5b8d655c7dd8e9ff13f2255621c17ca6c6876f829bb50949d5bc9b5ee1c921",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Message.vue",
+      "sha256": "17a439a80e430cb6399c925450130b413b0c0fceb369c64c7e128cb9fb125561",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ProgressBar.story.vue",
+      "sha256": "6a1ab0b3460bbaf437469f820dfdd65e051029b14ed437ca80305945417c2a58",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Popup.test.ts",
+      "sha256": "ec29aa0d2f53e3c78707398065a39b6151fdc27e4df2ad576979decc93290c34",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/misc/Legal.vue",
+      "sha256": "56311eb38c7cc86c1ec5de3f37dbdf8157bf5c7e0f70ca6eb638dece685dfa26",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Nothing.vue",
+      "sha256": "cd28a32c5a7c3b9a3096db88030ddc87f05a2fb44e40a6d883e45a43486941cf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/CustomTransition.vue",
+      "sha256": "dccd1eb00f1baf0317f85a9fd28a28b3735b2437d969eb00f9589505b87ad3c1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/User.vue",
+      "sha256": "e35e156f0d33d1e0aa25d74eaea2805cfa44a351f876f5aafffaaf857344f313",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Error.vue",
+      "sha256": "f574ed7be0f52e397db4ab6ef3b28835a4508fa5252d78a00af03df7d972d18e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationEmit.vue",
+      "sha256": "7044923201a75fbd6682769cc355a05859e9783eaa266e903b4e602649bb87ff",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Notification.vue",
+      "sha256": "88edbdfe290e8a21f94457836ba477c5757fe21c8b369fdfb963980dcca06c48",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Shortcut.vue",
+      "sha256": "3f08c7300e806bddf3a81991c7fdd379afa45c6a4e1620aa97843ec7f060473b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Popup.vue",
+      "sha256": "e0ef3a74c5c3d22a976a2e3c0f9b4e09ebed02d0a310c9e585191d2457d82e43",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ImageLightbox.vue",
+      "sha256": "5dbfc233fbb3d920b131393592df3a15f4bb46f8ce7d6f1abd61070209bf70bb",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Subscription.vue",
+      "sha256": "12ccb8133fcdd4b5fa0527a99cebd3848c6635eefa3e53f12bd8ad8dc6f9c4df",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ButtonLink.vue",
+      "sha256": "593cd376c392467e518c6f7ee57dcb2edbedc84e088bfea015dff50d3b305580",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/TimeDisplay.vue",
+      "sha256": "2d5ec739d943d55fc0e59f1a94516b6a2a9646bf8e941fd10f2871bacd70b15b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Ready.vue",
+      "sha256": "cc646bdb3adb408d7edae64f7abe66512496f51ae1e92cb7c6eb58240d08253e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ProgressBar.vue",
+      "sha256": "067d77c1185d29e29b2e9eeb25f1df926eb572dd81b531d98dccc3ed40e54e87",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Card.story.vue",
+      "sha256": "8d4bd63d9b3fc5ab558ea1dd16f048e1bb39472d3cf6e85ee645ad7e6d6e4392",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/DropdownItem.vue",
+      "sha256": "8ec9100ab6c783d6049f384e72544cbceaee7295beb638d9636ec6128dedaed5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Icon.ts",
+      "sha256": "d000a2349acc53e15970995d7431c8000b758714941d6f499829d191bf2e35c4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Card.vue",
+      "sha256": "f50302298c59af5bb843c6572ac6e876b2889f3b3d84804f0d5d8c8a79b5a59d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Dropdown.vue",
+      "sha256": "977f242a4fd410ca08d06f6fd7276a970443e1514ff57247cb7227f49082d9a9",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Modal.test.ts",
+      "sha256": "0eb6b9bf76a3110ea83d6a360133b6ec70ee190f7bed69dd771a5a93b1dd09d2",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/misc/CreateEdit.vue",
+      "sha256": "13a03383b52fad71bb8b5ca5bb6ad7a6cd36b95e6e80c0783328e2789c5016d2",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/ShortcutRecorder.vue",
+      "sha256": "96cc10e45ab7208958231f8af8a59be68a16ed316f4414657a74f10b5f39ebfd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Modal.vue",
+      "sha256": "805627e58fe3340ee9b13a572662868b71e3cb104ddce8670f65c46d29720c63",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationItem.vue",
+      "sha256": "6df789df12c839e19d7b87ab09d7aa8731cbbc9ddcbf64b0c7a8295715d62179",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Shortcut.test.ts",
+      "sha256": "530caae2adf3e0e04d3247f164fd78bc73e2fed48cff43f386694e1b85cfdfdd",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/misc/ApiConfig.vue",
+      "sha256": "bc6340034b8d7511135b00ad16276da9ceaed32f5f7b1fa13f36a2a855ae4b4d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/Loading.vue",
+      "sha256": "5d351d04015bda17d4af49bed33214d464ff1d031f53390839ae8e37247d7a5c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/WebhookManager.vue",
+      "sha256": "ec5477a8b34f54e7988864d14e34ae7e8525575d7d900e4595c6dddcc823cf92",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimeEntryForm.vue",
+      "sha256": "5fe1ea8835cdd15d7decf784a582e4b31704a525a7f47ba9f1728f9a79f12adf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TaskTimeTracking.vue",
+      "sha256": "8fe08a307c2fcba9b92b22815e405808f52a05a1a52969d6446dca392ac1cd62",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimeEntryList.vue",
+      "sha256": "eba0b586191762d650484b43e30713deab1a50a9123f56d95261a06f60c18125",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimerBadge.vue",
+      "sha256": "3e9f287c55fc922250caac65140f97b70f9ce5f45962c50d5aad5364b455fd7c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttRowPrimitive.vue",
+      "sha256": "f13dbca9e2901192a09d1b16168c4a395c2c1f1f0298319bee1c4fafa6041a8c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttChartPrimitive.vue",
+      "sha256": "35b19b1879f0a7b1f6c07867e9a07f56d8921972a174fbd8f6c39e49296dee0f",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttBarPrimitive.vue",
+      "sha256": "64540cc66e96c6d82b1ab675ff44e171d2c5d8fdb849eafbf4a6fd3a26775332",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/NativeTaskDescription.vue",
+      "sha256": "452059c29a93ce8a3cbd67a68056426adb7d8714136aa4427645da74386ee04b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/NativeTaskBasics.vue",
+      "sha256": "6c9dd92445286381fbcd3ce06f7e30d227ac038f34fe790df8d3c53e2b22b85e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AssigneeList.vue",
+      "sha256": "de84404415f2312c736a9315d8f0aa6cc7586024887121f1072f5db73521da1b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/EditAssignees.vue",
+      "sha256": "3c99ff0ab49bfe06e6b73f4fce705e53b6d35b5e0924ab6f725ffbc17f128dac",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/KanbanCard.vue",
+      "sha256": "bb677e5cef7fcd3b70e96ab98a99284aa906bd8616bfcdeac623983f08fbfb8b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Attachments.vue",
+      "sha256": "75b775675636c5c21e19f254e7f44a52aa9bb1df698c7e1fddea2abf9b24c2c1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AudioPreview.test.ts",
+      "sha256": "15d3cb9edad37c2424b81bfafa600f37b8907b8e1e3c43c49256fde1ed47f6a8",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/TaskGlanceTooltip.vue",
+      "sha256": "d14f27ad1f1eb91b7d870c81a3d0031c31374ec8dd0cb88b15aacbaa1e373950",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/CreatedUpdated.vue",
+      "sha256": "daafc6a43619acbf82d28e4910efc028a89d56332ca0e6623c0eb150aa9862db",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AudioPreview.vue",
+      "sha256": "db5c25282d791bafacc36fe151276a1186052c6d0504533bae0f477a4eb2c288",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Reminders.story.vue",
+      "sha256": "2c13fc2c84b4b6a82532b8d4ccfaf0c7189ac3675e6843f4bf3e95cb4c5cb0fe",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/TaskGlanceTooltip.test.ts",
+      "sha256": "1a34763096c35751059fb9df5e239b8472cb839f6da9b9f30704d557f8abb275",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/RepeatAfter.vue",
+      "sha256": "a03bba197344eb48af016266e5faa4b2b608b3a9d0a5838b4e3fd48ce6371f55",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/QuickAddMagic.vue",
+      "sha256": "d62cfd03e5a2440b34ec1847c6b1205dce44fca71eacc05b8a0318e8f2e5afb5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/SingleTaskInlineReadonly.vue",
+      "sha256": "8ee761fd8a6b11d07a4aaa4d53e3a07c9d7cb1996f3a85714c4a0ce25b78571b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Reminders.vue",
+      "sha256": "14a7fca3b46d810896c64b78453d4cfac66e132e622d5b12179c619f1f5ee086",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/BucketSelect.vue",
+      "sha256": "2d90d34965eabdc77a1b367b55d7c07ef23e5783f26874be2d725d39ecd54a95",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/DeferTask.vue",
+      "sha256": "104265dbcbac4a7279cbbb5a9ade85defcc2e5aedbbc59a3e2e28c88f9d9c0ab",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ProjectSearch.vue",
+      "sha256": "59c6a6f069f824529d7eb927bed41472a666429358d067d1ba3aa844f8062ae7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/RelatedTasks.vue",
+      "sha256": "57558597c96f1b0377eb415f1e724aea62af36b78a5a59212862a82a716f5355",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/DateTableCell.vue",
+      "sha256": "0342b6063c0ccafa1d693f653e7b41a5bdb77cc4f7efa9aa8398eeb1b69db514",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PrioritySelect.vue",
+      "sha256": "c4964cdcb98d73e3fee695723e2456564615fcba77b55687ef541457c7baf4ce",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Attachments.test.ts",
+      "sha256": "0c399c6579bd3708385ea5d6a89696a5af574485d69cf6bc17dcc2de31723dc2",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/SingleTaskInProject.vue",
+      "sha256": "e0115e5e4881ada7c05002dbf3bedc8bdbcc9d7ee0071584fe723d461ac26c47",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Heading.vue",
+      "sha256": "3c5f1755212a4c31d4909d12944b1bb3495a79ebf398cf4daec51a0d0b051e16",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/CommentCount.vue",
+      "sha256": "1b7861372b2f2ada2a1034622414fd17dac3cedcb95b76d0fed2f55ddd7cf9f5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Label.vue",
+      "sha256": "d00e7b70315e374aedeb290a8b209b64bf7e7990ac7109c188c804677670e144",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ChecklistSummary.vue",
+      "sha256": "f5677d62d36acd3530256aa8c8593c98dbd45a77d7c0712f2894965fd4ae7abc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ReminderPeriod.vue",
+      "sha256": "c3b42bacea330bb945912acd20854e625e6342eb8a10cdbccf1109f9741adcf5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PriorityLabel.vue",
+      "sha256": "2e9582969ac1605fbc6337f9b5fb663e7e8c21610339a861d522153c4e599643",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Description.vue",
+      "sha256": "779e2388410262c5ceed5a33ded4099dcf2f847cee9ed32270a1faa9d9591fdc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Comments.vue",
+      "sha256": "4ab1d7f2f77f03863f0b20e4cf39e2fa0a10b8e01802e330315948e97b5e0e5a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ReminderDetail.vue",
+      "sha256": "e3b443a1d80a9cf6b5f779a9ae0d8a204d07e04752f64de6cb9139a13d454798",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/EditLabels.vue",
+      "sha256": "7079ccb8fba1de2e4cbac466ac1f9fc569dbdc52fbadc621d5cb7cc4ce01ea79",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/NativeTaskMembership.vue",
+      "sha256": "52bdec4d6ef8d2d452d871beb4cba54486848def6afb6453af5b58c30bc07553",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/commentReplyContext.ts",
+      "sha256": "eed79b4285acbfa707ae370d18d259c5acaa133e9c3bd5ae06d3de11fb170b78",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/FilePreview.vue",
+      "sha256": "d0140964f1225dbb29b55b57724a39c532948b1e11b102474707298c47824623",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/NativeTaskComments.vue",
+      "sha256": "e5e381b64dd47ac639b8ba2d2f4bfc54d3864141457fcf912c851d34d40e701d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Sort.vue",
+      "sha256": "bee3f61d4c1cbadc1fe2552683c82007401dae62e7d7c777799ad29bb65baad3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Labels.vue",
+      "sha256": "881f02a02c530157cb3cde33dcb966bb6d918976c5c6759260b713abcc3a9754",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PercentDoneSelect.vue",
+      "sha256": "044c9e5bf2c9fa06c122757230ef32eb0229aec0ce864c18d514d7b9b9e292ec",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/deleteSelectionBeforeEnter.test.ts",
+      "sha256": "384b3aa9c8f60d9cd4bab1446975d400eb64b89d5085b6d18867c680112b1383",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/suggestion.ts",
+      "sha256": "f2fba23b0a11aedf83d5621ad81635def46da3bbc3c3f928692ce9bbe9ad6a9a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/EditorToolbar.vue",
+      "sha256": "a4accb1239b9d79a87a3b3d8581c8c353db30a8688a972b89e481ed9f584faf5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/clipboardPaste.test.ts",
+      "sha256": "c65481ec5e446542280d0db332f05b0b6606c403101d847e6badd6bd73b216e3",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/markdownPaste.test.ts",
+      "sha256": "a36a69720271b362055870c97192e378d8174f5ac4ca3db10525873a39e7c6a7",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkView.vue",
+      "sha256": "0c484786bf67b118cb9fbeedfe20464440f24ad0710e09706cbc784177dd0f03",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLinkContext.ts",
+      "sha256": "7a5fb4c949bba042e1fe324888c3fe7384024ecd5fff293999bb84d955001cf7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkView.test.ts",
+      "sha256": "fb457e9a3957e517330ed11aa3af8321bf83e07eb655e1c196f5cd57801c8193",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/editorExtensions.ts",
+      "sha256": "3c0622698453c01b7b1e9dd81b409cbb7cec66238fbd1dd910e0ccbbbaea9985",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/BlockquoteCommentView.vue",
+      "sha256": "a6cef1813f8a203b08a7ebb76e8e4a7065022c7fffa1c94043d526582153e9cc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkPill.vue",
+      "sha256": "07eddc2d1401acd91a178ab46486a55e2a835d179663f9ee8bacefeff139b651",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkPill.test.ts",
+      "sha256": "03d47f7c192620aac7f08937353674b1a366820428c03943b696f682fd54c01f",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/subscriptSuperscript.test.ts",
+      "sha256": "153820e4d5c54119844679631a246d09d3bac9a8c14ee5da3b22bac87fbfee7c",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/CommandsList.vue",
+      "sha256": "ea8eee0f47d5631bde8643058ca38fe4ead49bbe3ffa1ad1cf3cdd1451b24882",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/TipTap.vue",
+      "sha256": "b40b19e343c93b158f252cbe30bbf45c494e4c9adde227bb1f3be1d7b7045f19",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/blockquoteWithCommentId.ts",
+      "sha256": "97d4544a526e206d9d77d9d63c1b07d5bd7bc52f1ea1695208cb52dcfa1bbf06",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLink.test.ts",
+      "sha256": "e6f90ca1cd0bd6ced0b8c5ab15ace1f980c0b1bfd3583e71fb4b3dc2fbd38103",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLink.ts",
+      "sha256": "382009ac834cc119f70744d0e9583af1bce88e2e47c444855148b9e8fbb6b4ae",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/editorExtensions.test.ts",
+      "sha256": "5a87bb877ce3ced2a99693717ac5271f20267c88e1b54b650289aa1b703e7470",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterAutocomplete.ts",
+      "sha256": "938c310e4504c6437c39475a1e52049bad50d0d14ce900fe4d4d35c86d6d4997",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterCommandsList.vue",
+      "sha256": "894067bb2615045198596d6758dd788609e28c8bb462c875067449b973a51503",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInput.test.ts",
+      "sha256": "bcf22968e9552674750810535e33f51acde53cb4439eae5727b123d67cb1c7c8",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInputDocs.vue",
+      "sha256": "cbde82699021f0c88fdc3cdecd0085392612bd22650f03850417d4e85887a586",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInput.vue",
+      "sha256": "2413c3e68e2ae9fdb548ca722459500f63c350096c817c721268fca9eac9d284",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/MentionList.vue",
+      "sha256": "29f2574dcf4d85ba3ab5c30526b346c1be3d6403eccf768683aee4e02fd2ae10",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/mentionSuggestion.ts",
+      "sha256": "282fe6d7426fb795679bf5f5764408d6b1c64f5bc8a1d86e5a78a80843a46de4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/MentionUser.vue",
+      "sha256": "2f85b4a1756c693d3811c43785ab5d6e7f904f0e00724c7b98a7b8df4d78cf20",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/EmojiList.vue",
+      "sha256": "4983cd91deb238d9be4a89f01f19fac7cd0dcb1084aa222e5f3543c8e14d7c93",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiSuggestion.ts",
+      "sha256": "da59fc6804dc82e346cad8cf1894da05fac0908bead9e2803e11df7767ef02ed",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/partials/ProjectCard.vue",
+      "sha256": "d3b6528398401fe3a800008d3afd6422c13cd5b01935bba8225b23cfc9bfc69f",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/partials/ProjectCardGrid.vue",
+      "sha256": "81eb02f0e8b331b0442882c54e3767043c3cc83db9dcc31849fe9ad427b090a6",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/partials/SortPopup.vue",
+      "sha256": "417b81cc1c0385b7ac1c95fe996cf7d56d1cb2805b9a6265f98daaf94863ec4b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/partials/Filters.vue",
+      "sha256": "c8b4f0f05eec6054deea030aab95d163304322f90c7bc0f4554f9c8f333defc7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/partials/FilterPopup.vue",
+      "sha256": "7bf7f19d56518d99d1a5d3a06722fc8ddf2ebe8329374f4d3ecf3e7e2ab7b671",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ViewEditForm.vue",
+      "sha256": "47a9c257dd6ff42ed3f3316325331c5ee1c977f5886af14762629a47d1003bf4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectTable.vue",
+      "sha256": "b09b4abb0f835d26eff6eb3f7e64886cb28b743016cd9449809d71f3309922c0",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectKanban.vue",
+      "sha256": "d055eb07671f8492fcd5b46961da3ab445f85042328a4a0c6a2221acbe5e4ca3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectList.vue",
+      "sha256": "1284ca57f1988adaedab1eb69bb30a8be92125298ef297365de63d985e578be2",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectKanban.test.ts",
+      "sha256": "ca6d751b9bb33fb2aa5c41d9c47eae4099393df1edd043cc56ba72271a07a822",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectList.test.ts",
+      "sha256": "1fecdebacbee51b5566de18f9004d27eafd4744a3bfe1e442eb7c9a3c1d9ff10",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/project/views/PendingProjectList.vue",
+      "sha256": "05703774c27521b34456f7e114af4039083346defb21bd8390c030d779f4d98c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/project/views/ViewEditForm.test.ts",
+      "sha256": "5a08b317d819fed34173342db04aaf8f1320dbebd08acb8575c27b67a34f2c66",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectGantt.vue",
+      "sha256": "71b9784c4f53809210f20dc173b8d4a464191885a7dfea95ad8458415663d5d3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/flatpickr/Flatpickr.vue",
+      "sha256": "bdc98e070860501b8db5eb20acaeb0997bbcce04108c7f5601e279ac319ffc90",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/index.vue",
+      "sha256": "2e6959dbaa42aa7c9b8c55f87df7ff6d01d12fe9b58dbdada6c3aabdf061168d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/shortcuts.ts",
+      "sha256": "327c41d744778e5ce08e510e3731dd809fb1761cbee31fa7303a1805b1ad1e1e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/helpers/time/getDateWithTime.test.ts",
+      "sha256": "cbad91fe57cc10172d8dd544c0ab136318a4e4e0990e5d80e6710dfbf1f5738e",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/time/formatDate.test.ts",
+      "sha256": "f423cb76690fc88cf7b6936513573a1bf56ef73f3a625b6089f9778da34b1945",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/time/formatDate.ts",
+      "sha256": "3df716010f7c7109e2e9ba3df1d3b8769c57630ca6e9f0d829f5cd4550af0bf5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/sharing/LinkSharingAuth.vue",
+      "sha256": "57136122dba1b84b01ee6216e19594b9aad2bfd93e31c09dc5ec24287fb096c3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationCSV.vue",
+      "sha256": "45691ce76d6c752d99c4a7ff5622359736562a8c6d04bae7c07afa506c320c7e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationHandler.vue",
+      "sha256": "cb2da45fa5a0feca880224dc844af1dfadcfaf259f5b653a9adf9c194ff99001",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/migrate/Migration.vue",
+      "sha256": "4e29598343c33f551b9a84b6039ee6dc4eb5a7679368b6b09f14603217c1ebc1",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationCredentialsForm.vue",
+      "sha256": "ac1118cf916a726060963d4a9a1ab9a8af1c3902ff93a79a49b605e82491aa9d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/teams/NewTeam.vue",
+      "sha256": "388214df2d903e2f363cc3778dfc6664d84f0742f5ab7dceb628cad83c893208",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/teams/ListTeams.vue",
+      "sha256": "56519845a61905d6997df6f9df84cb7705f6f35be22f05eac3dd23e176854900",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/teams/EditTeam.vue",
+      "sha256": "76b2f5d89d15401cfe75e42542d8eb7b7ab0a36920d770a532edc5ca5507d626",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/PasswordReset.vue",
+      "sha256": "bbdc1c2dd1a7d1b5f026d820a69a9dc4c66eaefc8bd06f31aeb958c66b4e9152",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/Settings.vue",
+      "sha256": "b4c7b989243b0f66cca0a90ab8ed3ce2af6f9f9f18d3747b583fec0d7124e496",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/Register.vue",
+      "sha256": "1755f7b10583fe3a9f8463551d502e7632f74467e4f574c744ef326caa3df11b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/Login.vue",
+      "sha256": "03908c884e382e5a739aa7ee0d1cb70ba3368fcf70618060e5d48c0f6f2aa027",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/DesktopLogin.vue",
+      "sha256": "ba8c85fdd30764da0711814328e8e4efb9b044bec57fc23bb95d1b6ccd55cbaf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/DataExportDownload.vue",
+      "sha256": "eafef1851947e5ae198823f8aeab5c2bdae68d58a507a33ed649d9096d1607dc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/OpenIdAuth.vue",
+      "sha256": "522434697ec77ccb2bc6d74c6933ad02c0bc30d31dae170b7d724bd2819b0ca0",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/OAuthAuthorize.vue",
+      "sha256": "7e3a3683d7c64a79536be42dffbff652be71b9dd17c2e60048b9de9603057c96",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/RequestPasswordReset.vue",
+      "sha256": "d54f4e07a21bc30f90a0db6e8f2c0c2159d1f042abea912d4723bc58df057365",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/tasks/ShowTasks.test.ts",
+      "sha256": "ba89c52ca02141f98fbfd4e6aa01853cdd63144000d5b54e281fcf98aa12887a",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/tasks/ShowTasks.vue",
+      "sha256": "51da39ac19b31590fb3ddc36ffadd4fdfa630ecef3fe0680f092b501261f133c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/tasks/TaskDetailView.vue",
+      "sha256": "2b82103fe4be0d08bcc28ba857c053548dddb6e333e44474dff19cec779e9f54",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/filters/FilterNew.vue",
+      "sha256": "b334488cd566ef5112394445b1f7962b72988e20071d82f05cd720293be05747",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/filters/FilterEdit.vue",
+      "sha256": "c3d6ff8533c2772a316df34fd661087ac029d40b49cd661e687e4e82a94eae27",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/filters/FilterDelete.vue",
+      "sha256": "f7f646d01a955c394896730cd42ffc875f312ae1cdfb4841cde514a59364641e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/labels/ListLabels.vue",
+      "sha256": "97f9e05efc3dbc7120c12ec695eb254385ce318afb4063d1636779f2937bf7f4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/labels/NewLabel.vue",
+      "sha256": "4ee393b9fefdcc276583b59398a91146150c99a3f15e90981c0179b4a64f5c62",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/admin/UsersView.vue",
+      "sha256": "0a909ecca6e3c82b1592a33f36e6d502685662c152e5ecc494371cb067c437bc",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/admin/OverviewView.vue",
+      "sha256": "54cee7c78fd59805e0c77f798c4cafcafe805f04f9ec336f423aed6466f27bf3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/admin/ProjectsView.vue",
+      "sha256": "a321ecf51a8c7fb5cefe646fac26e6e13cb0095c3428ca658d7f100325d53031",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/admin/AdminShell.vue",
+      "sha256": "736dcbf6722a20e9f4cd9fa1b8bfd5e867f7c99646b34596ab6086ee05407e38",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/ListProjects.vue",
+      "sha256": "e85125a5ffb96b97882c12463ee1d9745e8e42ee98ef7eecdbbfb269559459cd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/ProjectView.vue",
+      "sha256": "0d075c384a3e9fc06fe9fe0a623785a5763b60950529ae32cdee069c54751f1b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/ProjectInfo.vue",
+      "sha256": "de46c8d8baf755b44f593dc64c15ec5300a0faec1fc8ed630c758450d389c554",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/NewProject.vue",
+      "sha256": "f7c6d38610bba153cc202e25b8ef15c07568edb1b5b5b3fe949c923c545de77a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/time-tracking/TimeTracking.vue",
+      "sha256": "cf314f75fc0d97146de610b32f4d1e95d9881b347eb20fcacdc8423923706254",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/TOTP.test.ts",
+      "sha256": "a1602dcef25961a60c0ad37fce1e880e1160e7b879b732c331500f144bff912e",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/user/settings/DataExport.vue",
+      "sha256": "032c84ccabcf218c9934f223767222d4f3f6ffc33bfb0e09cd4bb23238620529",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/Caldav.vue",
+      "sha256": "735fdc69c786d93af5c1d99287e5d81ceca82dc8fe79696f52cdfcfd3e2dd899",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/General.vue",
+      "sha256": "7ce0df4703b1e34e89943c14db59aef0d67dcd3d46a8ce21fe4aba44d4b9ddb3",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/TOTP.vue",
+      "sha256": "a2cabf4a6c517d3c8693ec98b99d3f3a828b884d36096250f52315d488551538",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/Webhooks.vue",
+      "sha256": "f16536feedd2082d44cfff7ba8825ad3d3788538071baf48c5366a5d000759b7",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/Sessions.vue",
+      "sha256": "2b2f3a71aed02669c6ff6f63ae0c4f399ef192253839ff4f6867d28d08a62232",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/Avatar.vue",
+      "sha256": "ad79b158fa80b9668ac7ac8ee045c515c1c4c7d21814959b69f113718f5bfebf",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/BotUsers.vue",
+      "sha256": "e7d126e33ed831f62cd729f897e41e995ec81cc8ca5fdd1a8e6bf504bcea708a",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/EmailUpdate.vue",
+      "sha256": "ce0b791b6a84181d7f0bf1339b33cc23119186fb589d911bc3e2737b8a19450e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/Deletion.vue",
+      "sha256": "0d53b1f22f9f64d5ee1e941a78ced43863580697dab5af3103efc24598f635c4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/AtomFeed.vue",
+      "sha256": "23dc824b11c93cf5c39cc51e87267554204048ceb8dae5aeddc4ee7f7c0f878b",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/General.test.ts",
+      "sha256": "030617b878d272d8207b0ae9c6964a7e7f13baa02215fc183c96294a6026d8d8",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/user/settings/ApiTokens.vue",
+      "sha256": "83895b828a6ec52608e3a8de5d6bfeaca4eaea228ab97d112a353e3ed40f746d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/PasswordUpdate.vue",
+      "sha256": "de1ab4cb1c15109adc44955da82300c2cbfc97281b97a96151aafa1bf0cede06",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/user/settings/ApiTokens.test.ts",
+      "sha256": "c682454cc5aeaeafb444e1365e0358c75ccd0ce6193a3e462c1e94a17243d8b6",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttFilters.ts",
+      "sha256": "142e233054d6f0e291d4035cb4b6be9630688b61324accf0047a14c653e3dfff",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttFilters.test.ts",
+      "sha256": "7adc0d612c41f24f44bcf87ed5507b242f0f6e6b775432dae00ce1812c0d7049",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttTaskList.ts",
+      "sha256": "991b33731c37bceaa662adff936ca2d40abe12ea98aa95f4a896b3e6a0d78f12",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsShare.vue",
+      "sha256": "1b4511d81f48301c21f62a52a8b27327c9c2cd38a17e77a88c92a86166b18dd4",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsWebhooks.vue",
+      "sha256": "5e47c64ea7edc87be2e306e7d41b1b13b600063caa5658aab99893bad711ae78",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsDelete.vue",
+      "sha256": "b1d12a85e5165b70d358f4af2969e2f41d0273d20c2b202a47bdafa95357eec6",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsBackground.test.ts",
+      "sha256": "daebf45846027f06260be9c74e80042cd8d9f1fbb93b571e976f61e9f9b85fbb",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsArchive.vue",
+      "sha256": "27c3506c23acd0acb0ecaaa5cfaba50aa455ec486eccc6738c4724b322adeb86",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsEdit.vue",
+      "sha256": "229af4830d65976ffb607eef394a4816dad8ccdf5ab064010693b27d5ad56795",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsDuplicate.vue",
+      "sha256": "33562c68a003ba7596a08bb0715fd2207d69c60c02c7c2c5f51949655c356471",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsArchive.test.ts",
+      "sha256": "86cdc994c19983bbb381745be92e3f5be42eb1c0ad4a422428977ed32421c95e",
+      "test": true
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsViews.vue",
+      "sha256": "b81542d1a49e3cb69f03ea3fa686923bc4ee2803bd9dc49bf81d3fc942986e5c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsBackground.vue",
+      "sha256": "6cfecf55a04de48200f9a6db68fe0c958df2d92c9f9b8e60543c70a07ed297bd",
+      "test": false
+    },
+    {
+      "path": "frontend/src/message/index.ts",
+      "sha256": "f75745f34e122b4b0e6dde00e0f504a6b150b4fc47c1cab7ed8ddcca113f2643",
+      "test": false
+    },
+    {
+      "path": "frontend/src/models/userSettings.test.ts",
+      "sha256": "70db993542d99df837056139d3bed4aec62f402b6ad996b8c926c47008e881e9",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/checkAndSetApiUrl.ts",
+      "sha256": "857c9a83dbd81846d6c8a948d062b58abc751331caa47aa13aa976b9fb79177c",
+      "test": false
+    },
+    {
+      "path": "frontend/src/helpers/playPop.ts",
+      "sha256": "0ae9b8474d9fbe74af3536a327dc16a7f7dbe41a863c352bb55f2a0244039fb8",
+      "test": false
+    },
+    {
+      "path": "frontend/src/helpers/parseTaskIdFromUrl.ts",
+      "sha256": "d436fbffd6cce1b4f0b86647a655d773d9e595aa3bff0b524dd15b0f15c2c63f",
+      "test": false
+    },
+    {
+      "path": "frontend/src/composables/useCopyToClipboard.test.ts",
+      "sha256": "5c5863dedfd6336da644b478d27a4d380c4728872afae40c5b2131f18a7fc201",
+      "test": true
+    },
+    {
+      "path": "frontend/src/composables/useRouteFilters.test.ts",
+      "sha256": "a27c9dd40b15668dcccddc86682754f9a3fb470aa3121a48c9062849446eb171",
+      "test": true
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/quickAddMagic.ts",
+      "sha256": "1e66d09f44afe633d21b5ea31ad2213d525fae99e57c43b97ffc9bf647aec867",
+      "test": false
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/dateParser.ts",
+      "sha256": "b2c9eb78ba0260cb77703e98c583500328f77e4d1f738259ee6989d400b0f617",
+      "test": false
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/index.ts",
+      "sha256": "0b66ab64e75962a13f67c28b1fbaacc386dc5ffef63133053eb8492de47d2681",
+      "test": false
+    },
+    {
+      "path": "frontend/src/client/queries/labels.ts",
+      "sha256": "238f0cb37ea926d8bf3d89b484e8fb7e8d1f4af2ccd953b055d6cfc390a523c5",
+      "test": false
+    },
+    {
+      "path": "frontend/src/client/queries/labels.test.ts",
+      "sha256": "2add0a767428e7832e1d7f1e86484c4e66279c21b345d88d0b953582dc45b3b2",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/AsyncEditor.ts",
+      "sha256": "da044e5fd980377558e7cf99bcccfd854e3c055535db974b9d2b5ee6fb172572",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/setLinkInEditor.ts",
+      "sha256": "9c60e420bcd3d1eca40711f88c7ecb9f61ef87cf4d75809bc70552255d31e98d",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/input/editor/blockquoteWithCommentId.test.ts",
+      "sha256": "6da576daafd30fd4c5b0149361a5e99119d93dd35a01cd6bd7c9de0a55b1a618",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterAutocomplete.test.ts",
+      "sha256": "c156a4618640d5261a038f413ac509ca0c4023b4a11d374fe3fbd3b69259cc17",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/mentionSuggestion.test.ts",
+      "sha256": "a432f32b0d56733d53662aa2f4139fdc4d78ff92351b24d18c87156bb22eb495",
+      "test": true
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiExtension.ts",
+      "sha256": "7c07c06bd047a0cf229341e6c675a0cf054ed39a98389d2e32433906d2918b0e",
+      "test": false
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/shortcuts.test.ts",
+      "sha256": "bff60a4d2dc48012ad3d1088b9307fe6f44411a712449d7e711944a306f4fe72",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/time/getDateWithTime.ts",
+      "sha256": "ce0d357b2fbf36447ee041bb4cab27921624b369265fb6ff5e81e092ca50a3ff",
+      "test": false
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttTaskList.test.ts",
+      "sha256": "d7cff1d2f86916f584f03d23e6ed676d33ea229a4a1287ed54fca51791a87109",
+      "test": true
+    },
+    {
+      "path": "frontend/src/message/index.test.ts",
+      "sha256": "0d3b521fd3fcd269ffca9e48cd44a7a6f8f9da3ba6e22c5052eb46847ac9daf5",
+      "test": true
+    },
+    {
+      "path": "frontend/src/marionette/list-task-row.test.ts",
+      "sha256": "b0d9749b5790d27279a8afa1829faedbe414489fa9f3c2ebde149d69383a007a",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/checkAndSetApiUrl.test.ts",
+      "sha256": "35986c8ff9f380fb16c70d147bd8b050d5dd8c60f3be1b644bab277db4350252",
+      "test": true
+    },
+    {
+      "path": "frontend/src/helpers/parseSubtasksViaIndention.test.ts",
+      "sha256": "f212eba3214d040cb8b2f59f04e2b4b46647ce4f4da5d07d1227a812a881d058",
+      "test": true
+    },
+    {
+      "path": "frontend/histoire.config.ts",
+      "sha256": "e2afb0f2395cd358b0298037d2052ded12f63bf60637706cae2c372ac4e81bde",
+      "test": false
+    },
+    {
+      "path": "frontend/src/client/queryClient.ts",
+      "sha256": "22f6db87c8ddec67d9413fa277cbfa9b98fb4206d144f1b885c8abb9ffb4f89f",
+      "test": false,
+      "archive": "Original queryClient.ts is preserved in the frozen baseline Git tree."
+    }
+  ],
+  "supplemental_removed_files": [
+    {
+      "path": "frontend/src/client/queryClient.ts",
+      "sha256": "22f6db87c8ddec67d9413fa277cbfa9b98fb4206d144f1b885c8abb9ffb4f89f",
+      "preserved": "Original queryClient.ts is preserved in the frozen baseline Git tree.",
+      "reason": "Missed @tanstack/vue-query static audit seed; no remaining consumers or runtime graph match."
+    }
+  ],
+  "supplemental_audit_note": "Initial closure missed @tanstack/vue-query; dependency/import follow-up found this unused client. No active runtime consumer."
+}

@@ -18,15 +18,15 @@ export default class AbstractMigrationService extends AbstractService<MigrationC
 		this.serviceUrlKey = serviceUrlKey
 	}
 
-	getAuthUrl() {
-		return this.getM(apiV2Url(`migration/${this.serviceUrlKey}/auth`))
+	getAuthUrl(signal?: AbortSignal) {
+		return this.getM(apiV2Url(`migration/${this.serviceUrlKey}/auth`), undefined, {}, signal)
 	}
 
-	getStatus() {
-		return this.getM(apiV2Url(`migration/${this.serviceUrlKey}/status`))
+	getStatus(signal?: AbortSignal) {
+		return this.getM(apiV2Url(`migration/${this.serviceUrlKey}/status`), undefined, {}, signal)
 	}
 
-	migrate(data: MigrationConfig) {
-		return this.update(data)
+	migrate(data: MigrationConfig, signal?: AbortSignal) {
+		return this.update(data, signal)
 	}
 }

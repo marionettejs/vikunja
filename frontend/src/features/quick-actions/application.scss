@@ -1,0 +1,258 @@
+.native-quick-actions {
+ [hidden] {display: none !important;}
+ // Pinned Modal.vue top variant; keep the scrim on the fullscreen dialog.
+ border: 0;
+ padding: 0;
+ background: rgba(0, 0, 0, .8);
+ color: var(--text);
+ position: fixed;
+ inset: 0;
+ inline-size: 100%;
+ block-size: 100%;
+ max-inline-size: 100%;
+ max-block-size: 100%;
+ margin: 0;
+ overflow: auto;
+ &::backdrop {background: transparent;}
+ .quick-actions {
+inline-size: calc(100% - 2rem);
+ max-inline-size: 640px;
+ margin: 3rem auto 0;
+ max-block-size: calc(100dvh - 6rem);
+ overflow: auto;
+ text-align: center;
+
+}
+ .quick-actions-outside-close {
+position: fixed;
+ inset-block-start: .5rem;
+ inset-inline-end: 26px;
+ color: var(--white);
+ font-size: 2rem;
+
+}
+ @media screen and (max-width: $tablet) {
+  .quick-actions {
+inline-size: 100%;
+ max-inline-size: none;
+ max-block-size: none;
+ margin: 0;
+ border: 0 !important;
+ border-radius: 0 !important;
+ min-block-size: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+ padding-block-start: env(safe-area-inset-top);
+ padding-block-end: env(safe-area-inset-bottom);
+
+}
+  .quick-actions-outside-close {display: none;}
+ }
+
+
+.quick-actions {
+	// global Bulma .card styles are gone (ported into Card.vue, scoped),
+	// so this bare .card div needs its own card visuals
+	background-color: var(--white);
+	border-radius: $radius;
+	border: 1px solid var(--card-border-color);
+	box-shadow: var(--shadow-sm);
+	color: var(--text);
+	overflow: auto;
+	justify-content: flex-start !important;
+
+	&.is-quick-add-mode {
+		padding: 0;
+		margin: 0;
+		border: none;
+		box-shadow: none;
+	}
+}
+
+.action-input {
+	display: flex;
+	align-items: center;
+
+	.input {
+		border: 0;
+		font-size: 1.5rem;
+
+		@media screen and (max-width: $tablet) {
+			padding-inline-end: .25rem;
+		}
+	}
+
+	&.has-active-cmd .input {
+		padding-inline-start: .5rem;
+	}
+
+	.close {
+		padding: 0 1rem 0 .5rem;
+		font-size: 1.5rem;
+
+		@media screen and (min-width: $tablet + 1) {
+			display: none;
+		}
+	}
+}
+
+.active-cmd {
+	font-size: 1.25rem;
+	margin-inline-start: .5rem;
+	background-color: var(--grey-100);
+	color: var(--grey-800);
+}
+
+.results {
+	text-align: start;
+	inline-size: 100%;
+	color: var(--grey-800);
+}
+
+.result-title {
+	background: var(--grey-100);
+	padding: .5rem;
+	display: block;
+	font-size: .75rem;
+}
+
+.result-item-button {
+	font-size: .9rem;
+	inline-size: 100%;
+	background: transparent;
+	color: var(--grey-800);
+	text-align: start;
+	box-shadow: none;
+	border-radius: 0;
+	text-transform: none;
+	font-family: $family-sans-serif;
+	font-weight: normal;
+	padding: .5rem .75rem;
+	border: none;
+	cursor: pointer;
+
+	&:focus,
+	&:hover {
+		background: var(--grey-100);
+		box-shadow: none !important;
+	}
+
+	&:active {
+		background: var(--grey-100);
+	}
+
+	.saved-filter-icon {
+		font-size: .75rem;
+		inline-size: .75rem;
+		margin-inline-end: .25rem;
+		color: var(--grey-400)
+	}
+
+	&:has(.saved-filter-icon) {
+		display: inline-flex;
+		align-items: center;
+	}
+}
+
+.task {
+	display: flex;
+	flex-wrap: wrap;
+	transition: background-color $transition;
+	align-items: center;
+	cursor: pointer;
+	border-radius: $radius;
+	border: 2px solid transparent;
+
+	text-overflow: ellipsis;
+	word-wrap: break-word;
+	word-break: break-word;
+	//display: -webkit-box;
+	hyphens: auto;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+
+	//flex: 1 0 50%;
+
+	.dueDate {
+		display: inline-block;
+		margin-inline-start: 5px;
+	}
+
+	&[data-is-overdue] .dueDate {
+		color: var(--danger-text);
+	}
+
+	.task-project {
+		inline-size: auto;
+		color: var(--grey-400);
+		font-size: .9rem;
+		white-space: nowrap;
+	}
+
+	.avatar {
+		border-radius: 50%;
+		vertical-align: bottom;
+		margin-inline-start: .5rem;
+		block-size: 21px;
+		inline-size: 21px;
+	}
+
+	.project-task-icon {
+		margin-inline-start: 6px;
+
+		&:not(:first-of-type) {
+			margin-inline-start: 8px;
+		}
+
+	}
+
+	a {
+		color: var(--text);
+		transition: color ease $transition-duration;
+
+		&:hover {
+			color: var(--grey-900);
+		}
+	}
+
+	.tasktext.done {
+		text-decoration: line-through;
+		color: var(--grey-500);
+	}
+
+	span.parent-tasks {
+		color: var(--grey-500);
+		inline-size: auto;
+		margin-inline-start: .25rem;
+	}
+}
+}
+.native-quick-actions .color-bubble {
+ display: inline-block;
+ border-radius: 100%;
+ block-size: 10px;
+ inline-size: 10px;
+ flex-shrink: 0;
+}
+.native-quick-actions .priority-label {
+ &.high-priority {
+ color: var(--danger-text);
+ inline-size: auto !important;
+}
+ &.not-so-high {color: var(--warning);}
+ &.negligible {color: var(--info);}
+ .icon {
+ vertical-align: top;
+ inline-size: auto !important;
+ padding-inline-end: .5rem;
+}
+}
+.header-search {
+ block-size: 100%;
+ inline-size: 100%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: .75rem;
+ color: var(--grey-400);
+ font-size: 1.25rem;
+}

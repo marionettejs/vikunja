@@ -17,9 +17,8 @@ export default class BucketService extends AbstractService<IBucket> {
 		return new BucketModel(data)
 	}
 
-	beforeUpdate(model) {
+	beforeUpdate(model: IBucket) {
 		const taskService = new TaskService()
-		model.tasks = model.tasks?.map(t => taskService.processModel(t))
-		return model
+		return {...model, tasks: model.tasks?.map(task => taskService.processModel(task))}
 	}
 }

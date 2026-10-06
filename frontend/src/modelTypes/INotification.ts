@@ -16,43 +16,20 @@ export const NOTIFICATION_NAMES = {
 	'TASK_MENTIONED': 'task.mentioned',
 } as const
 
-interface Notification {
-	doer: IUser
-}
-
-interface NotificationTaskComment extends Notification {
-	task: ITask
-	comment: ITaskComment
-}
-
-interface NotificationTask extends Notification {
-	task: ITask
-}
-
-interface NotificationAssigned extends Notification {
-	task: ITask
-	assignee: IUser
-}
-
-interface NotificationCreated extends Notification {
-	task: ITask
-	project: IProject
-}
-
-interface NotificationTaskReminder extends Notification {
-	task: ITask
-	project: IProject
-}
-
-interface NotificationMemberAdded extends Notification {
-	member: IUser
-	team: ITeam
+export interface NotificationData {
+	doer?: IUser
+	task?: Pick<ITask,'id'|'title'|'identifier'|'index'>
+	comment?: ITaskComment
+	assignee?: IUser
+	project?: IProject
+	member?: IUser
+	team?: Pick<ITeam,'id'|'name'>
 }
 
 export interface INotification extends IAbstract {
 	id: number
 	name: string
-	notification: NotificationTaskComment | NotificationTask | NotificationAssigned | NotificationCreated | NotificationMemberAdded | NotificationTaskReminder
+	notification: NotificationData
 	read: boolean
 	readAt: Date | null
 

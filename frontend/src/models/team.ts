@@ -16,9 +16,9 @@ export default class TeamModel extends AbstractModel<ITeam> implements ITeam {
 	externalId = ''
 	isPublic: boolean = false
 
-	createdBy: IUser | null = null
-	created: Date = null
-	updated: Date = null
+	createdBy: IUser = new UserModel()
+	created: Date = new Date(0)
+	updated: Date = new Date(0)
 
 	constructor(data: Partial<ITeam> = {}) {
 		super()

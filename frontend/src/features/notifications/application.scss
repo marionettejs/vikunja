@@ -1,0 +1,153 @@
+
+.notifications {
+	display: flex;
+
+	.trigger-button {
+		inline-size: 100%;
+		position: relative;
+	}
+
+	.unread-indicator {
+		position: absolute;
+		inset-block-start: 1rem;
+		inset-inline-end: .5rem;
+		inline-size: .75rem;
+		block-size: .75rem;
+
+		background: var(--primary);
+		border-radius: 100%;
+		border: 2px solid var(--white);
+	}
+
+	.notifications-list {
+		position: absolute;
+		inset-inline-end: 1rem;
+		inset-block-start: calc(100% + 1rem);
+		max-block-size: 400px;
+		overflow-y: auto;
+
+		background: var(--white);
+		inline-size: 350px;
+		max-inline-size: calc(100vw - 2rem);
+		padding: .75rem .25rem;
+		border-radius: $radius;
+		box-shadow: var(--shadow-sm);
+		font-size: .85rem;
+
+		@media screen and (max-width: $tablet) {
+			max-block-size: calc(100vh - 1rem - #{$navbar-height});
+		}
+
+		.head {
+			font-family: $vikunja-font;
+			font-size: 1rem;
+			padding: .5rem;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.actions {
+				display: flex;
+				align-items: center;
+				gap: .5rem;
+			}
+
+			.action-link {
+				border: 0;
+				background: transparent;
+				padding: 0;
+				font: inherit;
+				color: var(--grey-500);
+				transition: color $transition;
+
+				&:hover,
+				&:focus {
+					color: var(--primary);
+				}
+			}
+		}
+
+		.single-notification {
+			display: flex;
+			align-items: center;
+			padding: 0.25rem 0;
+
+			transition: background-color $transition;
+
+			&.is-clickable {
+				cursor: pointer;
+			}
+
+			&:hover {
+				background: var(--grey-100);
+				border-radius: $radius;
+			}
+
+			.read-indicator {
+				inline-size: .35rem;
+				block-size: .35rem;
+				background: var(--primary);
+				border-radius: 100%;
+				margin: 0 .5rem;
+				flex-shrink: 0;
+
+				&.read {
+					background: transparent;
+				}
+			}
+
+			.user {
+				display: inline-flex;
+				align-items: center;
+				inline-size: auto;
+				margin: 0 .5rem;
+
+				span {
+					font-family: $family-sans-serif;
+				}
+
+				.avatar {
+					block-size: 16px;
+				}
+
+				img {
+					margin-inline-end: 0;
+				}
+			}
+
+			.created {
+				color: var(--grey-400);
+			}
+
+			&:last-child {
+				margin-block-end: .25rem;
+			}
+
+			a {
+				color: var(--grey-800);
+			}
+		}
+
+		.nothing {
+			text-align: center;
+			padding: 1rem 0;
+			color: var(--grey-500);
+
+			.explainer {
+				font-size: .75rem;
+			}
+		}
+	}
+}
+
+.native-app .notifications {
+  [hidden] { display: none !important; }
+  .single-notification {
+    inline-size: 100%;
+    text-align: start;
+    background: transparent;
+    border: none;
+    font-size: inherit;
+    color: inherit;
+  }
+}

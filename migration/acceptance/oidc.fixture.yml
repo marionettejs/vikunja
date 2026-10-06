@@ -1,0 +1,11 @@
+auth:
+  openid:
+    enabled: true
+    providers:
+      fixture:
+        name: Isolated OIDC
+        authurl: http://127.0.0.1:18765
+        clientid: fixture-client
+        clientsecret: fixture-secret
+        requireavailability: true
+        emailfallback: true

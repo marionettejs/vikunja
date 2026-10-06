@@ -1,22 +1,18 @@
 /// <reference types="vitest" />
 import {defineConfig, type PluginOption, loadEnv} from 'vite'
 import {configDefaults} from 'vitest/config'
-import vue from '@vitejs/plugin-vue'
 import {URL, fileURLToPath} from 'node:url'
 import {dirname, resolve} from 'node:path'
 import {readFileSync} from 'node:fs'
 
-import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import {VitePWA} from 'vite-plugin-pwa'
 import UnpluginInjectPreload from 'unplugin-inject-preload/vite'
 import {visualizer} from 'rollup-plugin-visualizer'
 
 import { sentryVitePlugin, type SentryVitePluginOptions } from '@sentry/vite-plugin'
-import svgLoader from 'vite-svg-loader'
 import postcssPresetEnv from 'postcss-preset-env'
 import postcssEasingGradients from 'postcss-easing-gradients'
 import tailwindcss from '@tailwindcss/vite'
-import vueDevTools from 'vite-plugin-vue-devtools'
 
 const pathSrc = fileURLToPath(new URL('./src', import.meta.url)).replaceAll('\\', '/')
 
@@ -142,19 +138,6 @@ function getBuildConfig(env: Record<string, string>) {
 		},
 		plugins: [
 			tailwindcss(),
-			vue(),
-			svgLoader({
-				// Since the svgs are already manually optimized via https://jakearchibald.github.io/svgomg/
-				// we don't need to optimize them again.
-				svgo: false,
-			}),
-			VueI18nPlugin({
-				// TODO: only install needed stuff
-				// Whether to install the full set of APIs, components, etc. provided by Vue I18n.
-				// By default, all of them will be installed.
-				fullInstall: true,
-				include: resolve(dirname(pathSrc), './src/i18n/lang/**'),
-			}),
 			// https://github.com/Applelo/unplugin-inject-preload
 			UnpluginInjectPreload({
 				files: [{
@@ -222,9 +205,6 @@ function getBuildConfig(env: Record<string, string>) {
 					],
 				},
 			}),
-			vueDevTools({
-				launchEditor: env.VUE_DEVTOOLS_LAUNCH_EDITOR || 'code',
-			}),
 			// Put the Sentry vite plugin after all other plugins
 			sentryVitePlugin(getSentryConfig(env)),
 		],
@@ -235,7 +215,7 @@ function getBuildConfig(env: Record<string, string>) {
 					replacement: pathSrc,
 				},
 			],
-			extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+			extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
 		},
 		server: {
 			host: '127.0.0.1', // see: https://github.com/vitejs/vite/pull/8543

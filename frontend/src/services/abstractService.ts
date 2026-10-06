@@ -2,7 +2,6 @@ import {AuthenticatedHTTPFactory} from '@/helpers/fetcher'
 import type {Method} from 'axios'
 
 import {objectToSnakeCase} from '@/helpers/case'
-import AbstractModel from '@/models/abstractModel'
 import type {IAbstract} from '@/modelTypes/IAbstract'
 import type {Permission} from '@/constants/permissions'
 
@@ -47,7 +46,7 @@ function prepareParams(params: Record<string, unknown | unknown[]>) {
 	return objectToSnakeCase(params)
 }
 
-export default abstract class AbstractService<Model extends IAbstract = IAbstract> {
+export default abstract class AbstractService<Model extends object = IAbstract, ListItem extends object = Model, Created extends object = Model, Updated extends object = Model> {
 
 	/////////////////////////////
 	// Initial variable definitions
@@ -170,13 +169,13 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * )
 	 * // { "{taskId}": 7, "{userId}": 2 }
 	 */
-	getRouteReplacements(route : string, parameters : Record<string, unknown> = {}) {
+	getRouteReplacements(route : string, parameters : object = {}) {
 		const replace$$1: Record<string, unknown> = {}
 		let pattern = this.getRouteParameterPattern()
 		pattern = new RegExp(pattern instanceof RegExp ? pattern.source : pattern, 'g')
 
 		for (let parameter; (parameter = pattern.exec(route)) !== null;) {
-			replace$$1[parameter[0]] = parameters[parameter[1]]
+			replace$$1[parameter[0]] = Reflect.get(parameters, parameter[1])
 		}
 
 		return replace$$1
@@ -195,7 +194,7 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * getReplacedRoute('/projects/{projectId}/tasks', { projectId: 3 })
 	 * === '/projects/{projectId}/tasks'
 	 */
-	getReplacedRoute(path : string, pathparams : Record<string, unknown>) : string {
+	getReplacedRoute(path : string, pathparams : object) : string {
 		const replacements = this.getRouteReplacements(path, pathparams)
 		return Object.entries(replacements).reduce(
 			(result, [parameter, value]) => result.replace(parameter, value as string),
@@ -231,7 +230,7 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * The modelFactory returns a model from an object.
 	 * This one here is the default one, usually the service definitions for a model will override this.
 	 */
-	modelFactory(data : Partial<Model>) {
+	modelFactory(data: object) {
 		return data as Model
 	}
 
@@ -245,22 +244,22 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	/**
 	 * This is the model factory for get all requests.
 	 */
-	modelGetAllFactory(data : Partial<Model>) {
-		return this.modelFactory(data)
+	modelGetAllFactory(data: Partial<ListItem>): ListItem {
+		return this.modelFactory(data) as unknown as ListItem
 	}
 
 	/**
 	 * This is the model factory for create requests.
 	 */
-	modelCreateFactory(data : Partial<Model>) {
-		return this.modelFactory(data)
+	modelCreateFactory(data: Partial<Created>): Created {
+		return this.modelFactory(data) as unknown as Created
 	}
 
 	/**
 	 * This is the model factory for update requests.
 	 */
-	modelUpdateFactory(data : Partial<Model>) {
-		return this.modelFactory(data)
+	modelUpdateFactory(data: Partial<Updated>): Updated {
+		return this.modelFactory(data) as unknown as Updated
 	}
 
 	//////////////
@@ -277,21 +276,21 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	/**
 	 * Default preprocessor for create requests
 	 */
-	beforeCreate(model : Model) {
+	beforeCreate(model : Model): object {
 		return model
 	}
 
 	/**
 	 * Default preprocessor for update requests
 	 */
-	beforeUpdate(model : Model) {
+	beforeUpdate(model : Model): object {
 		return model
 	}
 
 	/**
 	 * Default preprocessor for delete requests
 	 */
-	beforeDelete(model : Model) {
+	beforeDelete(model : Model): object {
 		return model
 	}
 
@@ -304,41 +303,44 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * @param model The model to use. The request path is built using the values from the model.
 	 * @param params Optional query parameters
 	 */
-	get(model : Model, params = {}) {
+	get(model : Model, params = {}, signal?: AbortSignal) {
 		if (this.paths.get === '') {
 			throw new Error('This model is not able to get data.')
 		}
 
-		return this.getM(this.paths.get, model, params)
+		return this.getM(this.paths.get, model, params, signal)
 	}
 
 	/**
 	 * This is a more abstract implementation which only does a get request.
 	 * Services which need more flexibility can use this.
 	 */
-	async getM(url : string, model : Model = new AbstractModel({}), params: Record<string, unknown> = {}) {
+	async getM(url : string, model?: Model, params: Record<string, unknown> = {}, signal?: AbortSignal) {
 		const cancel = this.setLoading()
 
-		model = this.beforeGet(model)
-		const finalUrl = this.getReplacedRoute(url, model)
+		const input = model === undefined ? {} : this.beforeGet(model)
+		const finalUrl = this.getReplacedRoute(url, input)
 
 		try {
-			const response = await this.http.get(finalUrl, {params: prepareParams(params)})
+			const response = await this.http.get(finalUrl, {params: prepareParams(params), signal})
 			const result = this.modelGetFactory(response.data)
-			result.maxPermission = Number(response.headers['x-max-permission']) as Permission
+			Object.assign(result, {maxPermission: Number(response.headers['x-max-permission']) as Permission})
 			return result
 		} finally {
 			cancel()
 		}
 	}
 
-	async getBlobUrl(url : string, method : Method = 'GET', data = {}): Promise<string> {
+	async getBlobUrl(url : string, method : Method = 'GET', data = {}, signal?: AbortSignal): Promise<string> {
 		const response = await this.http({
 			url,
 			method,
 			responseType: 'blob',
+			signal,
 			data,
 		})
+
+		signal?.throwIfAborted()
 
 		// Firefox hands back null instead of an empty blob when the response has no body
 		if (!(response.data instanceof Blob)) {
@@ -370,7 +372,7 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * @param params Optional query parameters
 	 * @param page The page to get
 	 */
-	async getAll(model : Model = new AbstractModel({}), params = {}, page = 1): Promise<Model[]> {
+	async getAll(model?: Model, params: Record<string, unknown> = {}, page = 1, signal?: AbortSignal): Promise<ListItem[]> {
 		if (this.paths.getAll === '') {
 			throw new Error('This model is not able to get data.')
 		}
@@ -378,11 +380,12 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 		params.page = page
 
 		const cancel = this.setLoading()
-		model = this.beforeGet(model)
-		const finalUrl = this.getReplacedRoute(this.paths.getAll, model)
+		const input = model === undefined ? {} : this.beforeGet(model)
+		const finalUrl = this.getReplacedRoute(this.paths.getAll, input)
 
 		try {
-			const response = await this.http.get(finalUrl, {params: prepareParams(params)})
+			const response = await this.http.get(finalUrl, {params: prepareParams(params), signal})
+			signal?.throwIfAborted()
 			this.resultCount = Number(response.headers['x-pagination-result-count'])
 			this.totalPages = Number(response.headers['x-pagination-total-pages'])
 
@@ -400,7 +403,7 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * Performs a put request to the url specified before
 	 * @returns {Promise<any | never>}
 	 */
-	async create(model : Model) {
+	async create(model : Model, signal?: AbortSignal) {
 		if (this.paths.create === '') {
 			throw new Error('This model is not able to create data.')
 		}
@@ -409,11 +412,11 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 		const finalUrl = this.getReplacedRoute(this.paths.create, model)
 
 		try {
-			const response = await this.http.put(finalUrl, model)
+			const response = await this.http.put(finalUrl, model, {signal})
+			signal?.throwIfAborted()
 			const result = this.modelCreateFactory(response.data)
-			if (typeof model.maxPermission !== 'undefined') {
-				result.maxPermission = model.maxPermission
-			}
+			const permission = Reflect.get(model, 'maxPermission')
+			if (permission !== undefined) Object.assign(result, {maxPermission: permission})
 			return result
 		} finally {
 			cancel()
@@ -424,15 +427,14 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * An abstract implementation to send post requests.
 	 * Services can use this to implement functions to do post requests other than using the update method.
 	 */
-	async post(url : string, model : Model) {
+	async post(url : string, model : Model, signal?: AbortSignal) {
 		const cancel = this.setLoading()
 
 		try {
-			const response = await this.http.post(url, model)
+			const response = await this.http.post(url, model, {signal})
 			const result = this.modelUpdateFactory(response.data)
-			if (typeof model.maxPermission !== 'undefined') {
-				result.maxPermission = model.maxPermission
-			}
+			const permission = Reflect.get(model, 'maxPermission')
+			if (permission !== undefined) Object.assign(result, {maxPermission: permission})
 			return result
 		} finally {
 			cancel()
@@ -442,19 +444,19 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	/**
 	 * Performs a post request to the update url
 	 */
-	update(model : Model) {
+	update(model : Model, signal?: AbortSignal) {
 		if (this.paths.update === '') {
 			throw new Error('This model is not able to update data.')
 		}
 
 		const finalUrl = this.getReplacedRoute(this.paths.update, model)
-		return this.post(finalUrl, model)
+		return this.post(finalUrl, model, signal)
 	}
 
 	/**
 	 * Performs a delete request to the update url
 	 */
-	async delete(model : Model) {
+	async delete(model : Model, signal?: AbortSignal) {
 		if (this.paths.delete === '') {
 			throw new Error('This model is not able to delete data.')
 		}
@@ -463,7 +465,8 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 		const finalUrl = this.getReplacedRoute(this.paths.delete, model)
 
 		try {
-			const {data} = await this.http.delete(finalUrl, model)
+			const {data} = await this.http.delete(finalUrl, {...model, signal})
+			signal?.throwIfAborted()
 			return data
 		} finally {
 			cancel()
@@ -476,33 +479,30 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 	 * @param file {IFile}
 	 * @param fieldName The name of the field the file is uploaded to.
 	 */
-	uploadFile(url : string, file: File, fieldName : string) {
-		return this.uploadBlob(url, new Blob([file]), fieldName, file.name)
+	uploadFile(url : string, file: File, fieldName : string, signal?: AbortSignal) {
+		return this.uploadBlob(url, new Blob([file]), fieldName, file.name, signal)
 	}
 
 	/**
 	 * Uploads a blob to a url.
 	 */
-	uploadBlob(url : string, blob: Blob, fieldName: string, filename : string) {
+	uploadBlob(url : string, blob: Blob, fieldName: string, filename : string, signal?: AbortSignal) {
 		const data = new FormData()
 		data.append(fieldName, blob, filename)
-		return this.uploadFormData(url, data)
+		return this.uploadFormData(url, data, signal)
 	}
 
 	/**
 	 * Uploads a form data object.
 	 */
-	async uploadFormData(url : string, formData: FormData) {
+	async uploadFormData(url : string, formData: FormData, signal?: AbortSignal) {
 		const cancel = this.setLoading()
 		try {
 			const response = await this.http.put(
 				url,
 				formData,
 				{
-					headers: {
-						'Content-Type':
-							'multipart/form-data; boundary=' + formData._boundary,
-					},
+					signal,
 					// fix upload issue after upgrading to axios to 1.0.0
 					// see: https://github.com/axios/axios/issues/4885#issuecomment-1222419132
 					transformRequest: formData => formData,
@@ -511,6 +511,7 @@ export default abstract class AbstractService<Model extends IAbstract = IAbstrac
 					},
 				},
 			)
+			signal?.throwIfAborted()
 			return this.modelCreateFactory(response.data)
 		} finally {
 			this.uploadProgress = 0

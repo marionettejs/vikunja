@@ -68,9 +68,9 @@ export default class TaskModel extends AbstractModel<ITask> implements ITask {
 	labels: Label[] = []
 	assignees: IUser[] = []
 
-	dueDate: Date | null = 0
-	startDate: Date | null = 0
-	endDate: Date | null = 0
+	dueDate: Date | null = null
+	startDate: Date | null = null
+	endDate: Date | null = null
 	repeatAfter: number | IRepeatAfter = 0
 	repeatFromCurrentDate = false
 	repeatMode: IRepeatMode = TASK_REPEAT_MODES.REPEAT_MODE_DEFAULT
@@ -80,20 +80,20 @@ export default class TaskModel extends AbstractModel<ITask> implements ITask {
 	percentDone = 0
 	relatedTasks:  Partial<Record<IRelationKind, ITask[]>> = {}
 	attachments: IAttachment[] = []
-	coverImageAttachmentId: IAttachment['id'] = null
+	coverImageAttachmentId: ITask['coverImageAttachmentId'] = null
 	identifier = ''
 	index = 0
 	isFavorite = false
-	subscription: ISubscription = null
+	subscription: ISubscription | null = null
 
 	position = 0
 	
-	reactions = {}
-	comments = []
+	reactions: ITask['reactions'] = {}
+	comments: ITask['comments'] = []
 
-	createdBy: IUser = UserModel
-	created: Date = null
-	updated: Date = null
+	createdBy: IUser = new UserModel()
+	created: Date = new Date(0)
+	updated: Date = new Date(0)
 
 	projectId: IProject['id'] = 0
 	bucketId: IBucket['id'] = 0
@@ -130,11 +130,7 @@ export default class TaskModel extends AbstractModel<ITask> implements ITask {
 		}
 
 		// Convert all subtasks to task models
-		Object.keys(this.relatedTasks).forEach(relationKind => {
-			this.relatedTasks[relationKind] = this.relatedTasks[relationKind].map(t => {
-				return new TaskModel(t)
-			})
-		})
+		this.relatedTasks = Object.fromEntries(Object.entries<ITask[]>(this.relatedTasks).map(([kind, tasks]) => [kind, tasks.map(task => new TaskModel(task))]))
 
 		// Make all attachments to attachment models
 		this.attachments = this.attachments.map(a => new AttachmentModel(a))
@@ -160,9 +156,9 @@ export default class TaskModel extends AbstractModel<ITask> implements ITask {
 
 		// We can't convert emojis to camel case, hence we do this manually
 		this.reactions = {}
-		Object.keys(data.reactions || {}).forEach(reaction => {
-			this.reactions[reaction] = data.reactions[reaction].map(u => new UserModel(u))
-		})
+		for (const [reaction, users] of Object.entries(data.reactions ?? {})) {
+			this.reactions[reaction] = users.map(user => new UserModel(user))
+		}
 	}
 
 	getTextIdentifier() {

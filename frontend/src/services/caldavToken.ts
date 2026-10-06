@@ -11,7 +11,7 @@ export default class CaldavTokenService extends AbstractService<ICaldavToken> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof CaldavTokenModel>[0]) {
 		return new CaldavTokenModel(data)
 	}
 }

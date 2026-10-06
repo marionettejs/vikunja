@@ -5,8 +5,8 @@ export interface IBackgroundImage extends IAbstract {
 	url: string
 	thumb: string
 	info: {
-		author: string
-		authorName: string
+		author?: string
+		authorName?: string
 	}
 	blurHash: string  
 }

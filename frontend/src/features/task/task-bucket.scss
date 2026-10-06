@@ -1,0 +1,64 @@
+.native-task-bucket {
+	display: inline;
+
+	.bucket-name {
+		color: var(--grey-800);
+
+		&:hover {
+			color: var(--primary);
+		}
+	}
+
+	.change-indicator {
+		font-size: .75em;
+		margin-inline-start: .25rem;
+		color: var(--grey-400);
+	}
+
+	.dropdown,
+	.dropdown-trigger {
+		display: inline;
+		padding: 0;
+	}
+
+	.dropdown {
+		position: relative;
+	}
+
+	.dropdown-menu {
+		min-inline-size: 12rem;
+		position: absolute;
+		z-index: 20;
+		display: block;
+	}
+
+	.dropdown-content {
+		background-color: var(--scheme-main);
+		border-radius: $radius;
+		padding-block: .5rem;
+		box-shadow: var(--shadow-md);
+	}
+
+	.dropdown-item {
+		color: var(--text);
+		font-size: .875rem;
+		line-height: 1.5;
+		padding: $item-padding;
+		position: relative;
+		text-align: inherit;
+		white-space: nowrap;
+		inline-size: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: left !important;
+
+		&.is-active {
+			background-color: var(--link);
+			color: var(--link-invert);
+		}
+
+		&:hover:not(:disabled) {
+			background-color: var(--grey-100);
+		}
+	}
+}

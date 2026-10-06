@@ -1,0 +1,98 @@
+.project-table {
+  .table {
+    background: transparent;
+    th {
+      white-space: nowrap;
+    }
+    .image.is-avatar {
+      display: inline-block;
+      border-radius: 100%;
+      vertical-align: middle;
+    }
+  }
+  .columns-filter {
+    margin: 0;
+    .card-content.content {
+      display: flex;
+      flex-direction: column;
+    }
+    &.is-open {
+      margin: 2rem 0 1rem;
+    }
+  }
+  .priority-label {
+    .icon {
+      vertical-align: top;
+      inline-size: auto;
+      padding-inline-end: 0.5rem;
+    }
+    &.high-priority {
+      color: var(--danger-text);
+    }
+    &.not-so-high {
+      color: var(--warning);
+    }
+    &.negligible {
+      color: var(--info);
+    }
+  }
+  .sort__icon {
+    color: var(--grey-400);
+    display: inline-block;
+  }
+}
+
+.project-table .is-done {
+  background: var(--success);
+  color: hsl(215, 27.9%, 16.9%);
+  padding: 0.2rem 0.3rem;
+  font-weight: bold;
+  line-height: 1;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.project-table {
+  .base-checkbox__label {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: inline-flex;
+  }
+  .fancy-checkbox {
+    display: inline-block;
+    padding-inline-end: 5px;
+    padding-block-start: 3px;
+    svg {
+      position: relative;
+      z-index: 1;
+      stroke: var(--stroke-color, #c8ccd4);
+      transform: translate3d(0, 0, 0);
+      transition: all 0.2s ease;
+      path,
+      polyline {
+        transition:
+          all 0.2s linear,
+          color 0.2s ease;
+      }
+    }
+    input:checked + svg {
+      --stroke-color: var(--primary);
+      path {
+        stroke-dashoffset: 60;
+      }
+      polyline {
+        stroke-dashoffset: 42;
+      }
+    }
+    input:focus-visible + svg {
+      border-radius: 4px;
+      @include focus-ring;
+    }
+  }
+  .fancy-checkbox__content {
+    font-size: 0.8rem;
+    vertical-align: top;
+    padding-inline-start: 0.5rem;
+  }
+}

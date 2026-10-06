@@ -1,0 +1,100 @@
+.native-account-data {
+  .export-message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    inline-size: 100%;
+    gap: 0.5rem;
+    > p {
+      margin-block-end: 0;
+    }
+    @media (width <= 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      > p {
+        margin-block-end: 1rem;
+      }
+      > .button {
+        inline-size: 100%;
+      }
+    }
+  }
+  .message {
+    padding: 0.75rem 1rem;
+    border: 1px solid;
+    border-radius: 4px;
+    white-space: pre-line;
+    &.info {
+      border-color: var(--primary);
+      background: hsla(var(--primary-hsl), 0.05);
+    }
+    &.danger {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+  }
+}
+.native-webhook-manager {
+  .available-events-check {
+    margin-inline-end: 0.5rem;
+    inline-size: 12.5rem;
+  }
+  .webhook-target-url {
+    overflow-wrap: anywhere;
+  }
+}
+.native-bots {
+  .bot-card {
+    padding: 1rem;
+    margin-block-start: 1rem;
+    border: 1px solid var(--grey-200);
+    border-radius: 4px;
+  }
+  .bot-header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-block-end: 0.5rem;
+  }
+  .bot-name-input {
+    max-inline-size: 16rem;
+  }
+  .status {
+    margin-inline-start: auto;
+    font-size: 0.85rem;
+    color: var(--grey-600);
+  }
+  .bot-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-block-end: 1rem;
+  }
+  .tokens {
+    margin-block-start: 1rem;
+    padding-block-start: 1rem;
+    border-block-start: 1px solid var(--grey-200);
+  }
+  .create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-block-end: 1rem;
+  }
+  .message-wrapper {
+    background: var(--white);
+    border-radius: 4px;
+  }
+  .message-wrapper .message.warning {
+    color: var(--text);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--warning);
+    background: hsla(
+      var(--warning-h),
+      var(--warning-s),
+      var(--warning-l),
+      0.05
+    );
+    overflow-wrap: anywhere;
+  }
+}

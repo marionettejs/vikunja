@@ -4,7 +4,7 @@ import ReactionModel from '@/models/reaction'
 import type {IReactionPerEntity} from '@/modelTypes/IReaction'
 import UserModel from '@/models/user'
 
-export default class ReactionService extends AbstractService {
+export default class ReactionService extends AbstractService<IAbstract, Partial<IReactionPerEntity>> {
 	constructor() {
 		super({
 			getAll: '{kind}/{id}/reactions',
@@ -25,8 +25,8 @@ export default class ReactionService extends AbstractService {
 		return data
 	}
 
-	async delete(model: IAbstract) {
+	async delete(model: IAbstract, signal?: AbortSignal) {
 		const finalUrl = this.getReplacedRoute(this.paths.delete, model)
-		return super.post(finalUrl, model)
+		return super.post(finalUrl, model, signal)
 	}
 }

@@ -15,8 +15,9 @@ export default class TaskBucketService extends AbstractService<ITaskBucket> {
 	}
 
 	// Moving a task into the done bucket marks it done without going through TaskService.
-	async update(model: ITaskBucket) {
-		const updated = await super.update(model)
+	async update(model: ITaskBucket, signal?: AbortSignal) {
+		const updated = await super.update(model, signal)
+		signal?.throwIfAborted()
 		invalidateCachedTask(model.taskId)
 		return updated
 	}

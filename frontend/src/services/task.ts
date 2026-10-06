@@ -1,7 +1,6 @@
 import AbstractService from './abstractService'
 import TaskModel from '@/models/task'
 import type {ITask} from '@/modelTypes/ITask'
-import AttachmentService from './attachment'
 
 import {colorFromHex} from '@/helpers/color/colorFromHex'
 import {SECONDS_A_DAY, SECONDS_A_HOUR, SECONDS_A_WEEK} from '@/constants/date'
@@ -9,7 +8,7 @@ import {objectToSnakeCase} from '@/helpers/case'
 import {apiV2Url, AuthenticatedHTTPFactory} from '@/helpers/fetcher'
 import {invalidateCachedTask} from '@/helpers/taskCache'
 import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
-import {translatedError} from '@/message'
+import {translatedError} from '@/shared/notifications'
 
 // Mirrors models.MaxTasksPerBulkCreation on the backend.
 const MAX_TASKS_PER_BULK_CREATION = 100
@@ -40,6 +39,11 @@ function repeatAfterToSeconds(repeatAfter: ITask['repeatAfter'] | undefined): nu
 	}
 }
 
+export interface TaskWire extends Record<string, unknown> {
+ assignees: {id: number, username: string}[]
+ reminders: {reminder: string | null, relative_period: number, relative_to: string | null}[]
+}
+
 export default class TaskService extends AbstractService<ITask> {
 	constructor() {
 		super({
@@ -51,15 +55,15 @@ export default class TaskService extends AbstractService<ITask> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TaskModel>[0]) {
 		return new TaskModel(data)
 	}
 
-	beforeUpdate(model) {
+	beforeUpdate(model: ITask) {
 		return this.processModel(model)
 	}
 
-	beforeCreate(model) {
+	beforeCreate(model: ITask) {
 		return this.processModel(model)
 	}
 
@@ -67,86 +71,51 @@ export default class TaskService extends AbstractService<ITask> {
 		return false
 	}
 
-	async update(model: ITask) {
-		const updated = await super.update(model)
+	async update(model: ITask, signal?: AbortSignal) {
+		const updated = await super.update(model, signal)
+		signal?.throwIfAborted()
 		invalidateCachedTask(model.id)
 		return updated
 	}
 
-	async delete(model: ITask) {
-		const response = await super.delete(model)
+	async delete(model: ITask, signal?:AbortSignal) {
+		const response = await super.delete(model,signal)
 		invalidateCachedTask(model.id)
 		return response
 	}
 
-	processModel(updatedModel) {
-		const model = {...updatedModel}
-
-		model.title = model.title?.trim()
-
-		// Ensure that projectId is an int
-		model.projectId = Number(model.projectId)
-
-		// Convert dates into an iso string
-		model.dueDate = toISOStringOrNull(model.dueDate)
-		model.startDate = toISOStringOrNull(model.startDate)
-		model.endDate = toISOStringOrNull(model.endDate)
-		model.doneAt = toISOStringOrNull(model.doneAt)
-		model.deletedAt = toISOStringOrNull(model.deletedAt)
-		model.created = toISOStringOrNull(model.created)
-		model.updated = toISOStringOrNull(model.updated)
-
-		model.reminderDates = null
-		// remove all nulls, these would create empty reminders
-		model.reminders = (model.reminders ?? []).filter(r => r !== null)
-		// Make normal timestamps from js dates
-		if (model.reminders.length > 0) {
-			model.reminders.forEach(r => {
-				r.reminder = toISOStringOrNull(r.reminder)
-			})
+	processModel(updatedModel: ITask): TaskWire {
+		const model = {
+			...updatedModel,
+			title: updatedModel.title?.trim(),
+			projectId: Number(updatedModel.projectId),
+			dueDate: toISOStringOrNull(updatedModel.dueDate),
+			startDate: toISOStringOrNull(updatedModel.startDate),
+			endDate: toISOStringOrNull(updatedModel.endDate),
+			doneAt: toISOStringOrNull(updatedModel.doneAt),
+			deletedAt: toISOStringOrNull(updatedModel.deletedAt),
+			created: toISOStringOrNull(updatedModel.created),
+			updated: toISOStringOrNull(updatedModel.updated),
+			reminderDates: null,
+			reminders: (updatedModel.reminders ?? []).filter(reminder => reminder !== null).map(reminder => ({...reminder, reminder: toISOStringOrNull(reminder.reminder)})),
+			repeatAfter: repeatAfterToSeconds(updatedModel.repeatAfter),
+			hexColor: colorFromHex(updatedModel.hexColor ?? ''),
+			relatedTasks: Object.fromEntries(Object.entries<ITask[]>(updatedModel.relatedTasks ?? {}).map(([kind, tasks]) => [kind, tasks.map(task => this.processModel(task))])),
 		}
-
-		model.repeatAfter = repeatAfterToSeconds(model.repeatAfter)
-
-		model.hexColor = colorFromHex(model.hexColor ?? '')
-
-		// Do the same for all related tasks. `model` is only a shallow copy, so this
-		// has to build a new object - assigning into relatedTasks would replace the
-		// related tasks of the task we were passed with their api representation.
-		model.relatedTasks = Object.fromEntries(
-			Object.entries<ITask[]>(model.relatedTasks ?? {})
-				.map(([relationKind, tasks]) => [relationKind, tasks.map(t => this.processModel(t))]),
-		)
-
-		// Process all attachments to prevent parsing errors
-		if (model.attachments?.length > 0) {
-			const attachmentService = new AttachmentService()
-			model.attachments.map(a => {
-				return attachmentService.processModel(a)
-			})
-		}
-
 		const transformed = objectToSnakeCase(model)
-
-		// We can't convert emojis to skane case, hence we add them back again
-		transformed.reactions = {}
-		Object.keys(updatedModel.reactions || {}).forEach(reaction => {
-			transformed.reactions[reaction] = updatedModel.reactions[reaction].map(u => objectToSnakeCase(u))
-		})
-
-		return transformed as ITask
+		transformed.reactions = Object.fromEntries(Object.entries(updatedModel.reactions ?? {}).map(([reaction, users]) => [reaction, users.map(user => objectToSnakeCase(user))]))
+		return {
+			...transformed,
+			assignees: (updatedModel.assignees ?? []).map(user => ({...objectToSnakeCase(user), id: user.id, username: user.username})),
+			reminders: model.reminders.map(reminder => ({...objectToSnakeCase(reminder), reminder: reminder.reminder, relative_period: reminder.relativePeriod, relative_to: reminder.relativeTo})),
+		}
 	}
 
 	// The v2 endpoint validates strictly against the task schema and rejects the
 	// frontend-only properties (max_permission, reminder_dates, …) processModel
 	// adds, hence the allowlist.
 	private toBulkCreatePayload(task: ITask) {
-		// processModel lies about its return type — it returns the snake_cased
-		// wire format, not an ITask.
-		const processed = this.processModel(task) as unknown as {
-			assignees: {id: number, username: string}[],
-			reminders: {reminder: string | null, relative_period: number, relative_to: string | null}[],
-		} & Record<string, unknown>
+		const processed = this.processModel(task)
 		return {
 			title: processed.title,
 			description: processed.description,
@@ -175,7 +144,7 @@ export default class TaskService extends AbstractService<ITask> {
 
 	// Returns tasks aligned 1:1 with the input (null = not created). Grouped per
 	// project because the endpoint takes the project from the URL.
-	async bulkCreate(tasks: ITask[]): Promise<{tasks: (ITask | null)[], error: unknown | null}> {
+	async bulkCreate(tasks: ITask[], signal?: AbortSignal): Promise<{tasks: (ITask | null)[], error: unknown | null}> {
 		const cancel = this.setLoading()
 
 		try {
@@ -203,13 +172,16 @@ export default class TaskService extends AbstractService<ITask> {
 				// posting in reverse leaves the earliest input lines topmost. Tradeoff:
 				// per-project index numbers then run backwards across batches.
 				for (const batch of batches.reverse()) {
+					signal?.throwIfAborted()
 					try {
 						// Fresh http instance: the shared one's interceptors would run
 						// processModel on the {tasks} wrapper.
 						const {data} = await AuthenticatedHTTPFactory().post(
 							apiV2Url(`projects/${Number(projectId)}/tasks/bulk`),
 							{tasks: batch.map(index => this.toBulkCreatePayload(tasks[index]))},
+							{signal},
 						)
+						signal?.throwIfAborted()
 						if (!Array.isArray(data?.tasks) || data.tasks.length !== batch.length) {
 							throw translatedError('task.bulkCreateUnexpectedResponse')
 						}
@@ -219,6 +191,7 @@ export default class TaskService extends AbstractService<ITask> {
 							created[batch[batchIndex]] = this.modelCreateFactory(t)
 						})
 					} catch (e) {
+						signal?.throwIfAborted()
 						// Keep what other batches created so the caller can retry only
 						// the missing tasks instead of duplicating everything.
 						error ??= e

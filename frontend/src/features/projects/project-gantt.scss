@@ -1,0 +1,297 @@
+.native-gantt-surface {
+  [hidden] {
+    display: none !important;
+  }
+  // Original public Vikunja: components/project/views/ProjectGantt.vue
+
+  .gantt-chart-container {
+    padding-block-end: 1rem;
+    position: relative;
+    z-index: 0;
+  }
+
+  .gantt-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-block-end: 1rem;
+
+    @media screen and (max-width: $tablet) {
+      flex-direction: column;
+    }
+  }
+
+  .link-share-view:not(.has-background) .gantt-options {
+    border: none;
+    box-shadow: none;
+
+    .card-content {
+      padding: 0.5rem;
+    }
+  }
+
+  .field {
+    margin-block-end: 0;
+    inline-size: 33%;
+
+    &:not(:last-child) {
+      padding-inline-end: 0.5rem;
+    }
+
+    @media screen and (max-width: $tablet) {
+      inline-size: 100%;
+      max-inline-size: 100%;
+      margin-block-start: 0.5rem;
+      padding-inline-end: 0 !important;
+    }
+
+    &,
+    .input {
+      font-size: 0.8rem;
+    }
+
+    .select,
+    .select select {
+      block-size: auto;
+      inline-size: 100%;
+      font-size: 0.8rem;
+    }
+
+    .label {
+      font-size: 0.9rem;
+    }
+  }
+
+  // Original public Vikunja: components/gantt/GanttChart.vue
+
+  .gantt-container {
+    overflow-x: auto;
+    min-inline-size: 100%;
+  }
+
+  .gantt-chart-wrapper {
+    inline-size: max-content;
+    min-inline-size: 100%;
+    position: relative;
+  }
+
+  .gantt-rows-container {
+    position: relative;
+  }
+
+  .gantt-group-band {
+    position: absolute;
+    background: hsla(
+      var(--primary-h),
+      var(--primary-s),
+      var(--primary-l),
+      0.06
+    );
+    border: 1px solid
+      hsla(var(--primary-h), var(--primary-s), var(--primary-l), 0.12);
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .gantt-rows {
+    position: relative;
+    z-index: 2;
+  }
+
+  .gantt-row-content {
+    position: relative;
+    min-block-size: 40px;
+    inline-size: 100%;
+  }
+
+  // Original public Vikunja: components/gantt/GanttRowBars.vue
+
+  .gantt-row-bars {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    pointer-events: none;
+    z-index: 4;
+
+    .gantt-bar {
+      cursor: grab;
+      pointer-events: all;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
+    text {
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  .gantt-collapse-toggle {
+    pointer-events: all;
+    cursor: pointer;
+
+    &:hover polygon {
+      fill: var(--grey-700);
+    }
+
+    &:focus {
+      outline: none;
+
+      polygon {
+        fill: var(--primary);
+      }
+    }
+  }
+
+  .gantt-bar-text {
+    font-size: 0.85rem;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .gantt-parent-bar {
+    cursor: grab;
+    pointer-events: all;
+  }
+
+  .gantt-resize-handle {
+    cursor: col-resize !important;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: all; // Ensure they receive pointer events
+  }
+
+  // Show resize handles on bar hover
+  g:hover .gantt-resize-handle {
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+      cursor: inherit; // Use the specific cursor defined above
+    }
+  }
+
+  // Focus styles for task bars
+  g[role="slider"]:focus {
+    outline: none; // Remove default browser outline
+
+    .gantt-bar {
+      stroke: var(--primary) !important;
+      stroke-width: 3 !important;
+    }
+  }
+
+  // Original public Vikunja: components/gantt/GanttTimelineHeader.vue
+
+  .gantt-timeline {
+    background: var(--white);
+    border-block-end: 1px solid var(--grey-200);
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 10;
+  }
+
+  .gantt-timeline-months {
+    display: flex;
+
+    .timeunit-month {
+      background: var(--white);
+      font-family: $vikunja-font;
+      font-weight: bold;
+      border-inline-end: 1px solid var(--grey-200);
+      padding: 0.5rem 0;
+      text-align: center;
+      font-size: 1rem;
+      color: var(--grey-800);
+    }
+  }
+
+  .gantt-timeline-days {
+    display: flex;
+
+    .timeunit {
+      .timeunit-wrapper {
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        inline-size: 100%;
+        font-family: $vikunja-font;
+
+        &.today {
+          background: var(--primary);
+          color: var(--white);
+          border-radius: 5px 5px 0 0;
+          font-weight: bold;
+        }
+
+        .weekday {
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
+  // Original public Vikunja: components/gantt/GanttRow.vue
+
+  .bg-row {
+    background: hsla(var(--white-h), var(--white-s), var(--white-l), 0.15);
+  }
+
+  .bg-row-alt {
+    background: hsla(var(--grey-100-hsl), 0.5);
+  }
+
+  // Original public Vikunja: components/gantt/GanttVerticalGridLines.vue
+
+  .gantt-grid-lines {
+    position: absolute;
+    inset-inline-start: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .gantt-vertical-lines {
+    position: absolute;
+    inset: 0;
+  }
+
+  // Original public Vikunja: components/tasks/TaskForm.vue
+
+  .add-new-task {
+    padding: 1rem 0.7rem 0.4rem;
+    display: flex;
+    max-inline-size: 450px;
+
+    .input {
+      margin-inline-end: 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    .button {
+      font-size: 0.68rem;
+    }
+  }
+}
+
+.native-gantt-surface {
+  .gantt-relation-arrows {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .gantt-arrow {
+    opacity: 0.7;
+  }
+}

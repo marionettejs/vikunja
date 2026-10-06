@@ -13,8 +13,8 @@ export default class AdminProjectService extends AbstractService<IProject> {
 		return new ProjectModel(data)
 	}
 
-	async reassignOwner(projectId: IProject['id'], newOwnerId: IProject['owner']['id']) {
-		const {data} = await this.http.patch(`/admin/projects/${projectId}/owner`, {owner_id: newOwnerId})
+	async reassignOwner(projectId: IProject['id'], newOwnerId: IProject['owner']['id'], signal?: AbortSignal) {
+		const {data} = await this.http.patch(`/admin/projects/${projectId}/owner`, {owner_id: newOwnerId}, {signal})
 		return this.modelUpdateFactory(data)
 	}
 }

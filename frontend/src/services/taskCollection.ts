@@ -3,6 +3,7 @@ import TaskModel from '@/models/task'
 
 import type {ITask} from '@/modelTypes/ITask'
 import BucketModel from '@/models/bucket'
+import type {IBucket} from '@/modelTypes/IBucket'
 
 export type ExpandTaskFilterParam = 'subtasks' | 'buckets' | 'reactions' | 'comment_count' | 'is_unread' | null
 
@@ -29,7 +30,7 @@ export function getDefaultTaskFilterParams(): TaskFilterParams {
 	}
 }
 
-export default class TaskCollectionService extends AbstractService<ITask> {
+export default class TaskCollectionService extends AbstractService<ITask, ITask | IBucket> {
 	constructor() {
 		super({
 			getAll: '/projects/{projectId}/views/{viewId}/tasks',
@@ -37,18 +38,26 @@ export default class TaskCollectionService extends AbstractService<ITask> {
 		})
 	}
 
-	getReplacedRoute(path: string, pathparams: Record<string, unknown>): string {
-		if (!pathparams.viewId) {
+	getReplacedRoute(path: string, pathparams: object): string {
+		if (!Reflect.get(pathparams, 'viewId')) {
 			return super.getReplacedRoute('/projects/{projectId}/tasks', pathparams)
 		}
 		return super.getReplacedRoute(path, pathparams)
 	}
 
-	modelFactory(data) {
-		// FIXME: There must be a better way for this…
+	modelFactory(data: Partial<ITask>) { return new TaskModel(data) }
+
+	modelGetAllFactory(data: Partial<ITask | IBucket> & {project_view_id?: number}) {
 		if (typeof data.project_view_id !== 'undefined') {
 			return new BucketModel(data)
 		}
 		return new TaskModel(data)
 	}
+	async getTasks(model?: ITask, params: Record<string, unknown> = {}, page = 1, signal?: AbortSignal): Promise<ITask[]> {
+		return (await this.getAll(model, params, page, signal)).map(item => {
+			if ('tasks' in item) throw new Error('Task endpoint returned a bucket')
+			return item
+		})
+	}
+
 }

@@ -10,7 +10,7 @@ import {
 	LABEL_FIELDS,
 	PROJECT_FIELDS,
 } from '@/helpers/filters'
-import {getLabelByExactTitle} from '@/client/queries/labels'
+import {getLabelByExactTitle} from '@/helpers/labelLookup'
 import type {Label} from '@/client/generated'
 import {getLabelColor} from '@/composables/useLabelStyles'
 import {getTextColor} from '@/helpers/color/getTextColor'

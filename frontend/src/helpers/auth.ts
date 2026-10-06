@@ -8,6 +8,11 @@ let savedToken: string | null = null
  * It enables viewing multiple link shares indipendently from each in multiple tabs other without overriding any other open ones.
  */
 export const saveToken = (token: string, persist: boolean) => {
+	const previous = getTokenIdentity(savedToken ?? localStorage.getItem('token'))
+	if (JSON.stringify(previous) !== JSON.stringify(getTokenIdentity(token))) {
+		authEpoch++
+		inFlightRefresh = null
+	}
 	savedToken = token
 	if (persist) {
 		localStorage.setItem('token', token)
@@ -26,7 +31,7 @@ export const getToken = (): string | null => {
 	return savedToken
 }
 
-function getTokenPayload(token: string | null): Record<string, unknown> | null {
+export function getTokenPayload(token: string | null): Record<string, unknown> | null {
 	if (!token) return null
 	try {
 		const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
@@ -83,11 +88,11 @@ let authEpoch = 0
  * Same-tab concurrent calls share one in-flight refresh (always-on dedup); the
  * Web Locks API inside adds cross-tab coordination only in secure contexts.
  */
-export async function refreshToken(persist: boolean): Promise<void> {
+export async function refreshToken(persist: boolean, requestToken?: string): Promise<void> {
 	if (inFlightRefresh) {
 		return inFlightRefresh
 	}
-	const p = doRefresh(persist)
+	const p = doRefresh(persist, requestToken)
 	inFlightRefresh = p
 	// Only clear if it still points to this promise — a logout (or a newer
 	// refresh started after it) may have replaced inFlightRefresh meanwhile.
@@ -100,14 +105,14 @@ export async function refreshToken(persist: boolean): Promise<void> {
 	return p
 }
 
-async function doRefresh(persist: boolean): Promise<void> {
+async function doRefresh(persist: boolean, requestToken?: string): Promise<void> {
 	// Snapshot the epoch so we can tell if a logout happened while we awaited.
 	const epochAtStart = authEpoch
 	const loggedOutSinceStart = () => authEpoch !== epochAtStart
 
-	// Capture the tokens before waiting for the lock so we can detect
-	// if another tab refreshed while we were queued.
-	const tokenBeforeLock = localStorage.getItem('token')
+	// A delayed401 must compare against the token sent, even if another tab
+	// completed its refresh before this response reached the interceptor.
+	const tokenBeforeLock = requestToken ?? localStorage.getItem('token')
 	const desktopRefreshTokenBeforeLock = localStorage.getItem('desktopOAuthRefreshToken')
 
 	const refreshUnderLock = async () => {
@@ -150,6 +155,7 @@ async function doRefresh(persist: boolean): Promise<void> {
 		// another tab already refreshed. Just adopt the new token.
 		const currentToken = localStorage.getItem('token')
 		if (currentToken && currentToken !== tokenBeforeLock) {
+			if (requestToken && JSON.stringify(getTokenIdentity(currentToken)) !== JSON.stringify(getTokenIdentity(requestToken))) throw new DOMException('Identity changed during refresh', 'AbortError')
 			savedToken = currentToken
 			return
 		}

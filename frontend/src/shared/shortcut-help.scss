@@ -1,0 +1,54 @@
+@import '../styles/common-imports';
+
+.native-shortcuts {
+  .card-header-icon.close {
+    position: static;
+    color: var(--grey-500);
+    font-size: 1rem;
+    padding: .75rem 1rem;
+    transform: none;
+  }
+  .keyboard-shortcuts {text-align: start;}
+  .message:not(:last-child) {margin-block-end: 1rem;}
+  .message-wrapper {
+    border-radius: $radius;
+    background: var(--white);
+    .message {
+      padding: .75rem 1rem;
+      border-radius: $radius;
+      border: 1px solid var(--primary);
+      background: hsla(var(--primary-hsl), .05);
+    }
+  }
+  .shortcut-list {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+  .shortcut-title {margin-block-end: .5rem;}
+  .shortcut-keys {
+    justify-content: end;
+    margin-block-end: .5rem;
+  }
+  .shortcuts {
+    display: flex;
+    align-items: center;
+  }
+  kbd {
+    padding: .1rem .35rem;
+    border: 1px solid var(--grey-300);
+    background: var(--grey-100);
+    border-radius: 3px;
+    font-size: .75rem;
+  }
+  .shortcuts span {padding: 0 .25rem;}
+}
+.keyboard-shortcuts-button {
+  position: fixed;
+  inset-block-end: calc(1rem - 4px);
+  inset-inline-end: 1rem;
+  z-index: 4500;
+  color: var(--grey-500);
+  transition: color $transition;
+
+  @media screen and (max-width: $tablet) {display: none;}
+}

@@ -5,7 +5,6 @@
 // ###################
 // START BULMA IMPORTS
 // ###################
-//
 // The following imports are the same as in "bulma/bulma.sass"
 // with the exception of the bulma utilities – They are
 // imported globally in common-imports.scss
@@ -14,7 +13,6 @@
 @import "bulma-css-variables/sass/base/minireset";
 @import "bulma-css-variables/sass/base/generic";
 @import "bulma-css-variables/sass/base/animations";
-
 
 // imports from "bulma-css-variables/sass/elements/_all";
 // @import "bulma-css-variables/sass/elements/box"; // not used; migrated to <Card>
@@ -31,7 +29,6 @@
 
 @import "bulma-css-variables/sass/elements/other";
 
-
 // imports from "bulma-css-variables/sass/form/_all";
 @import "bulma-css-variables/sass/form/shared";
 @import "bulma-css-variables/sass/form/input-textarea";
@@ -39,7 +36,6 @@
 @import "bulma-css-variables/sass/form/select";
 // @import "bulma-css-variables/sass/form/file"; // not used; every file input is hidden and triggered via a custom button
 @import "bulma-css-variables/sass/form/tools";
-
 
 // imports from "bulma-css-variables/sass/components/_all";
 // @import "bulma-css-variables/sass/components/breadcrumb"; // not used
@@ -55,11 +51,9 @@
 // @import "bulma-css-variables/sass/components/panel"; // not used
 // @import "bulma-css-variables/sass/components/tabs"; // not used
 
-
 // imports from "bulma-css-variables/sass/grid/_all";
 @import "bulma-css-variables/sass/grid/columns";
 // @import "bulma-css-variables/sass/grid/tiles"; // not used
-
 
 // imports from "bulma-css-variables/sass/helpers/_all";
 @import "bulma-css-variables/sass/helpers/color";
@@ -71,7 +65,6 @@
 // @import "bulma-css-variables/sass/helpers/spacing"; // using logical units instead
 @import "bulma-css-variables/sass/helpers/typography";
 @import "bulma-css-variables/sass/helpers/visibility";
-
 
 // imports from "bulma-css-variables/sass/layout/_all";
 // @import "bulma-css-variables/sass/layout/hero"; // not used
@@ -88,17 +81,17 @@
 @import "custom-properties";
 
 .skip-to-content {
-	position: absolute;
-	inset-block-start: -100%;
-	inset-inline-start: 0;
-	z-index: 10000;
-	padding: .5rem 1rem;
-	background: var(--primary);
-	color: var(--white);
-	font-weight: 700;
-	text-decoration: none;
+  position: absolute;
+  inset-block-start: -100%;
+  inset-inline-start: 0;
+  z-index: 10000;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--white);
+  font-weight: 700;
+  text-decoration: none;
 
-	&:focus {
-		inset-block-start: 0;
-	}
+  &:focus {
+    inset-block-start: 0;
+  }
 }

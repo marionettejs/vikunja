@@ -1,11 +1,11 @@
 import {createRandomID} from '@/helpers/randomId'
 import {computePosition, flip, shift, offset} from '@floating-ui/dom'
-import {nextTick} from 'vue'
 import {eventToShortcutString} from '@/helpers/shortcut'
 import type {Editor} from '@tiptap/core'
 import {getPopupContainer} from '@/components/input/editor/popupContainer'
 
-export default function inputPrompt(pos: ClientRect, placeholder: string, oldValue: string = '', editor?: Editor): Promise<string | null> {
+export default function inputPrompt(pos: ClientRect, placeholder: string, oldValue: string = '', editor?: Editor, signal?: AbortSignal): Promise<string | null> {
+	if (signal?.aborted) return Promise.resolve(null)
 	return new Promise((resolve) => {
 		const id = 'link-input-' + createRandomID()
 		// Append inside the open task <dialog> (top-layer) when present, otherwise
@@ -95,7 +95,7 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 		// mouseup so a drag that never produces a click doesn't latch this forever.
 		let dismissing = false
 
-		nextTick(() => {
+		queueMicrotask(() => {
 			const inputEl = document.getElementById(id) as HTMLInputElement | null
 			inputEl?.focus()
 
@@ -143,7 +143,10 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 		}
 		document.addEventListener('mouseup', handleOutsideMouseup, true)
 
+		const abort = () => { resolve(null); cleanup() }
 		const cleanup = () => {
+			signal?.removeEventListener('abort', abort)
+			clearTimeout(outsideTimer)
 			window.removeEventListener('scroll', handleScroll, true)
 			document.removeEventListener('click', handleClickOutside)
 			document.removeEventListener('mousedown', handleOutsideMousedown, true)
@@ -184,9 +187,10 @@ export default function inputPrompt(pos: ClientRect, placeholder: string, oldVal
 		})
 
 		// Add slight delay to prevent immediate closing
-		setTimeout(() => {
+		const outsideTimer = setTimeout(() => {
 			document.addEventListener('click', handleClickOutside)
 		}, 100)
+		signal?.addEventListener('abort', abort, {once: true})
 
 	})
 }

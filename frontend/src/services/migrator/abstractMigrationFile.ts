@@ -20,11 +20,12 @@ export default class AbstractMigrationFileService extends AbstractService {
 		return false
 	}
 
-	migrate(file: File) {
+	migrate(file: File, signal?: AbortSignal) {
 		return this.uploadFile(
 			this.paths.create,
 			file,
 			'import',
+			signal,
 		)
 	}
 }

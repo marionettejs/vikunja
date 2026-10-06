@@ -40,8 +40,9 @@ export interface TimeEntryListResult {
 export function useTimeEntryService() {
 	const http = AuthenticatedHTTPFactory()
 
-	async function getAll(params: TimeEntryListParams = {}): Promise<TimeEntryListResult> {
+	async function getAll(params: TimeEntryListParams = {}, signal?: AbortSignal): Promise<TimeEntryListResult> {
 		const {data} = await http.get(apiV2Url('time-entries'), {
+			signal,
 			params: {
 				filter: params.filter,
 				filter_timezone: params.filterTimezone,
@@ -59,22 +60,22 @@ export function useTimeEntryService() {
 		}
 	}
 
-	async function create(entry: Partial<ITimeEntry>): Promise<ITimeEntry> {
-		const {data} = await http.post(apiV2Url('time-entries'), objectToSnakeCase(entry))
+	async function create(entry: Partial<ITimeEntry>, signal?: AbortSignal): Promise<ITimeEntry> {
+		const {data} = await http.post(apiV2Url('time-entries'), objectToSnakeCase(entry), {signal})
 		return parseTimeEntry(data)
 	}
 
-	async function update(entry: Partial<ITimeEntry> & {id: number}): Promise<ITimeEntry> {
-		const {data} = await http.put(apiV2Url(`time-entries/${entry.id}`), objectToSnakeCase(entry))
+	async function update(entry: Partial<ITimeEntry> & {id: number}, signal?: AbortSignal): Promise<ITimeEntry> {
+		const {data} = await http.put(apiV2Url(`time-entries/${entry.id}`), objectToSnakeCase(entry), {signal})
 		return parseTimeEntry(data)
 	}
 
-	async function remove(id: number): Promise<void> {
-		await http.delete(apiV2Url(`time-entries/${id}`))
+	async function remove(id: number, signal?: AbortSignal): Promise<void> {
+		await http.delete(apiV2Url(`time-entries/${id}`), {signal})
 	}
 
-	async function stopTimer(): Promise<ITimeEntry> {
-		const {data} = await http.post(apiV2Url('time-entries/timer/stop'))
+	async function stopTimer(signal?: AbortSignal): Promise<ITimeEntry> {
+		const {data} = await http.post(apiV2Url('time-entries/timer/stop'), undefined, {signal})
 		return parseTimeEntry(data)
 	}
 

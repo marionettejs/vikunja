@@ -6,6 +6,7 @@ export default class PasswordResetModel extends AbstractModel<IPasswordReset> im
 	token = ''
 	newPassword = ''
 	email = ''
+	declare message: string
 
 	constructor(data: Partial<IPasswordReset> = {}) {
 		super()

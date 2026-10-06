@@ -1,4 +1,3 @@
-import {nextTick, reactive} from 'vue'
 
 import AbstractModel from './abstractModel'
 import UserSettingsModel from '@/models/userSettings'
@@ -12,7 +11,7 @@ const avatarCache = new Map<string, string>()
 const pendingRequests = new Map<string, Promise<string>>()
 
 // Bumped on invalidation so components rendering that user's cached avatar refetch it.
-export const avatarCacheVersions = reactive(new Map<string, number>())
+
 
 // Returns undefined, never '': Vue renders src="" which the browser resolves to the page
 // URL and reports as a failed image load.
@@ -47,6 +46,13 @@ export async function fetchAvatarBlobUrl(user: Pick<IUser, 'username'>, size = 5
 	return await requestPromise
 }
 
+const avatarListeners = new Map<string, Set<() => void>>()
+export function observeAvatar(username: string, changed: () => void) {
+	const listeners = avatarListeners.get(username) ?? new Set<() => void>()
+	avatarListeners.set(username, listeners); listeners.add(changed)
+	return () => { listeners.delete(changed); if (!listeners.size) avatarListeners.delete(username) }
+}
+
 export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 	if (!user || !user.username) {
 		return
@@ -69,11 +75,11 @@ export function invalidateAvatarCache(user: Pick<IUser, 'username'>) {
 		}
 	}
 
-	avatarCacheVersions.set(user.username, (avatarCacheVersions.get(user.username) ?? 0) + 1)
 
 	// Only after the version bump rendered: revoking a url a live <img> still holds
 	// breaks it on the next re-decode (print, content-visibility).
-	void nextTick(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
+	for (const changed of avatarListeners.get(user.username) ?? []) changed()
+	queueMicrotask(() => staleUrls.forEach(url => window.URL.revokeObjectURL(url)))
 }
 
 export function getDisplayName(user: IUser) {
@@ -92,13 +98,13 @@ export default class UserModel extends AbstractModel<IUser> implements IUser {
 	exp = 0
 	type: AuthType = AUTH_TYPES.UNKNOWN
 
-	created: Date
-	updated: Date
-	settings: IUserSettings
+	created = new Date(NaN)
+	updated = new Date(NaN)
+	settings: IUserSettings = new UserSettingsModel({})
 
-	isLocalUser: boolean
+	isLocalUser = false
 	pendingEmail = ''
-	deletionScheduledAt: null
+	deletionScheduledAt: IUser['deletionScheduledAt'] = null
 	isAdmin?: boolean
 	botOwnerId = 0
 

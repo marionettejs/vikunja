@@ -19,12 +19,17 @@ export default class AvatarService extends AbstractService<IAvatar> {
 		return false
 	}
 
-	create(blob) {
+	create(blob: unknown) {
+		return this.uploadAvatar(blob as Blob)
+	}
+
+	uploadAvatar(blob: Blob, signal?: AbortSignal) {
 		return this.uploadBlob(
 			this.paths.create,
 			blob,
 			'avatar',
 			'avatar.jpg', // This fails without a file name
+			signal,
 		)
 	}
 }

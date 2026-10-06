@@ -37,10 +37,10 @@ a, button, input[type='checkbox'], input[type='radio'], select, [tabindex], [con
 
 body {
   background: var(--site-background);
-  min-height: 100vh;
+  min-block-size: 100vh;
  
   @media print {
-    background: #fff;
+    background: #ffffff;
   }
 }
 
@@ -77,8 +77,8 @@ button.table {
 }
 
 .is-max-width-desktop {
-  width: 100%;
-  max-width: $desktop;
+  inline-size: 100%;
+  max-inline-size: $desktop;
   margin: 0 auto;
 }
 
@@ -96,7 +96,7 @@ button.table {
 }
 
 .is-fullwidth {
-  width: 100%;
+  inline-size: 100%;
 }
 
 .color-bubble {

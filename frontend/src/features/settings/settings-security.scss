@@ -1,0 +1,31 @@
+.native-settings-security {
+  .native-token-editor .preset-buttons {
+    margin-block-start: 1rem;
+  }
+  .message.info {
+    padding: 0.75rem 1rem;
+    background: hsla(var(--primary-hsl), 0.05);
+    border-color: var(--primary);
+    color: var(--text);
+    white-space: pre-line;
+    border-radius: $radius;
+  }
+  [data-totp] img {
+    max-inline-size: 100%;
+    inline-size: 200px;
+  }
+  .table {
+    inline-size: 100%;
+    margin-block: 1rem;
+  }
+  .field.has-addons {
+    margin-block-start: 1rem;
+    margin-block-end: 0.75rem;
+  }
+  .native-token-editor .checkbox {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    margin-block-end: 0.25rem;
+  }
+}

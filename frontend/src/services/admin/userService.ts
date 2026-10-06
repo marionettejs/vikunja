@@ -26,32 +26,32 @@ export default class AdminUserService extends AbstractService<IAdminUser> {
 		return new AdminUserModel(data)
 	}
 
-	async setAdmin(id: IAdminUser['id'], isAdmin: boolean) {
-		const {data} = await this.http.patch(`/admin/users/${id}/admin`, {is_admin: isAdmin})
+	async setAdmin(id: IAdminUser['id'], isAdmin: boolean, signal?: AbortSignal) {
+		const {data} = await this.http.patch(`/admin/users/${id}/admin`, {is_admin: isAdmin}, {signal})
 		return this.modelUpdateFactory(data)
 	}
 
-	async setStatus(id: IAdminUser['id'], status: number) {
-		const {data} = await this.http.patch(`/admin/users/${id}/status`, {status})
+	async setStatus(id: IAdminUser['id'], status: number, signal?: AbortSignal) {
+		const {data} = await this.http.patch(`/admin/users/${id}/status`, {status}, {signal})
 		return this.modelUpdateFactory(data)
 	}
 
 	// The password endpoints only exist on /api/v2, hence the absolute URLs.
-	async setPassword(id: IAdminUser['id'], newPassword: string) {
-		const {data} = await this.http.patch(apiV2Url(`admin/users/${id}/password`), {new_password: newPassword})
+	async setPassword(id: IAdminUser['id'], newPassword: string, signal?: AbortSignal) {
+		const {data} = await this.http.patch(apiV2Url(`admin/users/${id}/password`), {new_password: newPassword}, {signal})
 		return this.modelUpdateFactory(data)
 	}
 
-	async sendPasswordResetEmail(id: IAdminUser['id']) {
-		await this.http.post(apiV2Url(`admin/users/${id}/password-reset-email`))
+	async sendPasswordResetEmail(id: IAdminUser['id'], signal?: AbortSignal) {
+		await this.http.post(apiV2Url(`admin/users/${id}/password-reset-email`), undefined, {signal})
 	}
 
-	async createUser(body: CreateAdminUserBody) {
-		const {data} = await this.http.post('/admin/users', body)
+	async createUser(body: CreateAdminUserBody, signal?: AbortSignal) {
+		const {data} = await this.http.post('/admin/users', body, {signal})
 		return this.modelCreateFactory(data)
 	}
 
-	async deleteUser(id: IAdminUser['id'], mode: DeleteUserMode) {
-		await this.http.delete(`/admin/users/${id}`, {params: {mode}})
+	async deleteUser(id: IAdminUser['id'], mode: DeleteUserMode, signal?: AbortSignal) {
+		await this.http.delete(`/admin/users/${id}`, {params: {mode}, signal})
 	}
 }

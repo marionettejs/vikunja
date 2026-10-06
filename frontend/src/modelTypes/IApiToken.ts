@@ -8,7 +8,7 @@ export interface IApiToken extends IAbstract {
 	id: number
 	title: string
 	token: string
-	permissions: IApiPermission
+	permissions: IApiPermission | null
 	expiresAt: Date
 	created: Date
 	ownerId?: number

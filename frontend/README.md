@@ -5,7 +5,7 @@
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
 [![Translation](https://badges.crowdin.net/vikunja/localized.svg)](https://crowdin.com/project/vikunja)
 
-This is the web frontend for Vikunja, written in Vue.js.
+This is the web frontend for Vikunja, implemented on this migration branch with Marionette 5.0.0-rc.2 and TypeScript. Full parity with the pinned Vue reference remains under verification; see ../migration/PROGRESS.md.
 
 Take a look at [our roadmap](https://my.vikunja.cloud/share/UrdhKPqumxDXUbYpEGJLSIyNTwAnbBzVlwdDpRbv/auth) (hosted on Vikunja!) for a list of things we're currently working on!
 

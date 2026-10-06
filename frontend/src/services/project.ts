@@ -15,31 +15,21 @@ export default class ProjectService extends AbstractService<IProject> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof ProjectModel>[0]) {
 		return new ProjectModel(data)
 	}
 
-	beforeUpdate(model) {
-		if(typeof model.tasks !== 'undefined') {
-			const taskService = new TaskService()
-			model.tasks = model.tasks.map(task => {
-				return taskService.beforeUpdate(task)
-			})
-		}
-		
-		if(typeof model.hexColor !== 'undefined') {
-			model.hexColor = colorFromHex(model.hexColor)
-		}
-		
-		return model
+	beforeUpdate(model: IProject) {
+		const taskService = new TaskService()
+		return {...model, tasks: model.tasks?.map(task => taskService.beforeUpdate(task)), hexColor: model.hexColor === undefined ? model.hexColor : colorFromHex(model.hexColor)}
 	}
 
-	beforeCreate(project) {
+	beforeCreate(project: IProject) {
 		project.hexColor = colorFromHex(project.hexColor)
 		return project
 	}
 
-	async background(project: Pick<IProject, 'id' | 'backgroundInformation'>) {
+	async background(project: Pick<IProject, 'id' | 'backgroundInformation'>, signal?: AbortSignal) {
 		if (project.backgroundInformation === null) {
 			return ''
 		}
@@ -48,15 +38,18 @@ export default class ProjectService extends AbstractService<IProject> {
 			url: `/projects/${project.id}/background`,
 			method: 'GET',
 			responseType: 'blob',
+			signal,
 		})
+		signal?.throwIfAborted()
 		return window.URL.createObjectURL(new Blob([response.data]))
 	}
 
-	async removeBackground(project: IProject) {
+	async removeBackground(project: IProject, signal?: AbortSignal) {
 		const cancel = this.setLoading()
 
 		try {
-			await this.http.delete(`/projects/${project.id}/background`)
+			await this.http.delete(`/projects/${project.id}/background`, {signal})
+			signal?.throwIfAborted()
 			return {
 				...project,
 				backgroundInformation: null,

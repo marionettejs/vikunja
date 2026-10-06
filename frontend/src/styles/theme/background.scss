@@ -7,7 +7,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    min-height: 100vh;
+    min-block-size: 100vh;
   }
 
   .box,
@@ -37,8 +37,8 @@
 }
 
 .app-container-background {
-  width: 100vw;
-  height: 100vh;
+  inline-size: 100vw;
+  block-size: 100vh;
   position: fixed;
   z-index: 0;
 }

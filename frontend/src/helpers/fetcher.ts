@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type {AxiosRequestConfig} from 'axios'
-import {getToken, getTokenType, refreshToken} from '@/helpers/auth'
+import {getToken, getTokenIdentity, getTokenType, refreshToken} from '@/helpers/auth'
 import {AUTH_TYPES} from '@/modelTypes/IUser'
 
 /**
@@ -47,9 +47,9 @@ export function HTTPFactory() {
 // fail with 401 only trigger a single refresh, then all retry with the new token.
 let refreshPromise: Promise<string | null> | null = null
 
-async function doRefresh(): Promise<string | null> {
+async function doRefresh(requestToken: string): Promise<string | null> {
 	try {
-		await refreshToken(true)
+		await refreshToken(true, requestToken)
 		return getToken()
 	} catch (e) {
 		// A 429 means the refresh endpoint is already rate-limited; retrying
@@ -62,7 +62,8 @@ async function doRefresh(): Promise<string | null> {
 		// blip, server restart). If this also fails, give up.
 		try {
 			await new Promise(resolve => setTimeout(resolve, 1000))
-			await refreshToken(true)
+			if (JSON.stringify(getTokenIdentity(getToken())) !== JSON.stringify(getTokenIdentity(requestToken))) return null
+			await refreshToken(true, requestToken)
 			return getToken()
 		} catch (retryErr) {
 			// Refresh failed. Don't remove the token here — in a multi-tab scenario,
@@ -78,10 +79,7 @@ export function AuthenticatedHTTPFactory() {
 	const instance = HTTPFactory()
 
 	instance.interceptors.request.use((config) => {
-		config.headers = {
-			...config.headers,
-			'Content-Type': 'application/json',
-		}
+		config.headers.set('Content-Type', 'application/json')
 
 		// Set the default auth header if we have a token
 		const token = getToken()
@@ -115,17 +113,21 @@ export function AuthenticatedHTTPFactory() {
 			return Promise.reject(error)
 		}
 
+		const authorization = originalRequest.headers?.Authorization
+		const requestToken = typeof authorization === 'string' ? authorization.replace(/^Bearer /, '') : ''
+		const stillOwned = () => !originalRequest.signal?.aborted && JSON.stringify(getTokenIdentity(getToken())) === JSON.stringify(getTokenIdentity(requestToken))
+		if (!stillOwned()) return Promise.reject(error)
 		originalRequest._retried = true
 
 		// Coalesce concurrent refresh attempts into a single request.
 		if (!refreshPromise) {
-			refreshPromise = doRefresh().finally(() => {
+			refreshPromise = doRefresh(requestToken).finally(() => {
 				refreshPromise = null
 			})
 		}
 
 		const newToken = await refreshPromise
-		if (!newToken) {
+		if (!newToken || !stillOwned()) {
 			// Refresh failed — reject so the UI can redirect to login.
 			return Promise.reject(error)
 		}

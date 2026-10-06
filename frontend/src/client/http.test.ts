@@ -125,7 +125,7 @@ describe('configureApiClient', () => {
 		await client.get({url: '/probe'})
 
 		expect(auth.refreshToken).toHaveBeenCalledOnce()
-		expect(auth.refreshToken).toHaveBeenCalledWith(true)
+		expect(auth.refreshToken).toHaveBeenCalledWith(true, 'expired-token')
 		expect(requests).toHaveLength(2)
 		expect(requests[1].headers.get('Authorization')).toBe('Bearer replacement-token')
 	})

@@ -12,15 +12,16 @@ export default class WebhookService extends AbstractService<IWebhook> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof WebhookModel>[0]) {
 		return new WebhookModel(data)
 	}
 
-	async getAvailableEvents(): Promise<string[]> {
+	async getAvailableEvents(signal?: AbortSignal): Promise<string[]> {
 		const cancel = this.setLoading()
 
 		try {
-			const response = await this.http.get('/webhooks/events')
+			const response = await this.http.get('/webhooks/events', {signal})
+			signal?.throwIfAborted()
 			return response.data
 		} finally {
 			cancel()
@@ -38,15 +39,16 @@ export class UserWebhookService extends AbstractService<IWebhook> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof WebhookModel>[0]) {
 		return new WebhookModel(data)
 	}
 
-	async getAvailableEvents(): Promise<string[]> {
+	async getAvailableEvents(signal?: AbortSignal): Promise<string[]> {
 		const cancel = this.setLoading()
 
 		try {
-			const response = await this.http.get('/user/settings/webhooks/events')
+			const response = await this.http.get('/user/settings/webhooks/events', {signal})
+			signal?.throwIfAborted()
 			return response.data
 		} finally {
 			cancel()

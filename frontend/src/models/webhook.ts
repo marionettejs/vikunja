@@ -11,10 +11,10 @@ export default class WebhookModel extends AbstractModel<IWebhook> implements IWe
 	basicAuthPassword = ''
 	targetUrl = ''
 	events = []
-	createdBy = null
+	createdBy: IWebhook['createdBy'] = new UserModel()
 
-	created: Date
-	updated: Date
+	created = new Date(NaN)
+	updated = new Date(NaN)
 
 	constructor(data: Partial<IWebhook> = {}) {
 		super()

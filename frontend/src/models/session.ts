@@ -6,8 +6,8 @@ export default class SessionModel extends AbstractModel<ISession> implements ISe
 	deviceInfo = ''
 	ipAddress = ''
 	isCurrent = false
-	lastActive: Date = null
-	created: Date = null
+	lastActive: Date = new Date(0)
+	created: Date = new Date(0)
 
 	constructor(data: Partial<ISession> = {}) {
 		super()

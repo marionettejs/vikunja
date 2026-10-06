@@ -9,12 +9,12 @@ export default class TaskCommentModel extends AbstractModel<ITaskComment> implem
 	id = 0
 	taskId: ITask['id'] = 0
 	comment = ''
-	author: IUser = UserModel
+	author: IUser = new UserModel()
 	
-	reactions = {}
+	reactions: ITaskComment['reactions'] = {}
 
-	created: Date = null
-	updated: Date = null
+	created: Date = new Date(0)
+	updated: Date = new Date(0)
 
 	constructor(data: Partial<ITaskComment> = {}) {
 		super()
@@ -26,8 +26,8 @@ export default class TaskCommentModel extends AbstractModel<ITaskComment> implem
 		
 		// We can't convert emojis to camel case, hence we do this manually
 		this.reactions = {}
-		Object.keys(data.reactions || {}).forEach(reaction => {
-			this.reactions[reaction] = data.reactions[reaction].map(u => new UserModel(u))
-		})
+		for (const [reaction, users] of Object.entries(data.reactions ?? {})) {
+			this.reactions[reaction] = users.map(user => new UserModel(user))
+		}
 	}
 }

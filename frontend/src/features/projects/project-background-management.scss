@@ -1,0 +1,108 @@
+.native-project-background {
+  .unsplash-credit {
+    text-align: end;
+    font-size: 0.8rem;
+  }
+
+  .unsplash-credit__link {
+    color: var(--grey-800);
+  }
+
+  .image-search__result-list {
+    --items-per-row: 1;
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(var(--items-per-row), 1fr);
+
+    @media screen and (min-width: $mobile) {
+      --items-per-row: 2;
+    }
+    @media screen and (min-width: $tablet) {
+      --items-per-row: 4;
+    }
+    @media screen and (min-width: $tablet) {
+      --items-per-row: 5;
+    }
+  }
+
+  .image-search__result-item {
+    margin-block-start: 0; // FIXME: removes padding from .content
+    aspect-ratio: 16 / 10;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    position: relative;
+  }
+
+  .image-search__image-button {
+    inline-size: 100%;
+  }
+
+  .image-search__image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .image-search__info {
+    position: absolute;
+    inset-block-end: 0;
+    inline-size: 100%;
+    padding: 0.25rem 0;
+    opacity: 0;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: $white;
+    transition: opacity $transition;
+  }
+  .image-search__result-item:hover .image-search__info {
+    opacity: 1;
+  }
+
+  .is-load-more-button {
+    margin: 1rem auto 0 !important;
+    display: block;
+    inline-size: 200px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+  .card {
+    color: var(--text);
+    text-align: start;
+    background: var(--white);
+  }
+}
+.native-app [data-info][hidden] {
+  display: none !important;
+}
+.native-upcoming-range .popup.is-open {
+  max-inline-size: calc(100vw - 2rem);
+  block-size: 320px !important;
+}
+.native-daily-entry .show-tasks-options {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.native-daily-entry .label-filter-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.native-daily-entry .llama-cool {
+  margin: 3rem auto 0;
+  display: block;
+}
+.native-daily-entry [hidden] {
+  display: none !important;
+}
+
+.native-share-surface .link-share-view {
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,70 @@
+.native-list-body {
+  .tasks {
+    padding: 0.5rem;
+  }
+  .list-view__add-task {
+    padding: 1rem 1rem 0;
+  }
+  .card {
+    background-color: var(--white);
+    border-radius: $radius;
+    margin-block-end: 1rem;
+    border: 1px solid var(--card-border-color);
+    box-shadow: var(--shadow-sm);
+    color: var(--text);
+    max-inline-size: 100%;
+    position: relative;
+  }
+  .card-content {
+    background-color: transparent;
+    padding: 1.5rem;
+    &:first-child {
+      border-start-start-radius: $radius;
+      border-start-end-radius: $radius;
+    }
+    &:last-child {
+      border-end-start-radius: $radius;
+      border-end-end-radius: $radius;
+    }
+    &.p-0 {
+      padding: 0;
+    }
+  }
+  .single-task .handle {
+    cursor: grab;
+    margin-inline-end: 0.25rem;
+    color: var(--grey-400);
+  }
+}
+.native-list-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .native-list-body .single-task .handle {
+    display: none;
+  }
+}
+.native-list-body .tasks:not(.dragging-disabled) .single-task {
+  cursor: grab;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: manipulation;
+  &:active {
+    cursor: grabbing;
+  }
+}
+.native-list-body .task-ghost {
+  border-radius: $radius;
+  background: var(--grey-100);
+  border: 2px dashed var(--grey-300);
+  * {
+    opacity: 0;
+  }
+}
+.native-list-filters .popup {
+  inset-block-start: 3rem;
+  inset-inline-end: 0;
+  max-inline-size: 300px;
+}

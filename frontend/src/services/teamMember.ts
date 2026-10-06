@@ -11,13 +11,11 @@ export default class TeamMemberService extends AbstractService<ITeamMember> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TeamMemberModel>[0]) {
 		return new TeamMemberModel(data)
 	}
 
-	beforeCreate(model) {
-		model.userId = model.id // The api wants to get the user id as user_Id
-		model.admin = model.admin === null ? false : model.admin
-		return model
+	beforeCreate(model: ITeamMember) {
+		return {...model, userId: model.id, admin: model.admin === null ? false : model.admin}
 	}
 }

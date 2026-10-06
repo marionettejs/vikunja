@@ -1,6 +1,6 @@
 import {describe, it, expect, vi, beforeEach, afterEach} from 'vitest'
 
-import {getToken, getTokenIdentity, getTokenType, refreshToken, removeToken} from './auth'
+import {getToken, getTokenIdentity, getTokenType, refreshToken, removeToken, saveToken} from './auth'
 
 let resolvePost: ((value: unknown) => void) | null = null
 
@@ -124,6 +124,29 @@ describe('refreshToken in-flight dedup', () => {
 		expect(post).toHaveBeenCalledTimes(1)
 	})
 
+	it('adopts a completed refresh for a late401 without rotating the cookie again', async () => {
+		const expired = `header.${btoa(JSON.stringify({id: 1, type: 1, jti: 'old'}))}.signature`
+		const renewed = `header.${btoa(JSON.stringify({id: 1, type: 1, jti: 'new'}))}.signature`
+		saveToken(expired, true)
+		saveToken(renewed, true)
+		await refreshToken(true, expired)
+		expect(post).not.toHaveBeenCalled()
+		expect(getToken()).toBe(renewed)
+	})
+
+	it('a queued Web Lock adopts the changed storage token before its storage event', async () => {
+		const old = `header.${btoa(JSON.stringify({id: 1, type: 1, jti: 'old'}))}.signature`
+		const renewed = `header.${btoa(JSON.stringify({id: 1, type: 1, jti: 'new'}))}.signature`
+		saveToken(old, true)
+		let enter!: () => void
+		const gate = new Promise<void>(done => {enter = done})
+		Object.defineProperty(navigator, 'locks', {value: {request: async (_name: string, callback: () => unknown) => {await gate; return callback()}}, configurable: true})
+		const pending = refreshToken(true, old)
+		localStorage.setItem('token', renewed)
+		enter(); await pending
+		expect(post).not.toHaveBeenCalled(); expect(getToken()).toBe(renewed)
+	})
+
 	it('allows a fresh refresh after the previous one settled', async () => {
 		const p1 = refreshToken(true)
 		settlePost()
@@ -149,6 +172,18 @@ describe('refreshToken in-flight dedup', () => {
 		await p1
 
 		expect(localStorage.getItem('token')).toBeNull()
+	})
+
+	it('a delayed personal refresh cannot replace a share with a colliding numeric id', async () => {
+		const personal = `header.${btoa(JSON.stringify({id: 1, type: 1}))}.signature`
+		const share = `header.${btoa(JSON.stringify({id: 1, type: 2}))}.signature`
+		saveToken(personal, true)
+		const pending = refreshToken(true)
+		saveToken(share, false)
+		settlePost()
+		await pending
+		expect(getToken()).toBe(share)
+		expect(localStorage.getItem('token')).toBe(personal)
 	})
 
 	it('an older refresh settling does not clobber a newer in-flight one', async () => {

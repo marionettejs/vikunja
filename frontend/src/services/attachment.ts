@@ -13,7 +13,11 @@ export enum PREVIEW_SIZE {
 	XL = 'xl',
 }
 
-export default class AttachmentService extends AbstractService<IAttachment> {
+export interface AttachmentUploadResult {
+ success: IAttachment[]
+ errors: {message: string}[] | null
+}
+export default class AttachmentService extends AbstractService<IAttachment, IAttachment, AttachmentUploadResult> {
 	constructor() {
 		super({
 			create: '/tasks/{taskId}/attachments',
@@ -37,25 +41,21 @@ export default class AttachmentService extends AbstractService<IAttachment> {
 		return new AttachmentModel(data)
 	}
 
-	modelCreateFactory(data) {
-		// Success contains the uploaded attachments
-		data.success = (data.success === null ? [] : data.success).map(a => {
-			return this.modelFactory(a)
-		})
-		return data
+	modelCreateFactory(data: Partial<AttachmentUploadResult>): AttachmentUploadResult {
+		return {...data, success: (data.success ?? []).map(attachment => this.modelFactory(attachment)), errors: data.errors ?? null}
 	}
 
-	getBlobUrl(model: Pick<IAttachment, 'id' | 'taskId'>, size?: PREVIEW_SIZE): Promise<string> {
+	getAttachmentBlobUrl(model: Pick<IAttachment, 'id' | 'taskId'>, size?: PREVIEW_SIZE, signal?: AbortSignal): Promise<string> {
 		let mainUrl = '/tasks/' + model.taskId + '/attachments/' + model.id
 		if (size !== undefined) {
 			mainUrl += `?preview_size=${size}`
 		}
 
-		return AbstractService.prototype.getBlobUrl.call(this, mainUrl)
+		return super.getBlobUrl(mainUrl, 'GET', {}, signal)
 	}
 
 	async download(model: IAttachment) {
-		const url = await this.getBlobUrl(model)
+		const url = await this.getAttachmentBlobUrl(model)
 		return downloadBlob(url, model.file.name)
 	}
 
@@ -64,7 +64,7 @@ export default class AttachmentService extends AbstractService<IAttachment> {
 	 * @param files
 	 * @returns {Promise<any|never>}
 	 */
-	create(model: IAttachment, files: File[] | FileList) {
+	upload(model: IAttachment, files: File[] | FileList, signal?: AbortSignal) {
 		const data = new FormData()
 		for (let i = 0; i < files.length; i++) {
 			// TODO: Validation of file size
@@ -74,6 +74,7 @@ export default class AttachmentService extends AbstractService<IAttachment> {
 		return this.uploadFormData(
 			this.getReplacedRoute(this.paths.create, model),
 			data,
+			signal,
 		)
 	}
 }

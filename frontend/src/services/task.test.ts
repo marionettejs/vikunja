@@ -42,6 +42,20 @@ describe('TaskService.bulkCreate', () => {
 		post.mockImplementation(async (_url, payload) => echoResponse(payload))
 	})
 
+	it('does not send bulk creation after its owner is stopped', async () => {
+		const request = new AbortController()
+		request.abort()
+		await expect(new TaskService().bulkCreate(buildTasks(['Cancelled'], 42), request.signal)).rejects.toMatchObject({name: 'AbortError'})
+		expect(post).not.toHaveBeenCalled()
+	})
+
+	it('rejects a late successful transport reply after owner cancellation', async () => {
+		const request = new AbortController()
+		post.mockImplementation(async (_url, payload) => {request.abort(); return echoResponse(payload)})
+		await expect(new TaskService().bulkCreate(buildTasks(['Cancelled'], 42), request.signal)).rejects.toMatchObject({name: 'AbortError'})
+		expect(post).toHaveBeenCalledWith('/api/v2/projects/42/tasks/bulk', expect.anything(), {signal: request.signal})
+	})
+
 	it('creates all tasks of one project in a single request', async () => {
 		const titles = ['first', 'second', 'third']
 		const {tasks, error} = await new TaskService().bulkCreate(buildTasks(titles, 42))
@@ -175,7 +189,7 @@ describe('TaskService.bulkCreate', () => {
 interface ProcessedTask {
 	repeat_after: number,
 	hex_color: string,
-	reminders: unknown[],
+	reminders: {reminder: string | null}[],
 	related_tasks: Record<string, ProcessedTask[]>,
 }
 
@@ -252,6 +266,15 @@ describe('TaskService.processModel', () => {
 
 		expect(relatedTasks.subtask[0]).toBe(subtask)
 		expect(subtask.repeatAfter).toEqual({type: 'days', amount: 1})
+	})
+
+	it('serializes reminders without replacing the caller’s Date values', () => {
+		const date = new Date('2026-10-01T12:00:00Z')
+		const reminder = {reminder: date, relativePeriod: 0, relativeTo: null}
+		const task = rawTask({reminders: [reminder]})
+		expect(process(task).reminders[0].reminder).toBe('2026-10-01T12:00:00.000Z')
+		expect(reminder.reminder).toBe(date)
+		expect(process(task).reminders[0].reminder).toBe('2026-10-01T12:00:00.000Z')
 	})
 
 	it('can process the same task twice', () => {

@@ -1,4 +1,6 @@
 import AbstractModel from '@/models/abstractModel'
+import type {ITask} from '@/modelTypes/ITask'
+import type {IBucket} from '@/modelTypes/IBucket'
 import type {ITaskBucket} from '@/modelTypes/ITaskBucket'
 import TaskModel from '@/models/task.ts'
 import BucketModel from '@/models/bucket.ts'
@@ -8,8 +10,8 @@ export default class TaskBucketModel extends AbstractModel<ITaskBucket> implemen
 	bucketId = 0
 	projectViewId = 0
 	projectId = 0
-	task = undefined
-	bucket = undefined
+	task: ITask | null = null
+	bucket: IBucket | null = null
 
 	constructor(data: Partial<ITaskBucket>) {
 		super()

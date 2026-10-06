@@ -1,0 +1,4097 @@
+{
+  "repository": "vue",
+  "sha": "5d22d730aa35b0666d0849099c12a1e638baabc9",
+  "counts": {
+    "tests": {
+      "files": 111,
+      "physical_lines": 14016,
+      "nonblank_lines": 11463
+    },
+    "source": {
+      "files": 552,
+      "physical_lines": 61381,
+      "nonblank_lines": 53544
+    },
+    "generated": {
+      "files": 16,
+      "physical_lines": 17414,
+      "nonblank_lines": 15681
+    }
+  },
+  "files": [
+    {
+      "path": "frontend/src/App.test.ts",
+      "scope": "tests",
+      "physical_lines": 104,
+      "nonblank_lines": 89
+    },
+    {
+      "path": "frontend/src/App.vue",
+      "scope": "source",
+      "physical_lines": 129,
+      "nonblank_lines": 106
+    },
+    {
+      "path": "frontend/src/client/generated/client.gen.ts",
+      "scope": "generated",
+      "physical_lines": 16,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/client/generated/client/client.gen.ts",
+      "scope": "generated",
+      "physical_lines": 277,
+      "nonblank_lines": 238
+    },
+    {
+      "path": "frontend/src/client/generated/client/index.ts",
+      "scope": "generated",
+      "physical_lines": 27,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/client/generated/client/types.gen.ts",
+      "scope": "generated",
+      "physical_lines": 218,
+      "nonblank_lines": 202
+    },
+    {
+      "path": "frontend/src/client/generated/client/utils.gen.ts",
+      "scope": "generated",
+      "physical_lines": 316,
+      "nonblank_lines": 276
+    },
+    {
+      "path": "frontend/src/client/generated/core/auth.gen.ts",
+      "scope": "generated",
+      "physical_lines": 48,
+      "nonblank_lines": 41
+    },
+    {
+      "path": "frontend/src/client/generated/core/bodySerializer.gen.ts",
+      "scope": "generated",
+      "physical_lines": 82,
+      "nonblank_lines": 68
+    },
+    {
+      "path": "frontend/src/client/generated/core/params.gen.ts",
+      "scope": "generated",
+      "physical_lines": 178,
+      "nonblank_lines": 156
+    },
+    {
+      "path": "frontend/src/client/generated/core/pathSerializer.gen.ts",
+      "scope": "generated",
+      "physical_lines": 171,
+      "nonblank_lines": 154
+    },
+    {
+      "path": "frontend/src/client/generated/core/queryKeySerializer.gen.ts",
+      "scope": "generated",
+      "physical_lines": 117,
+      "nonblank_lines": 100
+    },
+    {
+      "path": "frontend/src/client/generated/core/serverSentEvents.gen.ts",
+      "scope": "generated",
+      "physical_lines": 242,
+      "nonblank_lines": 209
+    },
+    {
+      "path": "frontend/src/client/generated/core/types.gen.ts",
+      "scope": "generated",
+      "physical_lines": 110,
+      "nonblank_lines": 103
+    },
+    {
+      "path": "frontend/src/client/generated/core/utils.gen.ts",
+      "scope": "generated",
+      "physical_lines": 140,
+      "nonblank_lines": 121
+    },
+    {
+      "path": "frontend/src/client/generated/index.ts",
+      "scope": "generated",
+      "physical_lines": 4,
+      "nonblank_lines": 3
+    },
+    {
+      "path": "frontend/src/client/generated/sdk.gen.ts",
+      "scope": "generated",
+      "physical_lines": 4237,
+      "nonblank_lines": 4027
+    },
+    {
+      "path": "frontend/src/client/generated/types.gen.ts",
+      "scope": "generated",
+      "physical_lines": 11231,
+      "nonblank_lines": 9944
+    },
+    {
+      "path": "frontend/src/client/http.test.ts",
+      "scope": "tests",
+      "physical_lines": 304,
+      "nonblank_lines": 251
+    },
+    {
+      "path": "frontend/src/client/http.ts",
+      "scope": "source",
+      "physical_lines": 93,
+      "nonblank_lines": 80
+    },
+    {
+      "path": "frontend/src/client/queries/labels.test.ts",
+      "scope": "tests",
+      "physical_lines": 198,
+      "nonblank_lines": 160
+    },
+    {
+      "path": "frontend/src/client/queries/labels.ts",
+      "scope": "source",
+      "physical_lines": 156,
+      "nonblank_lines": 131
+    },
+    {
+      "path": "frontend/src/client/queryClient.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/components/base/BaseButton.story.vue",
+      "scope": "source",
+      "physical_lines": 64,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/components/base/BaseButton.vue",
+      "scope": "source",
+      "physical_lines": 130,
+      "nonblank_lines": 112
+    },
+    {
+      "path": "frontend/src/components/base/BaseCheckbox.vue",
+      "scope": "source",
+      "physical_lines": 49,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/components/base/BasePagination.vue",
+      "scope": "source",
+      "physical_lines": 173,
+      "nonblank_lines": 153
+    },
+    {
+      "path": "frontend/src/components/base/Expandable.vue",
+      "scope": "source",
+      "physical_lines": 188,
+      "nonblank_lines": 163
+    },
+    {
+      "path": "frontend/src/components/date/DatemathHelp.story.vue",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/components/date/DatemathHelp.vue",
+      "scope": "source",
+      "physical_lines": 148,
+      "nonblank_lines": 141
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithRange.test.ts",
+      "scope": "tests",
+      "physical_lines": 53,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithRange.vue",
+      "scope": "source",
+      "physical_lines": 319,
+      "nonblank_lines": 278
+    },
+    {
+      "path": "frontend/src/components/date/DatepickerWithValues.vue",
+      "scope": "source",
+      "physical_lines": 260,
+      "nonblank_lines": 224
+    },
+    {
+      "path": "frontend/src/components/date/dateRanges.ts",
+      "scope": "source",
+      "physical_lines": 47,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChart.test.ts",
+      "scope": "tests",
+      "physical_lines": 52,
+      "nonblank_lines": 44
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChart.vue",
+      "scope": "source",
+      "physical_lines": 842,
+      "nonblank_lines": 705
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttChartBody.vue",
+      "scope": "source",
+      "physical_lines": 41,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRelationArrows.vue",
+      "scope": "source",
+      "physical_lines": 127,
+      "nonblank_lines": 112
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRow.vue",
+      "scope": "source",
+      "physical_lines": 40,
+      "nonblank_lines": 36
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttRowBars.vue",
+      "scope": "source",
+      "physical_lines": 518,
+      "nonblank_lines": 459
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttTimelineHeader.vue",
+      "scope": "source",
+      "physical_lines": 157,
+      "nonblank_lines": 141
+    },
+    {
+      "path": "frontend/src/components/gantt/GanttVerticalGridLines.vue",
+      "scope": "source",
+      "physical_lines": 45,
+      "nonblank_lines": 42
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttBarPrimitive.vue",
+      "scope": "source",
+      "physical_lines": 81,
+      "nonblank_lines": 78
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttChartPrimitive.vue",
+      "scope": "source",
+      "physical_lines": 87,
+      "nonblank_lines": 77
+    },
+    {
+      "path": "frontend/src/components/gantt/primitives/GanttRowPrimitive.vue",
+      "scope": "source",
+      "physical_lines": 46,
+      "nonblank_lines": 39
+    },
+    {
+      "path": "frontend/src/components/home/AddToHomeScreen.vue",
+      "scope": "source",
+      "physical_lines": 91,
+      "nonblank_lines": 78
+    },
+    {
+      "path": "frontend/src/components/home/AppHeader.vue",
+      "scope": "source",
+      "physical_lines": 342,
+      "nonblank_lines": 295
+    },
+    {
+      "path": "frontend/src/components/home/ContentAuth.vue",
+      "scope": "source",
+      "physical_lines": 272,
+      "nonblank_lines": 234
+    },
+    {
+      "path": "frontend/src/components/home/ContentLinkShare.vue",
+      "scope": "source",
+      "physical_lines": 212,
+      "nonblank_lines": 181
+    },
+    {
+      "path": "frontend/src/components/home/DemoMode.vue",
+      "scope": "source",
+      "physical_lines": 52,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/components/home/ImportHint.vue",
+      "scope": "source",
+      "physical_lines": 47,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/components/home/Logo.vue",
+      "scope": "source",
+      "physical_lines": 60,
+      "nonblank_lines": 51
+    },
+    {
+      "path": "frontend/src/components/home/MenuButton.vue",
+      "scope": "source",
+      "physical_lines": 77,
+      "nonblank_lines": 63
+    },
+    {
+      "path": "frontend/src/components/home/Navigation.vue",
+      "scope": "source",
+      "physical_lines": 260,
+      "nonblank_lines": 233
+    },
+    {
+      "path": "frontend/src/components/home/PoweredByLink.vue",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/components/home/ProjectsNavigation.vue",
+      "scope": "source",
+      "physical_lines": 115,
+      "nonblank_lines": 99
+    },
+    {
+      "path": "frontend/src/components/home/ProjectsNavigationItem.vue",
+      "scope": "source",
+      "physical_lines": 322,
+      "nonblank_lines": 285
+    },
+    {
+      "path": "frontend/src/components/home/UpdateNotification.vue",
+      "scope": "source",
+      "physical_lines": 87,
+      "nonblank_lines": 77
+    },
+    {
+      "path": "frontend/src/components/input/AsyncEditor.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 3
+    },
+    {
+      "path": "frontend/src/components/input/AutocompleteDropdown.vue",
+      "scope": "source",
+      "physical_lines": 236,
+      "nonblank_lines": 204
+    },
+    {
+      "path": "frontend/src/components/input/Button.story.vue",
+      "scope": "source",
+      "physical_lines": 35,
+      "nonblank_lines": 32
+    },
+    {
+      "path": "frontend/src/components/input/Button.test.ts",
+      "scope": "tests",
+      "physical_lines": 36,
+      "nonblank_lines": 30
+    },
+    {
+      "path": "frontend/src/components/input/Button.vue",
+      "scope": "source",
+      "physical_lines": 281,
+      "nonblank_lines": 241
+    },
+    {
+      "path": "frontend/src/components/input/ColorPicker.story.vue",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/components/input/ColorPicker.vue",
+      "scope": "source",
+      "physical_lines": 175,
+      "nonblank_lines": 154
+    },
+    {
+      "path": "frontend/src/components/input/Datepicker.vue",
+      "scope": "source",
+      "physical_lines": 181,
+      "nonblank_lines": 157
+    },
+    {
+      "path": "frontend/src/components/input/DatepickerInline.vue",
+      "scope": "source",
+      "physical_lines": 283,
+      "nonblank_lines": 251
+    },
+    {
+      "path": "frontend/src/components/input/FancyCheckbox.story.vue",
+      "scope": "source",
+      "physical_lines": 85,
+      "nonblank_lines": 73
+    },
+    {
+      "path": "frontend/src/components/input/FancyCheckbox.vue",
+      "scope": "source",
+      "physical_lines": 112,
+      "nonblank_lines": 97
+    },
+    {
+      "path": "frontend/src/components/input/FormCheckbox.test.ts",
+      "scope": "tests",
+      "physical_lines": 42,
+      "nonblank_lines": 37
+    },
+    {
+      "path": "frontend/src/components/input/FormCheckbox.vue",
+      "scope": "source",
+      "physical_lines": 62,
+      "nonblank_lines": 53
+    },
+    {
+      "path": "frontend/src/components/input/FormField.test.ts",
+      "scope": "tests",
+      "physical_lines": 260,
+      "nonblank_lines": 226
+    },
+    {
+      "path": "frontend/src/components/input/FormField.vue",
+      "scope": "source",
+      "physical_lines": 170,
+      "nonblank_lines": 156
+    },
+    {
+      "path": "frontend/src/components/input/FormInput.test.ts",
+      "scope": "tests",
+      "physical_lines": 123,
+      "nonblank_lines": 108
+    },
+    {
+      "path": "frontend/src/components/input/FormInput.vue",
+      "scope": "source",
+      "physical_lines": 83,
+      "nonblank_lines": 73
+    },
+    {
+      "path": "frontend/src/components/input/FormSelect.test.ts",
+      "scope": "tests",
+      "physical_lines": 173,
+      "nonblank_lines": 154
+    },
+    {
+      "path": "frontend/src/components/input/FormSelect.vue",
+      "scope": "source",
+      "physical_lines": 105,
+      "nonblank_lines": 94
+    },
+    {
+      "path": "frontend/src/components/input/Multiselect.test.ts",
+      "scope": "tests",
+      "physical_lines": 272,
+      "nonblank_lines": 219
+    },
+    {
+      "path": "frontend/src/components/input/Multiselect.vue",
+      "scope": "source",
+      "physical_lines": 745,
+      "nonblank_lines": 643
+    },
+    {
+      "path": "frontend/src/components/input/Password.vue",
+      "scope": "source",
+      "physical_lines": 98,
+      "nonblank_lines": 89
+    },
+    {
+      "path": "frontend/src/components/input/Reactions.vue",
+      "scope": "source",
+      "physical_lines": 207,
+      "nonblank_lines": 179
+    },
+    {
+      "path": "frontend/src/components/input/SimpleButton.vue",
+      "scope": "source",
+      "physical_lines": 40,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/components/input/editor/BlockquoteCommentView.vue",
+      "scope": "source",
+      "physical_lines": 134,
+      "nonblank_lines": 116
+    },
+    {
+      "path": "frontend/src/components/input/editor/CommandsList.vue",
+      "scope": "source",
+      "physical_lines": 162,
+      "nonblank_lines": 141
+    },
+    {
+      "path": "frontend/src/components/input/editor/EditorToolbar.vue",
+      "scope": "source",
+      "physical_lines": 553,
+      "nonblank_lines": 517
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkPill.test.ts",
+      "scope": "tests",
+      "physical_lines": 234,
+      "nonblank_lines": 182
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkPill.vue",
+      "scope": "source",
+      "physical_lines": 188,
+      "nonblank_lines": 167
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkView.test.ts",
+      "scope": "tests",
+      "physical_lines": 66,
+      "nonblank_lines": 55
+    },
+    {
+      "path": "frontend/src/components/input/editor/TaskLinkView.vue",
+      "scope": "source",
+      "physical_lines": 48,
+      "nonblank_lines": 42
+    },
+    {
+      "path": "frontend/src/components/input/editor/TipTap.vue",
+      "scope": "source",
+      "physical_lines": 1140,
+      "nonblank_lines": 965
+    },
+    {
+      "path": "frontend/src/components/input/editor/blockquoteWithCommentId.test.ts",
+      "scope": "tests",
+      "physical_lines": 65,
+      "nonblank_lines": 49
+    },
+    {
+      "path": "frontend/src/components/input/editor/blockquoteWithCommentId.ts",
+      "scope": "source",
+      "physical_lines": 50,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/components/input/editor/clipboardPaste.test.ts",
+      "scope": "tests",
+      "physical_lines": 96,
+      "nonblank_lines": 76
+    },
+    {
+      "path": "frontend/src/components/input/editor/commands.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/components/input/editor/contentRepair.ts",
+      "scope": "source",
+      "physical_lines": 116,
+      "nonblank_lines": 97
+    },
+    {
+      "path": "frontend/src/components/input/editor/deleteSelectionBeforeEnter.test.ts",
+      "scope": "tests",
+      "physical_lines": 91,
+      "nonblank_lines": 71
+    },
+    {
+      "path": "frontend/src/components/input/editor/deleteSelectionBeforeEnter.ts",
+      "scope": "source",
+      "physical_lines": 48,
+      "nonblank_lines": 39
+    },
+    {
+      "path": "frontend/src/components/input/editor/editorExtensions.test.ts",
+      "scope": "tests",
+      "physical_lines": 131,
+      "nonblank_lines": 106
+    },
+    {
+      "path": "frontend/src/components/input/editor/editorExtensions.ts",
+      "scope": "source",
+      "physical_lines": 343,
+      "nonblank_lines": 298
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/EmojiList.vue",
+      "scope": "source",
+      "physical_lines": 156,
+      "nonblank_lines": 137
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiData.test.ts",
+      "scope": "tests",
+      "physical_lines": 58,
+      "nonblank_lines": 50
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiData.ts",
+      "scope": "source",
+      "physical_lines": 75,
+      "nonblank_lines": 66
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiExtension.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 19
+    },
+    {
+      "path": "frontend/src/components/input/editor/emoji/emojiSuggestion.ts",
+      "scope": "source",
+      "physical_lines": 117,
+      "nonblank_lines": 99
+    },
+    {
+      "path": "frontend/src/components/input/editor/listKeymapWithJoin.test.ts",
+      "scope": "tests",
+      "physical_lines": 127,
+      "nonblank_lines": 96
+    },
+    {
+      "path": "frontend/src/components/input/editor/listKeymapWithJoin.ts",
+      "scope": "source",
+      "physical_lines": 69,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/components/input/editor/markdownPaste.test.ts",
+      "scope": "tests",
+      "physical_lines": 84,
+      "nonblank_lines": 66
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/MentionList.vue",
+      "scope": "source",
+      "physical_lines": 194,
+      "nonblank_lines": 168
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/MentionUser.vue",
+      "scope": "source",
+      "physical_lines": 41,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/mentionSuggestion.test.ts",
+      "scope": "tests",
+      "physical_lines": 13,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/components/input/editor/mention/mentionSuggestion.ts",
+      "scope": "source",
+      "physical_lines": 131,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/components/input/editor/popupContainer.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/components/input/editor/setLinkInEditor.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/components/input/editor/subscriptSuperscript.test.ts",
+      "scope": "tests",
+      "physical_lines": 74,
+      "nonblank_lines": 59
+    },
+    {
+      "path": "frontend/src/components/input/editor/suggestion.ts",
+      "scope": "source",
+      "physical_lines": 226,
+      "nonblank_lines": 212
+    },
+    {
+      "path": "frontend/src/components/input/editor/suggestionPopup.test.ts",
+      "scope": "tests",
+      "physical_lines": 118,
+      "nonblank_lines": 88
+    },
+    {
+      "path": "frontend/src/components/input/editor/suggestionPopup.ts",
+      "scope": "source",
+      "physical_lines": 75,
+      "nonblank_lines": 63
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskItemWithId.test.ts",
+      "scope": "tests",
+      "physical_lines": 137,
+      "nonblank_lines": 97
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskItemWithId.ts",
+      "scope": "source",
+      "physical_lines": 82,
+      "nonblank_lines": 71
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLink.test.ts",
+      "scope": "tests",
+      "physical_lines": 232,
+      "nonblank_lines": 173
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLink.ts",
+      "scope": "source",
+      "physical_lines": 111,
+      "nonblank_lines": 98
+    },
+    {
+      "path": "frontend/src/components/input/editor/taskLinkContext.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/components/input/editor/types.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterAutocomplete.test.ts",
+      "scope": "tests",
+      "physical_lines": 221,
+      "nonblank_lines": 178
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterAutocomplete.ts",
+      "scope": "source",
+      "physical_lines": 540,
+      "nonblank_lines": 468
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterCommandsList.vue",
+      "scope": "source",
+      "physical_lines": 178,
+      "nonblank_lines": 155
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInput.test.ts",
+      "scope": "tests",
+      "physical_lines": 118,
+      "nonblank_lines": 102
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInput.vue",
+      "scope": "source",
+      "physical_lines": 390,
+      "nonblank_lines": 335
+    },
+    {
+      "path": "frontend/src/components/input/filter/FilterInputDocs.vue",
+      "scope": "source",
+      "physical_lines": 73,
+      "nonblank_lines": 70
+    },
+    {
+      "path": "frontend/src/components/input/filter/highlighter.test.ts",
+      "scope": "tests",
+      "physical_lines": 29,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/components/input/filter/highlighter.ts",
+      "scope": "source",
+      "physical_lines": 334,
+      "nonblank_lines": 270
+    },
+    {
+      "path": "frontend/src/components/misc/ApiConfig.vue",
+      "scope": "source",
+      "physical_lines": 146,
+      "nonblank_lines": 127
+    },
+    {
+      "path": "frontend/src/components/misc/ButtonLink.vue",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/components/misc/Card.story.vue",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/components/misc/Card.vue",
+      "scope": "source",
+      "physical_lines": 145,
+      "nonblank_lines": 130
+    },
+    {
+      "path": "frontend/src/components/misc/ColorBubble.vue",
+      "scope": "source",
+      "physical_lines": 24,
+      "nonblank_lines": 21
+    },
+    {
+      "path": "frontend/src/components/misc/CreateEdit.vue",
+      "scope": "source",
+      "physical_lines": 113,
+      "nonblank_lines": 102
+    },
+    {
+      "path": "frontend/src/components/misc/CustomTransition.vue",
+      "scope": "source",
+      "physical_lines": 61,
+      "nonblank_lines": 51
+    },
+    {
+      "path": "frontend/src/components/misc/Done.vue",
+      "scope": "source",
+      "physical_lines": 37,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/components/misc/Dropdown.vue",
+      "scope": "source",
+      "physical_lines": 188,
+      "nonblank_lines": 164
+    },
+    {
+      "path": "frontend/src/components/misc/DropdownItem.vue",
+      "scope": "source",
+      "physical_lines": 70,
+      "nonblank_lines": 61
+    },
+    {
+      "path": "frontend/src/components/misc/Error.vue",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 25
+    },
+    {
+      "path": "frontend/src/components/misc/Icon.ts",
+      "scope": "source",
+      "physical_lines": 218,
+      "nonblank_lines": 215
+    },
+    {
+      "path": "frontend/src/components/misc/ImageLightbox.vue",
+      "scope": "source",
+      "physical_lines": 461,
+      "nonblank_lines": 408
+    },
+    {
+      "path": "frontend/src/components/misc/Legal.vue",
+      "scope": "source",
+      "physical_lines": 37,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/components/misc/Loading.vue",
+      "scope": "source",
+      "physical_lines": 42,
+      "nonblank_lines": 37
+    },
+    {
+      "path": "frontend/src/components/misc/Message.vue",
+      "scope": "source",
+      "physical_lines": 67,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/components/misc/Modal.test.ts",
+      "scope": "tests",
+      "physical_lines": 254,
+      "nonblank_lines": 213
+    },
+    {
+      "path": "frontend/src/components/misc/Modal.vue",
+      "scope": "source",
+      "physical_lines": 530,
+      "nonblank_lines": 464
+    },
+    {
+      "path": "frontend/src/components/misc/NoAuthWrapper.vue",
+      "scope": "source",
+      "physical_lines": 181,
+      "nonblank_lines": 159
+    },
+    {
+      "path": "frontend/src/components/misc/Nothing.vue",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/components/misc/Notification.vue",
+      "scope": "source",
+      "physical_lines": 99,
+      "nonblank_lines": 92
+    },
+    {
+      "path": "frontend/src/components/misc/OpenQuickActions.vue",
+      "scope": "source",
+      "physical_lines": 45,
+      "nonblank_lines": 36
+    },
+    {
+      "path": "frontend/src/components/misc/Pagination.vue",
+      "scope": "source",
+      "physical_lines": 57,
+      "nonblank_lines": 54
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationEmit.vue",
+      "scope": "source",
+      "physical_lines": 55,
+      "nonblank_lines": 51
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationItem.test.ts",
+      "scope": "tests",
+      "physical_lines": 33,
+      "nonblank_lines": 30
+    },
+    {
+      "path": "frontend/src/components/misc/PaginationItem.vue",
+      "scope": "source",
+      "physical_lines": 150,
+      "nonblank_lines": 129
+    },
+    {
+      "path": "frontend/src/components/misc/Popup.test.ts",
+      "scope": "tests",
+      "physical_lines": 241,
+      "nonblank_lines": 174
+    },
+    {
+      "path": "frontend/src/components/misc/Popup.vue",
+      "scope": "source",
+      "physical_lines": 162,
+      "nonblank_lines": 143
+    },
+    {
+      "path": "frontend/src/components/misc/ProgressBar.story.vue",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/components/misc/ProgressBar.vue",
+      "scope": "source",
+      "physical_lines": 132,
+      "nonblank_lines": 114
+    },
+    {
+      "path": "frontend/src/components/misc/Ready.vue",
+      "scope": "source",
+      "physical_lines": 130,
+      "nonblank_lines": 118
+    },
+    {
+      "path": "frontend/src/components/misc/Shortcut.test.ts",
+      "scope": "tests",
+      "physical_lines": 40,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/components/misc/Shortcut.vue",
+      "scope": "source",
+      "physical_lines": 44,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/components/misc/ShortcutRecorder.vue",
+      "scope": "source",
+      "physical_lines": 209,
+      "nonblank_lines": 181
+    },
+    {
+      "path": "frontend/src/components/misc/SideNavShell.vue",
+      "scope": "source",
+      "physical_lines": 126,
+      "nonblank_lines": 111
+    },
+    {
+      "path": "frontend/src/components/misc/Subscription.vue",
+      "scope": "source",
+      "physical_lines": 123,
+      "nonblank_lines": 105
+    },
+    {
+      "path": "frontend/src/components/misc/TimeDisplay.vue",
+      "scope": "source",
+      "physical_lines": 29,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/components/misc/User.vue",
+      "scope": "source",
+      "physical_lines": 101,
+      "nonblank_lines": 91
+    },
+    {
+      "path": "frontend/src/components/misc/UserAvatar.test.ts",
+      "scope": "tests",
+      "physical_lines": 144,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/components/misc/UserAvatar.vue",
+      "scope": "source",
+      "physical_lines": 69,
+      "nonblank_lines": 60
+    },
+    {
+      "path": "frontend/src/components/misc/WebhookManager.vue",
+      "scope": "source",
+      "physical_lines": 266,
+      "nonblank_lines": 241
+    },
+    {
+      "path": "frontend/src/components/misc/flatpickr/Flatpickr.vue",
+      "scope": "source",
+      "physical_lines": 218,
+      "nonblank_lines": 182
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/index.vue",
+      "scope": "source",
+      "physical_lines": 91,
+      "nonblank_lines": 79
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/shortcuts.test.ts",
+      "scope": "tests",
+      "physical_lines": 50,
+      "nonblank_lines": 39
+    },
+    {
+      "path": "frontend/src/components/misc/keyboard-shortcuts/shortcuts.ts",
+      "scope": "source",
+      "physical_lines": 227,
+      "nonblank_lines": 222
+    },
+    {
+      "path": "frontend/src/components/notifications/Notifications.vue",
+      "scope": "source",
+      "physical_lines": 411,
+      "nonblank_lines": 357
+    },
+    {
+      "path": "frontend/src/components/project/ProjectSettingsDropdown.vue",
+      "scope": "source",
+      "physical_lines": 171,
+      "nonblank_lines": 161
+    },
+    {
+      "path": "frontend/src/components/project/ProjectWrapper.test.ts",
+      "scope": "tests",
+      "physical_lines": 65,
+      "nonblank_lines": 54
+    },
+    {
+      "path": "frontend/src/components/project/ProjectWrapper.vue",
+      "scope": "source",
+      "physical_lines": 278,
+      "nonblank_lines": 242
+    },
+    {
+      "path": "frontend/src/components/project/partials/FilterPopup.vue",
+      "scope": "source",
+      "physical_lines": 131,
+      "nonblank_lines": 112
+    },
+    {
+      "path": "frontend/src/components/project/partials/Filters.vue",
+      "scope": "source",
+      "physical_lines": 199,
+      "nonblank_lines": 174
+    },
+    {
+      "path": "frontend/src/components/project/partials/ProjectCard.vue",
+      "scope": "source",
+      "physical_lines": 203,
+      "nonblank_lines": 175
+    },
+    {
+      "path": "frontend/src/components/project/partials/ProjectCardGrid.vue",
+      "scope": "source",
+      "physical_lines": 80,
+      "nonblank_lines": 69
+    },
+    {
+      "path": "frontend/src/components/project/partials/SortPopup.vue",
+      "scope": "source",
+      "physical_lines": 135,
+      "nonblank_lines": 122
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectGantt.vue",
+      "scope": "source",
+      "physical_lines": 219,
+      "nonblank_lines": 190
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectKanban.test.ts",
+      "scope": "tests",
+      "physical_lines": 114,
+      "nonblank_lines": 93
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectKanban.vue",
+      "scope": "source",
+      "physical_lines": 1139,
+      "nonblank_lines": 990
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectList.test.ts",
+      "scope": "tests",
+      "physical_lines": 119,
+      "nonblank_lines": 96
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectList.vue",
+      "scope": "source",
+      "physical_lines": 432,
+      "nonblank_lines": 360
+    },
+    {
+      "path": "frontend/src/components/project/views/ProjectTable.vue",
+      "scope": "source",
+      "physical_lines": 520,
+      "nonblank_lines": 490
+    },
+    {
+      "path": "frontend/src/components/project/views/ViewEditForm.test.ts",
+      "scope": "tests",
+      "physical_lines": 142,
+      "nonblank_lines": 124
+    },
+    {
+      "path": "frontend/src/components/project/views/ViewEditForm.vue",
+      "scope": "source",
+      "physical_lines": 425,
+      "nonblank_lines": 376
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickActions.test.ts",
+      "scope": "tests",
+      "physical_lines": 92,
+      "nonblank_lines": 80
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickActions.vue",
+      "scope": "source",
+      "physical_lines": 870,
+      "nonblank_lines": 763
+    },
+    {
+      "path": "frontend/src/components/quick-actions/QuickAddOverlay.vue",
+      "scope": "source",
+      "physical_lines": 66,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/components/sharing/LinkSharing.vue",
+      "scope": "source",
+      "physical_lines": 322,
+      "nonblank_lines": 291
+    },
+    {
+      "path": "frontend/src/components/sharing/UserTeam.vue",
+      "scope": "source",
+      "physical_lines": 386,
+      "nonblank_lines": 342
+    },
+    {
+      "path": "frontend/src/components/tasks/AddTask.vue",
+      "scope": "source",
+      "physical_lines": 373,
+      "nonblank_lines": 316
+    },
+    {
+      "path": "frontend/src/components/tasks/TaskForm.vue",
+      "scope": "source",
+      "physical_lines": 84,
+      "nonblank_lines": 74
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AssigneeList.vue",
+      "scope": "source",
+      "physical_lines": 116,
+      "nonblank_lines": 102
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Attachments.test.ts",
+      "scope": "tests",
+      "physical_lines": 90,
+      "nonblank_lines": 76
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Attachments.vue",
+      "scope": "source",
+      "physical_lines": 811,
+      "nonblank_lines": 699
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AudioPreview.test.ts",
+      "scope": "tests",
+      "physical_lines": 211,
+      "nonblank_lines": 161
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/AudioPreview.vue",
+      "scope": "source",
+      "physical_lines": 139,
+      "nonblank_lines": 119
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/BucketSelect.vue",
+      "scope": "source",
+      "physical_lines": 203,
+      "nonblank_lines": 168
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ChecklistSummary.vue",
+      "scope": "source",
+      "physical_lines": 93,
+      "nonblank_lines": 79
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/CommentCount.vue",
+      "scope": "source",
+      "physical_lines": 68,
+      "nonblank_lines": 57
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Comments.vue",
+      "scope": "source",
+      "physical_lines": 649,
+      "nonblank_lines": 572
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/CreatedUpdated.vue",
+      "scope": "source",
+      "physical_lines": 69,
+      "nonblank_lines": 65
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/DateTableCell.vue",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/DeferTask.vue",
+      "scope": "source",
+      "physical_lines": 187,
+      "nonblank_lines": 161
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Description.vue",
+      "scope": "source",
+      "physical_lines": 239,
+      "nonblank_lines": 202
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/EditAssignees.vue",
+      "scope": "source",
+      "physical_lines": 146,
+      "nonblank_lines": 126
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/EditLabels.vue",
+      "scope": "source",
+      "physical_lines": 169,
+      "nonblank_lines": 148
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/FilePreview.vue",
+      "scope": "source",
+      "physical_lines": 98,
+      "nonblank_lines": 87
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Heading.vue",
+      "scope": "source",
+      "physical_lines": 258,
+      "nonblank_lines": 221
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/KanbanCard.vue",
+      "scope": "source",
+      "physical_lines": 430,
+      "nonblank_lines": 367
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Label.vue",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Labels.vue",
+      "scope": "source",
+      "physical_lines": 41,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PercentDoneSelect.vue",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 25
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PriorityLabel.vue",
+      "scope": "source",
+      "physical_lines": 72,
+      "nonblank_lines": 64
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/PrioritySelect.vue",
+      "scope": "source",
+      "physical_lines": 44,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ProjectSearch.vue",
+      "scope": "source",
+      "physical_lines": 88,
+      "nonblank_lines": 75
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/QuickAddMagic.vue",
+      "scope": "source",
+      "physical_lines": 156,
+      "nonblank_lines": 138
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/RelatedTasks.vue",
+      "scope": "source",
+      "physical_lines": 512,
+      "nonblank_lines": 452
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ReminderDetail.vue",
+      "scope": "source",
+      "physical_lines": 311,
+      "nonblank_lines": 266
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/ReminderPeriod.vue",
+      "scope": "source",
+      "physical_lines": 153,
+      "nonblank_lines": 135
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Reminders.story.vue",
+      "scope": "source",
+      "physical_lines": 26,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Reminders.vue",
+      "scope": "source",
+      "physical_lines": 117,
+      "nonblank_lines": 100
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/RepeatAfter.vue",
+      "scope": "source",
+      "physical_lines": 186,
+      "nonblank_lines": 169
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/SingleTaskInProject.vue",
+      "scope": "source",
+      "physical_lines": 628,
+      "nonblank_lines": 531
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/SingleTaskInlineReadonly.vue",
+      "scope": "source",
+      "physical_lines": 206,
+      "nonblank_lines": 174
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/Sort.vue",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/TaskGlanceTooltip.test.ts",
+      "scope": "tests",
+      "physical_lines": 176,
+      "nonblank_lines": 138
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/TaskGlanceTooltip.vue",
+      "scope": "source",
+      "physical_lines": 353,
+      "nonblank_lines": 299
+    },
+    {
+      "path": "frontend/src/components/tasks/partials/commentReplyContext.ts",
+      "scope": "source",
+      "physical_lines": 26,
+      "nonblank_lines": 22
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TaskTimeTracking.vue",
+      "scope": "source",
+      "physical_lines": 84,
+      "nonblank_lines": 73
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimeEntryForm.vue",
+      "scope": "source",
+      "physical_lines": 353,
+      "nonblank_lines": 323
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimeEntryList.vue",
+      "scope": "source",
+      "physical_lines": 237,
+      "nonblank_lines": 215
+    },
+    {
+      "path": "frontend/src/components/time-tracking/TimerBadge.vue",
+      "scope": "source",
+      "physical_lines": 113,
+      "nonblank_lines": 101
+    },
+    {
+      "path": "frontend/src/components/token/ApiTokenForm.test.ts",
+      "scope": "tests",
+      "physical_lines": 122,
+      "nonblank_lines": 104
+    },
+    {
+      "path": "frontend/src/components/token/ApiTokenForm.vue",
+      "scope": "source",
+      "physical_lines": 427,
+      "nonblank_lines": 391
+    },
+    {
+      "path": "frontend/src/composables/useAutoHeightTextarea.ts",
+      "scope": "source",
+      "physical_lines": 75,
+      "nonblank_lines": 58
+    },
+    {
+      "path": "frontend/src/composables/useBodyClass.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/composables/useColorScheme.ts",
+      "scope": "source",
+      "physical_lines": 49,
+      "nonblank_lines": 39
+    },
+    {
+      "path": "frontend/src/composables/useCopyToClipboard.ts",
+      "scope": "source",
+      "physical_lines": 47,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/composables/useDateDisplay.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/composables/useDaytimeSalutation.test.ts",
+      "scope": "tests",
+      "physical_lines": 122,
+      "nonblank_lines": 107
+    },
+    {
+      "path": "frontend/src/composables/useDaytimeSalutation.ts",
+      "scope": "source",
+      "physical_lines": 95,
+      "nonblank_lines": 86
+    },
+    {
+      "path": "frontend/src/composables/useGanttBar.ts",
+      "scope": "source",
+      "physical_lines": 114,
+      "nonblank_lines": 100
+    },
+    {
+      "path": "frontend/src/composables/useGlobalNow.ts",
+      "scope": "source",
+      "physical_lines": 34,
+      "nonblank_lines": 27
+    },
+    {
+      "path": "frontend/src/composables/useLabelStyles.ts",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 21
+    },
+    {
+      "path": "frontend/src/composables/useLabels.ts",
+      "scope": "source",
+      "physical_lines": 27,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/composables/useMenuActive.ts",
+      "scope": "source",
+      "physical_lines": 52,
+      "nonblank_lines": 42
+    },
+    {
+      "path": "frontend/src/composables/useOnline.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/composables/useProjectBackground.ts",
+      "scope": "source",
+      "physical_lines": 59,
+      "nonblank_lines": 52
+    },
+    {
+      "path": "frontend/src/composables/useQuickAddMode.ts",
+      "scope": "source",
+      "physical_lines": 4,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/composables/useRedirectToLastVisited.ts",
+      "scope": "source",
+      "physical_lines": 35,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/composables/useRenewTokenOnFocus.ts",
+      "scope": "source",
+      "physical_lines": 91,
+      "nonblank_lines": 75
+    },
+    {
+      "path": "frontend/src/composables/useRouteFilters.test.ts",
+      "scope": "tests",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/composables/useRouteFilters.ts",
+      "scope": "source",
+      "physical_lines": 80,
+      "nonblank_lines": 69
+    },
+    {
+      "path": "frontend/src/composables/useRouteWithModal.ts",
+      "scope": "source",
+      "physical_lines": 123,
+      "nonblank_lines": 105
+    },
+    {
+      "path": "frontend/src/composables/useSidebarResize.ts",
+      "scope": "source",
+      "physical_lines": 157,
+      "nonblank_lines": 127
+    },
+    {
+      "path": "frontend/src/composables/useTaskDetailShortcuts.ts",
+      "scope": "source",
+      "physical_lines": 100,
+      "nonblank_lines": 85
+    },
+    {
+      "path": "frontend/src/composables/useTaskDragToProject.ts",
+      "scope": "source",
+      "physical_lines": 118,
+      "nonblank_lines": 99
+    },
+    {
+      "path": "frontend/src/composables/useTaskList.test.ts",
+      "scope": "tests",
+      "physical_lines": 259,
+      "nonblank_lines": 218
+    },
+    {
+      "path": "frontend/src/composables/useTaskList.ts",
+      "scope": "source",
+      "physical_lines": 273,
+      "nonblank_lines": 239
+    },
+    {
+      "path": "frontend/src/composables/useTaskListFiltering.test.ts",
+      "scope": "tests",
+      "physical_lines": 228,
+      "nonblank_lines": 191
+    },
+    {
+      "path": "frontend/src/composables/useTaskListFiltering.ts",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/composables/useTimeFormat.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/composables/useTimeTrackingFavicon.ts",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 25
+    },
+    {
+      "path": "frontend/src/composables/useTitle.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/composables/useWebSocket.ts",
+      "scope": "source",
+      "physical_lines": 208,
+      "nonblank_lines": 178
+    },
+    {
+      "path": "frontend/src/constants/authRouteNames.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/constants/date.ts",
+      "scope": "source",
+      "physical_lines": 12,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/constants/dateDisplay.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/constants/linkShareHash.ts",
+      "scope": "source",
+      "physical_lines": 1,
+      "nonblank_lines": 1
+    },
+    {
+      "path": "frontend/src/constants/permissions.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/constants/priorities.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/constants/proFeatures.ts",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 7
+    },
+    {
+      "path": "frontend/src/constants/redirectHash.ts",
+      "scope": "source",
+      "physical_lines": 12,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/constants/shortcuts.ts",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 29
+    },
+    {
+      "path": "frontend/src/constants/timeFormat.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/directives/focus.ts",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/directives/shortcut.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/directives/testid.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 29
+    },
+    {
+      "path": "frontend/src/directives/tooltip.ts",
+      "scope": "source",
+      "physical_lines": 49,
+      "nonblank_lines": 43
+    },
+    {
+      "path": "frontend/src/helpers/attachments.test.ts",
+      "scope": "tests",
+      "physical_lines": 121,
+      "nonblank_lines": 90
+    },
+    {
+      "path": "frontend/src/helpers/attachments.ts",
+      "scope": "source",
+      "physical_lines": 96,
+      "nonblank_lines": 80
+    },
+    {
+      "path": "frontend/src/helpers/auth.test.ts",
+      "scope": "tests",
+      "physical_lines": 334,
+      "nonblank_lines": 261
+    },
+    {
+      "path": "frontend/src/helpers/auth.ts",
+      "scope": "source",
+      "physical_lines": 190,
+      "nonblank_lines": 167
+    },
+    {
+      "path": "frontend/src/helpers/calculateItemPosition.ts",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/helpers/calculateTaskPosition.test.ts",
+      "scope": "tests",
+      "physical_lines": 44,
+      "nonblank_lines": 36
+    },
+    {
+      "path": "frontend/src/helpers/case.test.ts",
+      "scope": "tests",
+      "physical_lines": 29,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/helpers/case.ts",
+      "scope": "source",
+      "physical_lines": 85,
+      "nonblank_lines": 72
+    },
+    {
+      "path": "frontend/src/helpers/checkAndSetApiUrl.test.ts",
+      "scope": "tests",
+      "physical_lines": 59,
+      "nonblank_lines": 44
+    },
+    {
+      "path": "frontend/src/helpers/checkAndSetApiUrl.ts",
+      "scope": "source",
+      "physical_lines": 133,
+      "nonblank_lines": 118
+    },
+    {
+      "path": "frontend/src/helpers/checklistFromText.test.ts",
+      "scope": "tests",
+      "physical_lines": 130,
+      "nonblank_lines": 118
+    },
+    {
+      "path": "frontend/src/helpers/checklistFromText.ts",
+      "scope": "source",
+      "physical_lines": 51,
+      "nonblank_lines": 43
+    },
+    {
+      "path": "frontend/src/helpers/closeWhenClickedOutside.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/helpers/color/colorFromHex.test.ts",
+      "scope": "tests",
+      "physical_lines": 13,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/helpers/color/colorFromHex.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/helpers/color/colorIsDark.test.ts",
+      "scope": "tests",
+      "physical_lines": 18,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/helpers/color/colorIsDark.ts",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/helpers/color/getTextColor.test.ts",
+      "scope": "tests",
+      "physical_lines": 65,
+      "nonblank_lines": 54
+    },
+    {
+      "path": "frontend/src/helpers/color/getTextColor.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/helpers/color/randomColor.ts",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/helpers/createAsyncComponent.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/helpers/desktopAuth.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/helpers/downloadBlob.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 7
+    },
+    {
+      "path": "frontend/src/helpers/editorContentEmpty.ts",
+      "scope": "source",
+      "physical_lines": 3,
+      "nonblank_lines": 3
+    },
+    {
+      "path": "frontend/src/helpers/editorDraftStorage.ts",
+      "scope": "source",
+      "physical_lines": 61,
+      "nonblank_lines": 50
+    },
+    {
+      "path": "frontend/src/helpers/fetchTaskById.test.ts",
+      "scope": "tests",
+      "physical_lines": 80,
+      "nonblank_lines": 61
+    },
+    {
+      "path": "frontend/src/helpers/fetchTaskById.ts",
+      "scope": "source",
+      "physical_lines": 26,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/helpers/fetcher.test.ts",
+      "scope": "tests",
+      "physical_lines": 17,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/helpers/fetcher.ts",
+      "scope": "source",
+      "physical_lines": 142,
+      "nonblank_lines": 121
+    },
+    {
+      "path": "frontend/src/helpers/filters.test.ts",
+      "scope": "tests",
+      "physical_lines": 591,
+      "nonblank_lines": 484
+    },
+    {
+      "path": "frontend/src/helpers/filters.ts",
+      "scope": "source",
+      "physical_lines": 284,
+      "nonblank_lines": 234
+    },
+    {
+      "path": "frontend/src/helpers/ganttRelationArrows.spec.ts",
+      "scope": "tests",
+      "physical_lines": 117,
+      "nonblank_lines": 99
+    },
+    {
+      "path": "frontend/src/helpers/ganttRelationArrows.ts",
+      "scope": "source",
+      "physical_lines": 122,
+      "nonblank_lines": 103
+    },
+    {
+      "path": "frontend/src/helpers/ganttTaskTree.spec.ts",
+      "scope": "tests",
+      "physical_lines": 141,
+      "nonblank_lines": 121
+    },
+    {
+      "path": "frontend/src/helpers/ganttTaskTree.ts",
+      "scope": "source",
+      "physical_lines": 154,
+      "nonblank_lines": 129
+    },
+    {
+      "path": "frontend/src/helpers/getBlobFromBlurHash.ts",
+      "scope": "source",
+      "physical_lines": 22,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/helpers/getFullBaseUrl.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/helpers/getHumanSize.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/helpers/getInheritedBackgroundColor.ts",
+      "scope": "source",
+      "physical_lines": 24,
+      "nonblank_lines": 19
+    },
+    {
+      "path": "frontend/src/helpers/getProjectTitle.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/helpers/getTopLayerContainer.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/helpers/handleChunkLoadErrors.test.ts",
+      "scope": "tests",
+      "physical_lines": 94,
+      "nonblank_lines": 69
+    },
+    {
+      "path": "frontend/src/helpers/handleChunkLoadErrors.ts",
+      "scope": "source",
+      "physical_lines": 60,
+      "nonblank_lines": 49
+    },
+    {
+      "path": "frontend/src/helpers/hourToDaytime.test.ts",
+      "scope": "tests",
+      "physical_lines": 31,
+      "nonblank_lines": 29
+    },
+    {
+      "path": "frontend/src/helpers/hourToDaytime.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/helpers/imageZoom.test.ts",
+      "scope": "tests",
+      "physical_lines": 142,
+      "nonblank_lines": 113
+    },
+    {
+      "path": "frontend/src/helpers/imageZoom.ts",
+      "scope": "source",
+      "physical_lines": 81,
+      "nonblank_lines": 68
+    },
+    {
+      "path": "frontend/src/helpers/inputPrompt.ts",
+      "scope": "source",
+      "physical_lines": 192,
+      "nonblank_lines": 164
+    },
+    {
+      "path": "frontend/src/helpers/isAppleDevice.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/helpers/isEmail.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/helpers/isValidHttpUrl.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/helpers/keyboardModality.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/helpers/parseDateOrNull.test.ts",
+      "scope": "tests",
+      "physical_lines": 42,
+      "nonblank_lines": 32
+    },
+    {
+      "path": "frontend/src/helpers/parseDateOrNull.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/helpers/parseScopesFromQuery.test.ts",
+      "scope": "tests",
+      "physical_lines": 80,
+      "nonblank_lines": 67
+    },
+    {
+      "path": "frontend/src/helpers/parseScopesFromQuery.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/helpers/parseSubtasksViaIndention.test.ts",
+      "scope": "tests",
+      "physical_lines": 169,
+      "nonblank_lines": 155
+    },
+    {
+      "path": "frontend/src/helpers/parseSubtasksViaIndention.ts",
+      "scope": "source",
+      "physical_lines": 82,
+      "nonblank_lines": 70
+    },
+    {
+      "path": "frontend/src/helpers/parseTaskIdFromUrl.test.ts",
+      "scope": "tests",
+      "physical_lines": 80,
+      "nonblank_lines": 65
+    },
+    {
+      "path": "frontend/src/helpers/parseTaskIdFromUrl.ts",
+      "scope": "source",
+      "physical_lines": 77,
+      "nonblank_lines": 63
+    },
+    {
+      "path": "frontend/src/helpers/parseValidationErrors.test.ts",
+      "scope": "tests",
+      "physical_lines": 96,
+      "nonblank_lines": 77
+    },
+    {
+      "path": "frontend/src/helpers/parseValidationErrors.ts",
+      "scope": "source",
+      "physical_lines": 44,
+      "nonblank_lines": 38
+    },
+    {
+      "path": "frontend/src/helpers/playPop.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/helpers/projectView.ts",
+      "scope": "source",
+      "physical_lines": 42,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/helpers/randomId.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/helpers/redirectToProvider.test.ts",
+      "scope": "tests",
+      "physical_lines": 51,
+      "nonblank_lines": 41
+    },
+    {
+      "path": "frontend/src/helpers/redirectToProvider.ts",
+      "scope": "source",
+      "physical_lines": 78,
+      "nonblank_lines": 66
+    },
+    {
+      "path": "frontend/src/helpers/replaceAll.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/helpers/runWrites.test.ts",
+      "scope": "tests",
+      "physical_lines": 39,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/helpers/runWrites.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/helpers/saveCollapsedBucketState.ts",
+      "scope": "source",
+      "physical_lines": 34,
+      "nonblank_lines": 29
+    },
+    {
+      "path": "frontend/src/helpers/saveLastVisited.ts",
+      "scope": "source",
+      "physical_lines": 22,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/helpers/scrollIntoView.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/helpers/sentryFilters.test.ts",
+      "scope": "tests",
+      "physical_lines": 195,
+      "nonblank_lines": 158
+    },
+    {
+      "path": "frontend/src/helpers/sentryFilters.ts",
+      "scope": "source",
+      "physical_lines": 138,
+      "nonblank_lines": 113
+    },
+    {
+      "path": "frontend/src/helpers/setTitle.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/helpers/shortcut.test.ts",
+      "scope": "tests",
+      "physical_lines": 493,
+      "nonblank_lines": 399
+    },
+    {
+      "path": "frontend/src/helpers/shortcut.ts",
+      "scope": "source",
+      "physical_lines": 308,
+      "nonblank_lines": 255
+    },
+    {
+      "path": "frontend/src/helpers/stringHash.test.ts",
+      "scope": "tests",
+      "physical_lines": 21,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/helpers/stringHash.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/helpers/taskCache.test.ts",
+      "scope": "tests",
+      "physical_lines": 41,
+      "nonblank_lines": 32
+    },
+    {
+      "path": "frontend/src/helpers/taskCache.ts",
+      "scope": "source",
+      "physical_lines": 36,
+      "nonblank_lines": 27
+    },
+    {
+      "path": "frontend/src/helpers/time/calculateDayInterval.test.ts",
+      "scope": "tests",
+      "physical_lines": 95,
+      "nonblank_lines": 82
+    },
+    {
+      "path": "frontend/src/helpers/time/calculateDayInterval.ts",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/helpers/time/calculateNearestHours.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/helpers/time/calculateNearestTime.test.ts",
+      "scope": "tests",
+      "physical_lines": 128,
+      "nonblank_lines": 109
+    },
+    {
+      "path": "frontend/src/helpers/time/createDateFromString.test.ts",
+      "scope": "tests",
+      "physical_lines": 15,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/helpers/time/createDateFromString.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 19
+    },
+    {
+      "path": "frontend/src/helpers/time/formatDate.test.ts",
+      "scope": "tests",
+      "physical_lines": 52,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/helpers/time/formatDate.ts",
+      "scope": "source",
+      "physical_lines": 124,
+      "nonblank_lines": 102
+    },
+    {
+      "path": "frontend/src/helpers/time/getDateWithTime.test.ts",
+      "scope": "tests",
+      "physical_lines": 75,
+      "nonblank_lines": 59
+    },
+    {
+      "path": "frontend/src/helpers/time/getDateWithTime.ts",
+      "scope": "source",
+      "physical_lines": 42,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/helpers/time/getNextWeekDate.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/helpers/time/isoToKebabDate.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/helpers/time/parseBooleanProp.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/helpers/time/parseDateOrString.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/helpers/time/parseDateProp.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/helpers/time/period.ts",
+      "scope": "source",
+      "physical_lines": 51,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/helpers/time/roundToNaturalDayBoundary.test.ts",
+      "scope": "tests",
+      "physical_lines": 30,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/helpers/time/roundToNaturalDayBoundary.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/helpers/time/smartFillStart.test.ts",
+      "scope": "tests",
+      "physical_lines": 57,
+      "nonblank_lines": 48
+    },
+    {
+      "path": "frontend/src/helpers/time/smartFillStart.ts",
+      "scope": "source",
+      "physical_lines": 24,
+      "nonblank_lines": 21
+    },
+    {
+      "path": "frontend/src/helpers/time/toISOStringOrNull.test.ts",
+      "scope": "tests",
+      "physical_lines": 29,
+      "nonblank_lines": 22
+    },
+    {
+      "path": "frontend/src/helpers/time/toISOStringOrNull.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/helpers/useFlatpickrLanguage.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 19
+    },
+    {
+      "path": "frontend/src/helpers/utils.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/helpers/validatePasswort.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/histoire.setup.ts",
+      "scope": "source",
+      "physical_lines": 29,
+      "nonblank_lines": 22
+    },
+    {
+      "path": "frontend/src/i18n/index.ts",
+      "scope": "source",
+      "physical_lines": 127,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/i18n/useDayjsLanguageSync.ts",
+      "scope": "source",
+      "physical_lines": 107,
+      "nonblank_lines": 98
+    },
+    {
+      "path": "frontend/src/main.ts",
+      "scope": "source",
+      "physical_lines": 127,
+      "nonblank_lines": 102
+    },
+    {
+      "path": "frontend/src/message/index.test.ts",
+      "scope": "tests",
+      "physical_lines": 69,
+      "nonblank_lines": 58
+    },
+    {
+      "path": "frontend/src/message/index.ts",
+      "scope": "source",
+      "physical_lines": 62,
+      "nonblank_lines": 51
+    },
+    {
+      "path": "frontend/src/modelSchema/common/repeats.ts",
+      "scope": "source",
+      "physical_lines": 40,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/modelTypes/IAbstract.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/modelTypes/IAdminOverview.ts",
+      "scope": "source",
+      "physical_lines": 26,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/modelTypes/IAdminUser.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/modelTypes/IApiToken.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/modelTypes/IAttachment.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/modelTypes/IAvatar.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/IBackgroundImage.ts",
+      "scope": "source",
+      "physical_lines": 12,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/modelTypes/IBucket.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/modelTypes/ICaldavToken.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/IEmailUpdate.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/IFile.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/modelTypes/ILinkShare.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/modelTypes/INotification.ts",
+      "scope": "source",
+      "physical_lines": 60,
+      "nonblank_lines": 50
+    },
+    {
+      "path": "frontend/src/modelTypes/IPasswordReset.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/modelTypes/IPasswordUpdate.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/IProject.ts",
+      "scope": "source",
+      "physical_lines": 27,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/modelTypes/IProjectDuplicate.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/modelTypes/IProjectView.ts",
+      "scope": "source",
+      "physical_lines": 43,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/modelTypes/IReaction.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/modelTypes/ISavedFilter.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/modelTypes/ISession.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/modelTypes/ISubscription.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/modelTypes/ITask.ts",
+      "scope": "source",
+      "physical_lines": 66,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskAssignee.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskBucket.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskComment.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskDuplicate.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskPosition.ts",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 7
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskRelation.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/modelTypes/ITaskReminder.ts",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 7
+    },
+    {
+      "path": "frontend/src/modelTypes/ITeam.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/modelTypes/ITeamMember.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/modelTypes/ITeamProject.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/ITeamShareBase.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/modelTypes/ITimeEntry.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/modelTypes/ITotp.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/modelTypes/IUser.ts",
+      "scope": "source",
+      "physical_lines": 29,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/modelTypes/IUserProject.ts",
+      "scope": "source",
+      "physical_lines": 6,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modelTypes/IUserSettings.ts",
+      "scope": "source",
+      "physical_lines": 57,
+      "nonblank_lines": 53
+    },
+    {
+      "path": "frontend/src/modelTypes/IUserShareBase.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/modelTypes/IWebhook.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/models/abstractModel.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/models/adminOverview.ts",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/models/adminUser.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/models/apiTokenModel.ts",
+      "scope": "source",
+      "physical_lines": 22,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/models/attachment.test.ts",
+      "scope": "tests",
+      "physical_lines": 110,
+      "nonblank_lines": 85
+    },
+    {
+      "path": "frontend/src/models/attachment.ts",
+      "scope": "source",
+      "physical_lines": 65,
+      "nonblank_lines": 55
+    },
+    {
+      "path": "frontend/src/models/avatar.ts",
+      "scope": "source",
+      "physical_lines": 11,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/models/backgroundImage.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/models/bucket.ts",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/models/caldavToken.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/models/emailUpdate.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/models/file.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/models/linkShare.ts",
+      "scope": "source",
+      "physical_lines": 29,
+      "nonblank_lines": 24
+    },
+    {
+      "path": "frontend/src/models/notification.ts",
+      "scope": "source",
+      "physical_lines": 120,
+      "nonblank_lines": 107
+    },
+    {
+      "path": "frontend/src/models/passwordReset.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/models/passwordUpdate.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/models/project.ts",
+      "scope": "source",
+      "physical_lines": 57,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/models/projectDuplicateModel.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/models/projectView.ts",
+      "scope": "source",
+      "physical_lines": 49,
+      "nonblank_lines": 41
+    },
+    {
+      "path": "frontend/src/models/reaction.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/models/savedFilter.ts",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 31
+    },
+    {
+      "path": "frontend/src/models/session.ts",
+      "scope": "source",
+      "physical_lines": 24,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/models/subscription.ts",
+      "scope": "source",
+      "physical_lines": 22,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/models/task.test.ts",
+      "scope": "tests",
+      "physical_lines": 49,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/models/task.ts",
+      "scope": "source",
+      "physical_lines": 175,
+      "nonblank_lines": 139
+    },
+    {
+      "path": "frontend/src/models/taskAssignee.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/models/taskBucket.ts",
+      "scope": "source",
+      "physical_lines": 26,
+      "nonblank_lines": 22
+    },
+    {
+      "path": "frontend/src/models/taskComment.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/models/taskDuplicateModel.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/models/taskPosition.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/models/taskRelation.ts",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/models/taskReminder.ts",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/models/team.ts",
+      "scope": "source",
+      "physical_lines": 36,
+      "nonblank_lines": 30
+    },
+    {
+      "path": "frontend/src/models/teamMember.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/models/teamProject.ts",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/models/teamShareBase.ts",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/models/totp.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/models/user.test.ts",
+      "scope": "tests",
+      "physical_lines": 74,
+      "nonblank_lines": 61
+    },
+    {
+      "path": "frontend/src/models/user.ts",
+      "scope": "source",
+      "physical_lines": 118,
+      "nonblank_lines": 95
+    },
+    {
+      "path": "frontend/src/models/userProject.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/models/userSettings.test.ts",
+      "scope": "tests",
+      "physical_lines": 35,
+      "nonblank_lines": 25
+    },
+    {
+      "path": "frontend/src/models/userSettings.ts",
+      "scope": "source",
+      "physical_lines": 55,
+      "nonblank_lines": 51
+    },
+    {
+      "path": "frontend/src/models/userShareBase.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/models/webhook.ts",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/modules/projectHistory.test.ts",
+      "scope": "tests",
+      "physical_lines": 83,
+      "nonblank_lines": 70
+    },
+    {
+      "path": "frontend/src/modules/projectHistory.ts",
+      "scope": "source",
+      "physical_lines": 53,
+      "nonblank_lines": 42
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/dateParser.ts",
+      "scope": "source",
+      "physical_lines": 396,
+      "nonblank_lines": 342
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/index.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/prefixParser.ts",
+      "scope": "source",
+      "physical_lines": 55,
+      "nonblank_lines": 46
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/prefixes.ts",
+      "scope": "source",
+      "physical_lines": 27,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/priorityParser.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/quickAddMagic.test.ts",
+      "scope": "tests",
+      "physical_lines": 1050,
+      "nonblank_lines": 905
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/quickAddMagic.ts",
+      "scope": "source",
+      "physical_lines": 60,
+      "nonblank_lines": 50
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/repeatParser.ts",
+      "scope": "source",
+      "physical_lines": 114,
+      "nonblank_lines": 109
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/textCleanup.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/modules/quickAddMagic/types.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/pinia.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 3
+    },
+    {
+      "path": "frontend/src/registerServiceWorker.ts",
+      "scope": "source",
+      "physical_lines": 33,
+      "nonblank_lines": 31
+    },
+    {
+      "path": "frontend/src/router/index.test.ts",
+      "scope": "tests",
+      "physical_lines": 108,
+      "nonblank_lines": 84
+    },
+    {
+      "path": "frontend/src/router/index.ts",
+      "scope": "source",
+      "physical_lines": 648,
+      "nonblank_lines": 616
+    },
+    {
+      "path": "frontend/src/sentry.ts",
+      "scope": "source",
+      "physical_lines": 90,
+      "nonblank_lines": 76
+    },
+    {
+      "path": "frontend/src/services/abstractService.test.ts",
+      "scope": "tests",
+      "physical_lines": 140,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/services/abstractService.ts",
+      "scope": "source",
+      "physical_lines": 520,
+      "nonblank_lines": 449
+    },
+    {
+      "path": "frontend/src/services/accountDelete.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/services/admin/overviewService.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/services/admin/projectService.ts",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/services/admin/userService.ts",
+      "scope": "source",
+      "physical_lines": 57,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/services/apiToken.ts",
+      "scope": "source",
+      "physical_lines": 37,
+      "nonblank_lines": 32
+    },
+    {
+      "path": "frontend/src/services/attachment.ts",
+      "scope": "source",
+      "physical_lines": 79,
+      "nonblank_lines": 66
+    },
+    {
+      "path": "frontend/src/services/avatar.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/services/backgroundUnsplash.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/services/backgroundUpload.ts",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 27
+    },
+    {
+      "path": "frontend/src/services/botUser.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/services/bucket.ts",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 22
+    },
+    {
+      "path": "frontend/src/services/caldavToken.ts",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 15
+    },
+    {
+      "path": "frontend/src/services/dataExport.ts",
+      "scope": "source",
+      "physical_lines": 24,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/services/emailUpdate.test.ts",
+      "scope": "tests",
+      "physical_lines": 66,
+      "nonblank_lines": 53
+    },
+    {
+      "path": "frontend/src/services/emailUpdate.ts",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 35
+    },
+    {
+      "path": "frontend/src/services/linkShare.ts",
+      "scope": "source",
+      "physical_lines": 18,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/services/migrator/abstractMigration.ts",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/services/migrator/abstractMigrationFile.ts",
+      "scope": "source",
+      "physical_lines": 30,
+      "nonblank_lines": 25
+    },
+    {
+      "path": "frontend/src/services/migrator/csvMigration.ts",
+      "scope": "source",
+      "physical_lines": 124,
+      "nonblank_lines": 108
+    },
+    {
+      "path": "frontend/src/services/notification.ts",
+      "scope": "source",
+      "physical_lines": 34,
+      "nonblank_lines": 29
+    },
+    {
+      "path": "frontend/src/services/passwordReset.ts",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/services/passwordUpdateService.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/services/project.ts",
+      "scope": "source",
+      "physical_lines": 69,
+      "nonblank_lines": 59
+    },
+    {
+      "path": "frontend/src/services/projectDuplicateService.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/services/projectUsers.ts",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/services/projectViews.ts",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/services/reactions.ts",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 27
+    },
+    {
+      "path": "frontend/src/services/savedFilter.ts",
+      "scope": "source",
+      "physical_lines": 146,
+      "nonblank_lines": 120
+    },
+    {
+      "path": "frontend/src/services/session.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/services/subscription.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/services/task.test.ts",
+      "scope": "tests",
+      "physical_lines": 267,
+      "nonblank_lines": 213
+    },
+    {
+      "path": "frontend/src/services/task.ts",
+      "scope": "source",
+      "physical_lines": 245,
+      "nonblank_lines": 213
+    },
+    {
+      "path": "frontend/src/services/taskAssignee.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/services/taskBucket.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/services/taskCollection.ts",
+      "scope": "source",
+      "physical_lines": 54,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/services/taskComment.ts",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 31
+    },
+    {
+      "path": "frontend/src/services/taskDuplicateService.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/services/taskPosition.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/services/taskRelation.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/services/team.ts",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 17
+    },
+    {
+      "path": "frontend/src/services/teamMember.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/services/teamProject.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/services/timeEntry.test.ts",
+      "scope": "tests",
+      "physical_lines": 33,
+      "nonblank_lines": 30
+    },
+    {
+      "path": "frontend/src/services/timeEntry.ts",
+      "scope": "source",
+      "physical_lines": 82,
+      "nonblank_lines": 71
+    },
+    {
+      "path": "frontend/src/services/totp.ts",
+      "scope": "source",
+      "physical_lines": 38,
+      "nonblank_lines": 30
+    },
+    {
+      "path": "frontend/src/services/user.ts",
+      "scope": "source",
+      "physical_lines": 15,
+      "nonblank_lines": 13
+    },
+    {
+      "path": "frontend/src/services/userProject.ts",
+      "scope": "source",
+      "physical_lines": 23,
+      "nonblank_lines": 20
+    },
+    {
+      "path": "frontend/src/services/userSettings.ts",
+      "scope": "source",
+      "physical_lines": 10,
+      "nonblank_lines": 9
+    },
+    {
+      "path": "frontend/src/services/webhook.ts",
+      "scope": "source",
+      "physical_lines": 55,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/stores/auth.linkShare.test.ts",
+      "scope": "tests",
+      "physical_lines": 101,
+      "nonblank_lines": 84
+    },
+    {
+      "path": "frontend/src/stores/auth.renewToken.test.ts",
+      "scope": "tests",
+      "physical_lines": 245,
+      "nonblank_lines": 198
+    },
+    {
+      "path": "frontend/src/stores/auth.ts",
+      "scope": "source",
+      "physical_lines": 649,
+      "nonblank_lines": 564
+    },
+    {
+      "path": "frontend/src/stores/base.ts",
+      "scope": "source",
+      "physical_lines": 232,
+      "nonblank_lines": 197
+    },
+    {
+      "path": "frontend/src/stores/config.test.ts",
+      "scope": "tests",
+      "physical_lines": 40,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/stores/config.ts",
+      "scope": "source",
+      "physical_lines": 141,
+      "nonblank_lines": 126
+    },
+    {
+      "path": "frontend/src/stores/helper.ts",
+      "scope": "source",
+      "physical_lines": 9,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/stores/kanban.test.ts",
+      "scope": "tests",
+      "physical_lines": 177,
+      "nonblank_lines": 133
+    },
+    {
+      "path": "frontend/src/stores/kanban.ts",
+      "scope": "source",
+      "physical_lines": 429,
+      "nonblank_lines": 360
+    },
+    {
+      "path": "frontend/src/stores/projects.test.ts",
+      "scope": "tests",
+      "physical_lines": 307,
+      "nonblank_lines": 243
+    },
+    {
+      "path": "frontend/src/stores/projects.ts",
+      "scope": "source",
+      "physical_lines": 418,
+      "nonblank_lines": 352
+    },
+    {
+      "path": "frontend/src/stores/tasks.test.ts",
+      "scope": "tests",
+      "physical_lines": 195,
+      "nonblank_lines": 158
+    },
+    {
+      "path": "frontend/src/stores/tasks.ts",
+      "scope": "source",
+      "physical_lines": 692,
+      "nonblank_lines": 601
+    },
+    {
+      "path": "frontend/src/stores/timeTracking.test.ts",
+      "scope": "tests",
+      "physical_lines": 139,
+      "nonblank_lines": 115
+    },
+    {
+      "path": "frontend/src/stores/timeTracking.ts",
+      "scope": "source",
+      "physical_lines": 142,
+      "nonblank_lines": 125
+    },
+    {
+      "path": "frontend/src/stores/viewFilters.test.ts",
+      "scope": "tests",
+      "physical_lines": 66,
+      "nonblank_lines": 47
+    },
+    {
+      "path": "frontend/src/stores/viewFilters.ts",
+      "scope": "source",
+      "physical_lines": 28,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/styles/common-imports.scss",
+      "scope": "source",
+      "physical_lines": 45,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/styles/components/_index.scss",
+      "scope": "source",
+      "physical_lines": 4,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/styles/components/labels.scss",
+      "scope": "source",
+      "physical_lines": 29,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/styles/components/task.scss",
+      "scope": "source",
+      "physical_lines": 4,
+      "nonblank_lines": 4
+    },
+    {
+      "path": "frontend/src/styles/components/tasks.scss",
+      "scope": "source",
+      "physical_lines": 48,
+      "nonblank_lines": 41
+    },
+    {
+      "path": "frontend/src/styles/components/tooltip.scss",
+      "scope": "source",
+      "physical_lines": 12,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/styles/custom-properties/_index.scss",
+      "scope": "source",
+      "physical_lines": 2,
+      "nonblank_lines": 2
+    },
+    {
+      "path": "frontend/src/styles/custom-properties/colors.scss",
+      "scope": "source",
+      "physical_lines": 351,
+      "nonblank_lines": 324
+    },
+    {
+      "path": "frontend/src/styles/custom-properties/shadows.scss",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 23
+    },
+    {
+      "path": "frontend/src/styles/fonts.scss",
+      "scope": "source",
+      "physical_lines": 37,
+      "nonblank_lines": 33
+    },
+    {
+      "path": "frontend/src/styles/global.scss",
+      "scope": "source",
+      "physical_lines": 104,
+      "nonblank_lines": 83
+    },
+    {
+      "path": "frontend/src/styles/tailwind.css",
+      "scope": "source",
+      "physical_lines": 3,
+      "nonblank_lines": 3
+    },
+    {
+      "path": "frontend/src/styles/theme/_index.scss",
+      "scope": "source",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/styles/theme/background.scss",
+      "scope": "source",
+      "physical_lines": 54,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/styles/theme/content.scss",
+      "scope": "source",
+      "physical_lines": 53,
+      "nonblank_lines": 44
+    },
+    {
+      "path": "frontend/src/styles/theme/flatpickr.scss",
+      "scope": "source",
+      "physical_lines": 221,
+      "nonblank_lines": 180
+    },
+    {
+      "path": "frontend/src/styles/theme/form.scss",
+      "scope": "source",
+      "physical_lines": 107,
+      "nonblank_lines": 91
+    },
+    {
+      "path": "frontend/src/styles/theme/helpers.scss",
+      "scope": "source",
+      "physical_lines": 13,
+      "nonblank_lines": 11
+    },
+    {
+      "path": "frontend/src/styles/theme/link-share.scss",
+      "scope": "source",
+      "physical_lines": 17,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/styles/theme/loading.scss",
+      "scope": "source",
+      "physical_lines": 40,
+      "nonblank_lines": 36
+    },
+    {
+      "path": "frontend/src/styles/theme/logical-spacing.scss",
+      "scope": "source",
+      "physical_lines": 50,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/styles/theme/navigation.scss",
+      "scope": "source",
+      "physical_lines": 141,
+      "nonblank_lines": 115
+    },
+    {
+      "path": "frontend/src/styles/theme/scrollbars.scss",
+      "scope": "source",
+      "physical_lines": 31,
+      "nonblank_lines": 26
+    },
+    {
+      "path": "frontend/src/styles/theme/theme.scss",
+      "scope": "source",
+      "physical_lines": 126,
+      "nonblank_lines": 105
+    },
+    {
+      "path": "frontend/src/styles/theme/typography.scss",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/styles/transitions.scss",
+      "scope": "source",
+      "physical_lines": 19,
+      "nonblank_lines": 16
+    },
+    {
+      "path": "frontend/src/sw.ts",
+      "scope": "source",
+      "physical_lines": 68,
+      "nonblank_lines": 56
+    },
+    {
+      "path": "frontend/src/types/DateISO.ts",
+      "scope": "source",
+      "physical_lines": 5,
+      "nonblank_lines": 5
+    },
+    {
+      "path": "frontend/src/types/IProvider.ts",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 8
+    },
+    {
+      "path": "frontend/src/types/IRelationKind.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/types/IReminderPeriodRelativeTo.ts",
+      "scope": "source",
+      "physical_lines": 8,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/types/IRepeatAfter.ts",
+      "scope": "source",
+      "physical_lines": 16,
+      "nonblank_lines": 14
+    },
+    {
+      "path": "frontend/src/types/IRepeatMode.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 6
+    },
+    {
+      "path": "frontend/src/types/PartialWithId.ts",
+      "scope": "source",
+      "physical_lines": 1,
+      "nonblank_lines": 1
+    },
+    {
+      "path": "frontend/src/types/desktop.d.ts",
+      "scope": "source",
+      "physical_lines": 20,
+      "nonblank_lines": 18
+    },
+    {
+      "path": "frontend/src/types/global-components.d.ts",
+      "scope": "source",
+      "physical_lines": 21,
+      "nonblank_lines": 19
+    },
+    {
+      "path": "frontend/src/types/quick-entry.d.ts",
+      "scope": "source",
+      "physical_lines": 7,
+      "nonblank_lines": 7
+    },
+    {
+      "path": "frontend/src/types/vue-fontawesome.ts",
+      "scope": "source",
+      "physical_lines": 40,
+      "nonblank_lines": 34
+    },
+    {
+      "path": "frontend/src/urls.ts",
+      "scope": "source",
+      "physical_lines": 2,
+      "nonblank_lines": 2
+    },
+    {
+      "path": "frontend/src/views/404.vue",
+      "scope": "source",
+      "physical_lines": 12,
+      "nonblank_lines": 10
+    },
+    {
+      "path": "frontend/src/views/About.vue",
+      "scope": "source",
+      "physical_lines": 44,
+      "nonblank_lines": 40
+    },
+    {
+      "path": "frontend/src/views/Home.vue",
+      "scope": "source",
+      "physical_lines": 120,
+      "nonblank_lines": 104
+    },
+    {
+      "path": "frontend/src/views/admin/AdminShell.vue",
+      "scope": "source",
+      "physical_lines": 32,
+      "nonblank_lines": 28
+    },
+    {
+      "path": "frontend/src/views/admin/OverviewView.vue",
+      "scope": "source",
+      "physical_lines": 264,
+      "nonblank_lines": 241
+    },
+    {
+      "path": "frontend/src/views/admin/ProjectsView.vue",
+      "scope": "source",
+      "physical_lines": 207,
+      "nonblank_lines": 192
+    },
+    {
+      "path": "frontend/src/views/admin/UsersView.vue",
+      "scope": "source",
+      "physical_lines": 591,
+      "nonblank_lines": 549
+    },
+    {
+      "path": "frontend/src/views/filters/FilterDelete.vue",
+      "scope": "source",
+      "physical_lines": 25,
+      "nonblank_lines": 21
+    },
+    {
+      "path": "frontend/src/views/filters/FilterEdit.vue",
+      "scope": "source",
+      "physical_lines": 99,
+      "nonblank_lines": 88
+    },
+    {
+      "path": "frontend/src/views/filters/FilterNew.vue",
+      "scope": "source",
+      "physical_lines": 75,
+      "nonblank_lines": 71
+    },
+    {
+      "path": "frontend/src/views/labels/ListLabels.vue",
+      "scope": "source",
+      "physical_lines": 219,
+      "nonblank_lines": 198
+    },
+    {
+      "path": "frontend/src/views/labels/NewLabel.vue",
+      "scope": "source",
+      "physical_lines": 83,
+      "nonblank_lines": 71
+    },
+    {
+      "path": "frontend/src/views/migrate/Migration.vue",
+      "scope": "source",
+      "physical_lines": 63,
+      "nonblank_lines": 55
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationCSV.vue",
+      "scope": "source",
+      "physical_lines": 492,
+      "nonblank_lines": 435
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationCredentialsForm.vue",
+      "scope": "source",
+      "physical_lines": 184,
+      "nonblank_lines": 168
+    },
+    {
+      "path": "frontend/src/views/migrate/MigrationHandler.vue",
+      "scope": "source",
+      "physical_lines": 375,
+      "nonblank_lines": 326
+    },
+    {
+      "path": "frontend/src/views/migrate/migrators.ts",
+      "scope": "source",
+      "physical_lines": 77,
+      "nonblank_lines": 74
+    },
+    {
+      "path": "frontend/src/views/project/ListProjects.vue",
+      "scope": "source",
+      "physical_lines": 109,
+      "nonblank_lines": 93
+    },
+    {
+      "path": "frontend/src/views/project/NewProject.vue",
+      "scope": "source",
+      "physical_lines": 94,
+      "nonblank_lines": 81
+    },
+    {
+      "path": "frontend/src/views/project/ProjectInfo.vue",
+      "scope": "source",
+      "physical_lines": 62,
+      "nonblank_lines": 55
+    },
+    {
+      "path": "frontend/src/views/project/ProjectView.vue",
+      "scope": "source",
+      "physical_lines": 161,
+      "nonblank_lines": 134
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttFilters.test.ts",
+      "scope": "tests",
+      "physical_lines": 68,
+      "nonblank_lines": 57
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttFilters.ts",
+      "scope": "source",
+      "physical_lines": 164,
+      "nonblank_lines": 138
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttTaskList.test.ts",
+      "scope": "tests",
+      "physical_lines": 14,
+      "nonblank_lines": 12
+    },
+    {
+      "path": "frontend/src/views/project/helpers/useGanttTaskList.ts",
+      "scope": "source",
+      "physical_lines": 128,
+      "nonblank_lines": 103
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsArchive.test.ts",
+      "scope": "tests",
+      "physical_lines": 97,
+      "nonblank_lines": 82
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsArchive.vue",
+      "scope": "source",
+      "physical_lines": 54,
+      "nonblank_lines": 45
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsBackground.test.ts",
+      "scope": "tests",
+      "physical_lines": 141,
+      "nonblank_lines": 119
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsBackground.vue",
+      "scope": "source",
+      "physical_lines": 310,
+      "nonblank_lines": 270
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsDelete.vue",
+      "scope": "source",
+      "physical_lines": 95,
+      "nonblank_lines": 79
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsDuplicate.vue",
+      "scope": "source",
+      "physical_lines": 70,
+      "nonblank_lines": 60
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsEdit.vue",
+      "scope": "source",
+      "physical_lines": 128,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsShare.vue",
+      "scope": "source",
+      "physical_lines": 75,
+      "nonblank_lines": 62
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsViews.vue",
+      "scope": "source",
+      "physical_lines": 248,
+      "nonblank_lines": 224
+    },
+    {
+      "path": "frontend/src/views/project/settings/ProjectSettingsWebhooks.vue",
+      "scope": "source",
+      "physical_lines": 87,
+      "nonblank_lines": 73
+    },
+    {
+      "path": "frontend/src/views/sharing/LinkSharingAuth.vue",
+      "scope": "source",
+      "physical_lines": 184,
+      "nonblank_lines": 158
+    },
+    {
+      "path": "frontend/src/views/tasks/ShowTasks.test.ts",
+      "scope": "tests",
+      "physical_lines": 88,
+      "nonblank_lines": 74
+    },
+    {
+      "path": "frontend/src/views/tasks/ShowTasks.vue",
+      "scope": "source",
+      "physical_lines": 352,
+      "nonblank_lines": 314
+    },
+    {
+      "path": "frontend/src/views/tasks/TaskDetailView.vue",
+      "scope": "source",
+      "physical_lines": 1499,
+      "nonblank_lines": 1339
+    },
+    {
+      "path": "frontend/src/views/teams/EditTeam.vue",
+      "scope": "source",
+      "physical_lines": 406,
+      "nonblank_lines": 371
+    },
+    {
+      "path": "frontend/src/views/teams/ListTeams.vue",
+      "scope": "source",
+      "physical_lines": 92,
+      "nonblank_lines": 82
+    },
+    {
+      "path": "frontend/src/views/teams/NewTeam.vue",
+      "scope": "source",
+      "physical_lines": 97,
+      "nonblank_lines": 83
+    },
+    {
+      "path": "frontend/src/views/time-tracking/TimeTracking.vue",
+      "scope": "source",
+      "physical_lines": 396,
+      "nonblank_lines": 359
+    },
+    {
+      "path": "frontend/src/views/user/DataExportDownload.vue",
+      "scope": "source",
+      "physical_lines": 60,
+      "nonblank_lines": 54
+    },
+    {
+      "path": "frontend/src/views/user/DesktopLogin.vue",
+      "scope": "source",
+      "physical_lines": 120,
+      "nonblank_lines": 110
+    },
+    {
+      "path": "frontend/src/views/user/Login.vue",
+      "scope": "source",
+      "physical_lines": 274,
+      "nonblank_lines": 240
+    },
+    {
+      "path": "frontend/src/views/user/OAuthAuthorize.vue",
+      "scope": "source",
+      "physical_lines": 83,
+      "nonblank_lines": 70
+    },
+    {
+      "path": "frontend/src/views/user/OpenIdAuth.vue",
+      "scope": "source",
+      "physical_lines": 154,
+      "nonblank_lines": 130
+    },
+    {
+      "path": "frontend/src/views/user/PasswordReset.vue",
+      "scope": "source",
+      "physical_lines": 101,
+      "nonblank_lines": 90
+    },
+    {
+      "path": "frontend/src/views/user/Register.vue",
+      "scope": "source",
+      "physical_lines": 276,
+      "nonblank_lines": 247
+    },
+    {
+      "path": "frontend/src/views/user/RequestPasswordReset.vue",
+      "scope": "source",
+      "physical_lines": 86,
+      "nonblank_lines": 80
+    },
+    {
+      "path": "frontend/src/views/user/Settings.vue",
+      "scope": "source",
+      "physical_lines": 102,
+      "nonblank_lines": 94
+    },
+    {
+      "path": "frontend/src/views/user/settings/ApiTokens.test.ts",
+      "scope": "tests",
+      "physical_lines": 171,
+      "nonblank_lines": 147
+    },
+    {
+      "path": "frontend/src/views/user/settings/ApiTokens.vue",
+      "scope": "source",
+      "physical_lines": 189,
+      "nonblank_lines": 170
+    },
+    {
+      "path": "frontend/src/views/user/settings/AtomFeed.vue",
+      "scope": "source",
+      "physical_lines": 76,
+      "nonblank_lines": 69
+    },
+    {
+      "path": "frontend/src/views/user/settings/Avatar.vue",
+      "scope": "source",
+      "physical_lines": 213,
+      "nonblank_lines": 179
+    },
+    {
+      "path": "frontend/src/views/user/settings/BotUsers.vue",
+      "scope": "source",
+      "physical_lines": 362,
+      "nonblank_lines": 330
+    },
+    {
+      "path": "frontend/src/views/user/settings/Caldav.vue",
+      "scope": "source",
+      "physical_lines": 156,
+      "nonblank_lines": 140
+    },
+    {
+      "path": "frontend/src/views/user/settings/DataExport.vue",
+      "scope": "source",
+      "physical_lines": 140,
+      "nonblank_lines": 123
+    },
+    {
+      "path": "frontend/src/views/user/settings/Deletion.vue",
+      "scope": "source",
+      "physical_lines": 138,
+      "nonblank_lines": 123
+    },
+    {
+      "path": "frontend/src/views/user/settings/EmailUpdate.vue",
+      "scope": "source",
+      "physical_lines": 131,
+      "nonblank_lines": 119
+    },
+    {
+      "path": "frontend/src/views/user/settings/General.test.ts",
+      "scope": "tests",
+      "physical_lines": 107,
+      "nonblank_lines": 92
+    },
+    {
+      "path": "frontend/src/views/user/settings/General.vue",
+      "scope": "source",
+      "physical_lines": 630,
+      "nonblank_lines": 578
+    },
+    {
+      "path": "frontend/src/views/user/settings/PasswordUpdate.vue",
+      "scope": "source",
+      "physical_lines": 72,
+      "nonblank_lines": 62
+    },
+    {
+      "path": "frontend/src/views/user/settings/Sessions.vue",
+      "scope": "source",
+      "physical_lines": 113,
+      "nonblank_lines": 100
+    },
+    {
+      "path": "frontend/src/views/user/settings/TOTP.test.ts",
+      "scope": "tests",
+      "physical_lines": 138,
+      "nonblank_lines": 117
+    },
+    {
+      "path": "frontend/src/views/user/settings/TOTP.vue",
+      "scope": "source",
+      "physical_lines": 161,
+      "nonblank_lines": 145
+    },
+    {
+      "path": "frontend/src/views/user/settings/Webhooks.vue",
+      "scope": "source",
+      "physical_lines": 66,
+      "nonblank_lines": 55
+    }
+  ]
+}

@@ -1,120 +1,39 @@
 import AbstractModel from './abstractModel'
-import {parseDateOrNull} from '@/helpers/parseDateOrNull'
-import UserModel, {getDisplayName} from '@/models/user'
-import TaskModel from '@/models/task'
-import TaskCommentModel from '@/models/taskComment'
-import ProjectModel from '@/models/project'
-import TeamModel from '@/models/team'
-
-import {NOTIFICATION_NAMES, type INotification} from '@/modelTypes/INotification'
+import { parseDateOrNull } from '@/helpers/parseDateOrNull'
+import UserModel, { getDisplayName } from './user'
+import TaskModel from './task'
+import TaskCommentModel from './taskComment'
+import ProjectModel from './project'
+import TeamModel from './team'
+import { NOTIFICATION_NAMES as names, type INotification } from '@/modelTypes/INotification'
 import type { IUser } from '@/modelTypes/IUser'
-
 export default class NotificationModel extends AbstractModel<INotification> implements INotification {
 	id = 0
 	name = ''
-	notification: INotification['notification'] = null
+	notification: INotification['notification'] = {}
 	read = false
 	readAt: Date | null = null
-
-	created: Date
-
-	constructor(data: Partial<INotification>) {
+	created = new Date(NaN)
+	constructor(data: Partial<INotification> = {}) {
 		super()
 		this.assignData(data)
-
-		switch (this.name) {
-			case NOTIFICATION_NAMES.TASK_COMMENT:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					task: new TaskModel(this.notification.task),
-					comment: new TaskCommentModel(this.notification.comment),
-				}
-				break
-			case NOTIFICATION_NAMES.TASK_ASSIGNED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					task: new TaskModel(this.notification.task),
-					assignee: new UserModel(this.notification.assignee),
-				}
-				break
-			case NOTIFICATION_NAMES.TASK_DELETED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					task: new TaskModel(this.notification.task),
-				}
-				break
-			case NOTIFICATION_NAMES.TASK_CREATED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					task: new TaskModel(this.notification.task),
-					project: new ProjectModel(this.notification.project),
-				}
-				break
-			case NOTIFICATION_NAMES.PROJECT_CREATED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					project: new ProjectModel(this.notification.project),
-				}
-				break
-			case NOTIFICATION_NAMES.TEAM_MEMBER_ADDED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					member: new UserModel(this.notification.member),
-					team: new TeamModel(this.notification.team),
-				}
-				break
-			case NOTIFICATION_NAMES.TASK_REMINDER:
-				this.notification = {
-					task: new TaskModel(this.notification.task),
-					project: new ProjectModel(this.notification.project),
-				}
-				break
-			case NOTIFICATION_NAMES.TASK_MENTIONED:
-				this.notification = {
-					doer: new UserModel(this.notification.doer),
-					task: new TaskModel(this.notification.task),
-				}
-				break
-		}
-
+		const payload = this.notification
+		this.notification = { ...payload, ...(payload.doer ? { doer: new UserModel(payload.doer) } : {}), ...(payload.task ? { task: new TaskModel(payload.task) } : {}), ...(payload.comment ? { comment: new TaskCommentModel(payload.comment) } : {}), ...(payload.assignee ? { assignee: new UserModel(payload.assignee) } : {}), ...(payload.project ? { project: new ProjectModel(payload.project) } : {}), ...(payload.member ? { member: new UserModel(payload.member) } : {}), ...(payload.team ? { team: new TeamModel(payload.team) } : {}) }
 		this.created = new Date(this.created)
 		this.readAt = parseDateOrNull(this.readAt)
 	}
-
 	toText(user: IUser | null = null) {
-		let who: string
-
+		const { task, project, assignee, member, team, doer } = this.notification, identifier = task ? (task.identifier || `#${task.index}`) : ''
 		switch (this.name) {
-			case NOTIFICATION_NAMES.TASK_COMMENT:
-				return `commented on ${this.notification.task.getTextIdentifier()}`
-			case NOTIFICATION_NAMES.TASK_ASSIGNED:
-				who = `${getDisplayName(this.notification.assignee)}`
-
-				if (user !== null && user.id === this.notification.assignee.id) {
-					who = 'you'
-				}
-
-				return `assigned ${who} to ${this.notification.task.getTextIdentifier()}`
-			case NOTIFICATION_NAMES.TASK_DELETED:
-				return `deleted ${this.notification.task.getTextIdentifier()}`
-			case NOTIFICATION_NAMES.TASK_CREATED:
-				return `created ${this.notification.task.getTextIdentifier()}`
-			case NOTIFICATION_NAMES.PROJECT_CREATED:
-				return `created ${this.notification.project.title}`
-			case NOTIFICATION_NAMES.TEAM_MEMBER_ADDED:
-				who = `${getDisplayName(this.notification.member)}`
-
-				if (user !== null && user.id === this.notification.member.id) {
-					who = 'you'
-				}
-
-				return `added ${who} to the ${this.notification.team.name} team`
-			case NOTIFICATION_NAMES.TASK_REMINDER:
-				return `Reminder for ${this.notification.task.getTextIdentifier()} ${this.notification.task.title} (${this.notification.project.title})`
-			case NOTIFICATION_NAMES.TASK_MENTIONED:
-				return `${getDisplayName(this.notification.doer)} mentioned you on ${this.notification.task.getTextIdentifier()}`
+			case names.TASK_COMMENT: return task ? `commented on ${identifier}` : ''
+			case names.TASK_ASSIGNED: return task && assignee ? `assigned ${user?.id === assignee.id ? 'you' : getDisplayName(assignee)} to ${identifier}` : ''
+			case names.TASK_DELETED: return task ? `deleted ${identifier}` : ''
+			case names.TASK_CREATED: return task ? `created ${identifier}` : ''
+			case names.PROJECT_CREATED: return project ? `created ${project.title}` : ''
+			case names.TEAM_MEMBER_ADDED: return member && team ? `added ${user?.id === member.id ? 'you' : getDisplayName(member)} to the ${team.name} team` : ''
+			case names.TASK_REMINDER: return task && project ? `Reminder for ${identifier} ${task.title} (${project.title})` : ''
+			case names.TASK_MENTIONED: return task && doer ? `${getDisplayName(doer)} mentioned you on ${identifier}` : ''
 		}
-
 		return ''
 	}
 }

@@ -21,7 +21,30 @@ function serviceWithBlobResponse(blob: Blob) {
 	return service
 }
 
+describe('route parameters', () => {
+	it('reads model fields and inherited getters without requiring a dictionary', () => {
+		class Parameters {
+			get projectId() { return 3 }
+			taskId = 0
+		}
+		const service = new ProjectService()
+		expect(service.getReplacedRoute('/projects/{projectId}/tasks/{taskId}', new Parameters())).toBe('/projects/3/tasks/0')
+		expect(service.getReplacedRoute('/projects/{id}', new ProjectModel({id: 7}))).toBe('/projects/7')
+		expect(service.getRouteReplacements('/tasks/{taskId}', {})).toEqual({'{taskId}': undefined})
+	})
+})
+
 describe('getBlobUrl', () => {
+ it('forwards blob cancellation and does not publish an object URL after abort',async()=>{
+  const service=new AttachmentService(),request=new AbortController();let release!:(value:{data:Blob})=>void;
+  service.http=vi.fn(()=>new Promise(resolve=>release=resolve)) as unknown as typeof service.http;
+  const createObjectURL=vi.spyOn(window.URL,'createObjectURL');
+  const result=service.getAttachmentBlobUrl({taskId:1,id:2},undefined,request.signal);
+  expect(service.http).toHaveBeenCalledWith(expect.objectContaining({url:'/tasks/1/attachments/2',signal:request.signal}));
+  request.abort();release({data:new Blob(['local fixture'],{type:'text/plain'})});
+  await expect(result).rejects.toMatchObject({name:'AbortError'});expect(createObjectURL).not.toHaveBeenCalled();
+ })
+
 	afterEach(() => {
 		vi.restoreAllMocks()
 		vi.unstubAllGlobals()
@@ -32,7 +55,7 @@ describe('getBlobUrl', () => {
 		const service = serviceWithBlobResponse(new Blob(['%PDF-1.4'], {type: 'application/pdf'}))
 		const createObjectURL = vi.spyOn(window.URL, 'createObjectURL').mockReturnValue('blob:mock')
 
-		const url = await service.getBlobUrl({taskId: 1, id: 1} as IAttachment)
+		const url = await service.getAttachmentBlobUrl({taskId: 1, id: 1} as IAttachment)
 
 		expect(url).toBe('blob:mock')
 		const blob = createObjectURL.mock.calls[0][0] as Blob
@@ -45,13 +68,13 @@ describe('getBlobUrl', () => {
 		const service = new AttachmentService()
 		service.http = vi.fn().mockResolvedValue({data: null}) as unknown as typeof service.http
 
-		await expect(service.getBlobUrl({taskId: 1, id: 4} as IAttachment)).rejects.toThrow(/blob/)
+		await expect(service.getAttachmentBlobUrl({taskId: 1, id: 4} as IAttachment)).rejects.toThrow(/blob/)
 	})
 
 	it('converts svg blobs to data urls', async () => {
 		const service = serviceWithBlobResponse(new Blob(['<svg xmlns="http://www.w3.org/2000/svg"/>'], {type: 'image/svg+xml'}))
 
-		const url = await service.getBlobUrl({taskId: 1, id: 2} as IAttachment)
+		const url = await service.getAttachmentBlobUrl({taskId: 1, id: 2} as IAttachment)
 
 		expect(url).toMatch(/^data:image\/svg\+xml/)
 	})
@@ -61,7 +84,7 @@ describe('getBlobUrl', () => {
 		vi.spyOn(window.URL, 'createObjectURL').mockReturnValue('blob:mock')
 		vi.stubGlobal('FileReader', undefined)
 
-		const url = await service.getBlobUrl({taskId: 1, id: 3} as IAttachment)
+		const url = await service.getAttachmentBlobUrl({taskId: 1, id: 3} as IAttachment)
 
 		expect(url).toBe('blob:mock')
 	})
@@ -76,7 +99,7 @@ describe('getBlobUrl', () => {
 			}
 		})
 
-		const url = await service.getBlobUrl({taskId: 1, id: 4} as IAttachment)
+		const url = await service.getAttachmentBlobUrl({taskId: 1, id: 4} as IAttachment)
 
 		expect(url).toBe('blob:mock')
 	})

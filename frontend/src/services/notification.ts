@@ -1,7 +1,6 @@
 import AbstractService from '@/services/abstractService'
 import NotificationModel from '@/models/notification'
 import type {INotification} from '@/modelTypes/INotification'
-import {toISOStringOrNull} from '@/helpers/time/toISOStringOrNull'
 
 export default class NotificationService extends AbstractService<INotification> {
 	constructor() {
@@ -12,23 +11,12 @@ export default class NotificationService extends AbstractService<INotification> 
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: Partial<INotification>) {
 		return new NotificationModel(data)
 	}
 
-	beforeUpdate(model) {
-		if (!model) {
-			return model
-		}
-
-		return {
-			...model,
-			created: toISOStringOrNull(model.created),
-			readAt: toISOStringOrNull(model.readAt),
-		}
-	}
-	
-	async markAllRead() {
-		return this.post('/notifications', false)
+	async markAllRead(signal?: AbortSignal) {
+		const {data} = await this.http.post('/notifications', false, {signal})
+		return data
 	}
 }

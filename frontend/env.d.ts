@@ -1,6 +1,4 @@
 /// <reference types="vite/client" />
-/// <reference types="vite-svg-loader" />
-/// <reference types="@histoire/plugin-vue/components" />
 
 interface ImportMetaEnv {
 	readonly VIKUNJA_API_URL?: string
@@ -16,7 +14,6 @@ interface ImportMetaEnv {
 
 	readonly VITE_IS_ONLINE: boolean
 
-	readonly VUE_DEVTOOLS_LAUNCH_EDITOR: VitePluginVueDevToolsOptions.launchEditor
 }
 
 interface ImportMeta {

@@ -14,7 +14,7 @@ export default class TaskCommentService extends AbstractService<ITaskComment> {
 		})
 	}
 
-	modelFactory(data) {
+	modelFactory(data: ConstructorParameters<typeof TaskCommentModel>[0]) {
 		return new TaskCommentModel(data)
 	}
 
