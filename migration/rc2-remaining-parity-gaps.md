@@ -1,5 +1,7 @@
 # Current remaining parity gaps
 
+Latest scoped UI corrections: [admin recovery and notification ARIA/fades](rc2-ui-recovery-20261007.md). Migration-introduced defects there are fixed; unchanged Vue-baseline failures and unavailable verification are classified separately. Earlier metrics below retain their original source pins.
+
 Latest bounded continuation at measuredsourceafcac46a0/frontend eea122d071da1656b23f8483c6a9558f1c44e701:477/480exactthreebaselinefailures,775units,24Undo/40noticepairs andfreshn20three-build2/2pass. Read [current engineering evidence](rc2-unblocked-parity-20261007.md) and [current measurements](rc2-undo-milestone-measurements-20261007.md). Earlier pins/results below remain historical.
 
 Complete Vue parity is not established. All 59 route families remain partial; zero are fully certified. Historical frozen source `dd53a27e72cd529fe3fb944404362de54cb70ddd`, frontend tree `297071a8099e9ac56484c9e7e76a651ef59f9cfa`: 477/480 browser cases in 1414.635 seconds, zero skipped/flaky, exactly three preserved baseline failures; 753/753 units across 83 files. The fresh matched three-build benchmark passed 2/2 with n20 samples retained. See [final October 7 measurements](rc2-final-measurements-20261007.md) and the [current route/device ledger](rc2-supported-route-device-coverage.md). Earlier stage results below are historical evidence, not current-source certification.

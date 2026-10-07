@@ -144,3 +144,5 @@ Evidence root: `/workspace/vikunja-evidence/final-acceptance-20261007/frozen/ben
 ## Subsequent runtime follow-up
 
 The six-reference UI correction changes the frontend to `c2b439e84fcfdd7864ab7189015c239b014b472a` (runtime commit `d9823e439d93cd47f10978f7cba05c2a37104f34`). **This report was not rerun for that tree**; its tables and raw samples still measure frontend `50662d98588496fcc100d19b9b0412a84ed9ab05`. See [the separate fixes and focused verification](rc2-translation-labels-20261007.md).
+
+The later admin recovery/notification ARIA+fade follow-up has runtime96d0b895/frontend `e820902d675fb296ad925ac357c69872ace99fd1` with separate [verification and inherited-failure classification](rc2-ui-recovery-20261007.md). This benchmark remains on frontend50662; it was **not rerun for that follow-up**.
