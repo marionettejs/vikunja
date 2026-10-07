@@ -34,7 +34,6 @@ import (
 	"code.vikunja.io/api/pkg/db"
 	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/license"
-	"code.vikunja.io/api/pkg/modules/keyvalue"
 	"code.vikunja.io/api/pkg/user"
 
 	"github.com/ThreeDotsLabs/watermill/message"
@@ -285,9 +284,11 @@ func TestUpdateTasksInSavedFilterViews_AccessViaShareOrParent(t *testing.T) {
 			noAccessID     int64 = 2
 		)
 		parentProjectID := int64(9990)
-		insertTestProject(t, s, &Project{ID: parentProjectID, Title: "ancestor parent", Identifier: "ANCPARENT", OwnerID: parentOwnerID})
-		insertTestProject(t, s, &Project{ID: childProjectID, Title: "ancestor child", Identifier: "ANCCHILD", OwnerID: childOwnerID, ParentProjectID: &parentProjectID})
-		_, err := s.Insert(&Task{ID: taskID, Title: "child project task", ProjectID: childProjectID, Index: 1, CreatedByID: childOwnerID})
+		_, err := s.Insert(&Project{ID: parentProjectID, Title: "ancestor parent", Identifier: "ANCPARENT", OwnerID: parentOwnerID})
+		require.NoError(t, err)
+		_, err = s.Insert(&Project{ID: childProjectID, Title: "ancestor child", Identifier: "ANCCHILD", OwnerID: childOwnerID, ParentProjectID: &parentProjectID})
+		require.NoError(t, err)
+		_, err = s.Insert(&Task{ID: taskID, Title: "child project task", ProjectID: childProjectID, Index: 1, CreatedByID: childOwnerID})
 		require.NoError(t, err)
 
 		parentOwnerView, _ := createKanbanFilterView(t, s, 9999, 9999, parentOwnerID, "done = false")
@@ -588,7 +589,8 @@ func TestSubscriberNotifications_SkipUsersWithoutReadAccess(t *testing.T) {
 			OwnerID:         doerID,
 			ParentProjectID: &parentID,
 		}
-		insertTestProject(t, s, child)
+		_, err := s.Insert(child)
+		require.NoError(t, err)
 		require.NoError(t, s.Commit())
 		_ = s.Close()
 
@@ -757,75 +759,4 @@ func TestWebhookDeliveryListenerSkipsErrorReporting(t *testing.T) {
 
 	require.Error(t, err)
 	assert.Equal(t, "true", msg.Metadata.Get(events.MetadataSkipErrorReporting))
-}
-
-// Existing rows must follow the task's done state into and out of the view's done bucket.
-func TestUpdateTasksInSavedFilterViews_DoneBucket(t *testing.T) {
-	setup := func(t *testing.T, taskID int64, startInDoneBucket bool) (view *ProjectView, defaultBucket, doneBucket *Bucket) {
-		db.LoadAndAssertFixtures(t)
-		s := db.NewSession()
-		view, defaultBucket = createKanbanFilterView(t, s, 9999, 9999, 1, "project = 1")
-		doneBucket = &Bucket{ProjectViewID: view.ID, Title: "done", CreatedByID: 1}
-		_, err := s.Insert(doneBucket)
-		require.NoError(t, err)
-		view.DoneBucketID = doneBucket.ID
-		_, err = s.ID(view.ID).Cols("done_bucket_id").Update(view)
-		require.NoError(t, err)
-
-		startBucket := defaultBucket
-		if startInDoneBucket {
-			startBucket = doneBucket
-		}
-		_, err = s.Insert(&TaskBucket{TaskID: taskID, ProjectViewID: view.ID, BucketID: startBucket.ID})
-		require.NoError(t, err)
-		require.NoError(t, s.Commit())
-		_ = s.Close()
-		return
-	}
-
-	t.Run("done task moves to done bucket", func(t *testing.T) {
-		view, _, doneBucket := setup(t, 2, false)
-
-		events.TestListener(t, &TaskUpdatedEvent{
-			Task: &Task{ID: 2, ProjectID: 1, Done: true},
-			Doer: &user.User{ID: 1},
-		}, &UpdateTaskInSavedFilterViews{})
-
-		db.AssertExists(t, "task_buckets", map[string]interface{}{"task_id": 2, "project_view_id": view.ID, "bucket_id": doneBucket.ID}, false)
-	})
-
-	t.Run("undone task moves out of done bucket", func(t *testing.T) {
-		view, defaultBucket, _ := setup(t, 1, true)
-
-		events.TestListener(t, &TaskUpdatedEvent{
-			Task: &Task{ID: 1, ProjectID: 1, Done: false},
-			Doer: &user.User{ID: 1},
-		}, &UpdateTaskInSavedFilterViews{})
-
-		db.AssertExists(t, "task_buckets", map[string]interface{}{"task_id": 1, "project_view_id": view.ID, "bucket_id": defaultBucket.ID}, false)
-	})
-}
-
-// GHSA-4hv6-xc92-j86g
-func TestTOTPAccountLockRevokesSessions(t *testing.T) {
-	db.LoadAndAssertFixtures(t)
-	events.ClearDispatchedEvents()
-	u := &user.User{ID: 2}
-	// keyvalue store is process-global; reset counter between runs.
-	_ = keyvalue.Del(u.GetFailedTOTPAttemptsKey())
-
-	for i := 0; i < 10; i++ {
-		user.HandleFailedTOTPAuth(u)
-	}
-
-	locked := events.GetDispatchedEvents((&user.AccountLockedEvent{}).Name())
-	require.Len(t, locked, 1)
-	assert.Equal(t, &user.AccountLockedEvent{UserID: 2}, locked[0])
-	db.AssertExists(t, "sessions", map[string]interface{}{"user_id": 2}, false)
-
-	events.TestListener(t, locked[0], &RevokeSessionsOnAccountLock{})
-
-	db.AssertMissing(t, "sessions", map[string]interface{}{"user_id": 2})
-	db.AssertExists(t, "sessions", map[string]interface{}{"user_id": 1}, false)
-	assert.Equal(t, &SessionsRevokedEvent{UserID: 2}, singleDispatchedEvent[*SessionsRevokedEvent](t))
 }

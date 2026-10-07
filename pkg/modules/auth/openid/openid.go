@@ -25,7 +25,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"sync"
 
 	"code.vikunja.io/api/pkg/db"
 	"code.vikunja.io/api/pkg/events"
@@ -116,7 +115,7 @@ func init() {
 func (p *Provider) setOicdProvider() (err error) {
 	err = utils.RetryWithBackoff(fmt.Sprintf("OpenID Connect provider '%s'", p.Name), func() error {
 		var providerErr error
-		p.openIDProvider, providerErr = oidc.NewProvider(withHTTPClient(context.Background()), p.OriginalAuthURL)
+		p.openIDProvider, providerErr = oidc.NewProvider(context.Background(), p.OriginalAuthURL)
 		return providerErr
 	})
 
@@ -125,12 +124,6 @@ func (p *Provider) setOicdProvider() (err error) {
 	}
 
 	return err
-}
-
-var httpClient = sync.OnceValue(utils.NewUnguardedHTTPClient)
-
-func withHTTPClient(ctx context.Context) context.Context {
-	return oidc.ClientContext(ctx, httpClient())
 }
 
 func (p *Provider) Issuer() (issuerURL string, err error) {
@@ -229,7 +222,10 @@ func HandleCallback(c *echo.Context) error {
 // ErrOpenIDBadRequestWithDetails error keeps its provider detail so v1 can render
 // its bespoke body and v2 can map it to RFC 9457.
 func AuthenticateCallback(ctx context.Context, cb *Callback, providerKey string) (*user.User, *models.SessionOIDCData, error) {
-	provider, oauthToken, idToken, rawIDToken, err := exchangeOidcTokens(ctx, cb, providerKey)
+	// ctx is threaded through only to dispatch the login event; the OIDC token
+	// exchange, claim verification and user/avatar sync run on their own
+	// background contexts, exactly as the v1 callback always did.
+	provider, oauthToken, idToken, rawIDToken, err := exchangeOidcTokens(cb, providerKey) //nolint:contextcheck
 	if err != nil {
 		return nil, nil, err
 	}
@@ -240,7 +236,7 @@ func AuthenticateCallback(ctx context.Context, cb *Callback, providerKey string)
 		ProviderKey: providerKey,
 	}
 
-	cl, err := getClaims(ctx, provider, oauthToken, idToken)
+	cl, err := getClaims(provider, oauthToken, idToken) //nolint:contextcheck
 	if err != nil {
 		return nil, nil, err
 	}
@@ -403,39 +399,42 @@ func syncUserAvatarFromOpenID(s *xorm.Session, u *user.User, pictureURL string) 
 }
 
 // fallbackSearchUsers builds the ordered list of local-user lookups used to link an OIDC
-// login to an existing account. With a usable email: each username candidate AND the
-// email, then the email alone. Without: each username candidate alone.
+// login to an existing account when the provider has email and/or username fallback enabled.
+// GetUserWithEmail ANDs all non-zero fields, so the email (when set) is combined with each
+// username candidate.
 func fallbackSearchUsers(cl *claims, provider *Provider, idToken *oidc.IDToken) []*user.User {
-	// Empty candidates are skipped: GetUserWithEmail ignores zero fields, so an empty
-	// username or email would degenerate to an issuer-only lookup and link an arbitrary
-	// local user.
-	var usernames []string
+	// Only a verified email may link to an existing account — an unverified one lets an
+	// attacker asserting a victim's email take over their local account (GHSA-xv7q-fvmc-jx96).
+	emailFallbackAllowed := provider.EmailFallback && bool(cl.EmailVerified)
+
+	fallbackEmail := ""
+	if emailFallbackAllowed {
+		// Used alone, allow for someone to connect from various provider to the same account.
+		// Note: mapping on email prevents auto-updating the user email.
+		fallbackEmail = cl.Email
+	}
+
+	// Try the subject first (keeps working for IdPs where sub == username), then the
+	// preferred_username. The latter lets providers with an opaque sub (e.g. a random
+	// UUID, like PocketID) still link to an existing local account.
+	var searches []*user.User
 	if provider.UsernameFallback {
-		// Subject first for IdPs where sub == username; preferred_username covers IdPs
-		// with an opaque sub (e.g. PocketID).
+		// Skip empty username candidates: GetUserWithEmail ANDs only non-zero fields, so a
+		// {Issuer, Username:"", Email:""} would degenerate to an issuer-only lookup and link
+		// an arbitrary local user. idToken.Subject is non-empty per OIDC, but guard anyway.
 		if idToken.Subject != "" {
-			usernames = append(usernames, idToken.Subject)
+			searches = append(searches, &user.User{Issuer: user.IssuerLocal, Username: idToken.Subject, Email: fallbackEmail})
 		}
 		preferred := strings.ReplaceAll(cl.PreferredUsername, " ", "-")
 		if preferred != "" && preferred != idToken.Subject {
-			usernames = append(usernames, preferred)
+			searches = append(searches, &user.User{Issuer: user.IssuerLocal, Username: preferred, Email: fallbackEmail})
 		}
 	}
-
-	// Only a verified email may link to an existing account — an unverified one lets an
-	// attacker asserting a victim's email take over their local account (GHSA-xv7q-fvmc-jx96).
-	// Note: mapping on email prevents auto-updating the user email.
-	email := ""
-	if provider.EmailFallback && bool(cl.EmailVerified) {
-		email = cl.Email
-	}
-
-	var searches []*user.User
-	for _, username := range usernames {
-		searches = append(searches, &user.User{Issuer: user.IssuerLocal, Username: username, Email: email})
-	}
-	if email != "" {
-		searches = append(searches, &user.User{Issuer: user.IssuerLocal, Email: email})
+	// Email-only lookup when no username candidates were added. Only with a real,
+	// verified email — an empty email would degenerate to an issuer-only lookup and
+	// link an arbitrary local user.
+	if len(searches) == 0 && emailFallbackAllowed && cl.Email != "" {
+		searches = append(searches, &user.User{Issuer: user.IssuerLocal, Email: cl.Email})
 	}
 
 	return searches
@@ -571,7 +570,7 @@ func mergeClaims(cl *claims, cl2 *claims, forceUserInfo bool) error {
 	return nil
 }
 
-func getClaims(ctx context.Context, provider *Provider, oauth2Token *oauth2.Token, idToken *oidc.IDToken) (*claims, error) {
+func getClaims(provider *Provider, oauth2Token *oauth2.Token, idToken *oidc.IDToken) (*claims, error) {
 
 	cl := &claims{}
 	err := idToken.Claims(cl)
@@ -581,8 +580,7 @@ func getClaims(ctx context.Context, provider *Provider, oauth2Token *oauth2.Toke
 	}
 
 	if provider.ForceUserInfo || cl.Email == "" || cl.Name == "" || cl.PreferredUsername == "" || cl.Picture == "" {
-		ctx = withHTTPClient(ctx)
-		info, err := provider.openIDProvider.UserInfo(ctx, provider.Oauth2Config.TokenSource(ctx, oauth2Token))
+		info, err := provider.openIDProvider.UserInfo(context.Background(), provider.Oauth2Config.TokenSource(context.Background(), oauth2Token))
 		if err != nil {
 			log.Errorf("Error getting userinfo for provider %s: %v", provider.Name, err)
 			return nil, err
@@ -611,8 +609,8 @@ func getClaims(ctx context.Context, provider *Provider, oauth2Token *oauth2.Toke
 // and verifies the returned ID token. It takes an already-bound Callback so it
 // can be shared by the v1 echo handler (which binds from the request) and the v2
 // Huma handler (which binds via its typed body).
-func exchangeOidcTokens(ctx context.Context, cb *Callback, providerKey string) (*Provider, *oauth2.Token, *oidc.IDToken, string, error) {
-	provider, err := GetProvider(providerKey) //nolint:contextcheck // GetProvider is shared with context-less startup callers.
+func exchangeOidcTokens(cb *Callback, providerKey string) (*Provider, *oauth2.Token, *oidc.IDToken, string, error) {
+	provider, err := GetProvider(providerKey)
 	if err != nil {
 		return nil, nil, nil, "", err
 	}
@@ -624,7 +622,7 @@ func exchangeOidcTokens(ctx context.Context, cb *Callback, providerKey string) (
 
 	provider.Oauth2Config.RedirectURL = cb.RedirectURL
 	// Parse the access & ID token
-	oauth2Token, err := provider.Oauth2Config.Exchange(withHTTPClient(ctx), cb.Code)
+	oauth2Token, err := provider.Oauth2Config.Exchange(context.Background(), cb.Code)
 	if err != nil {
 		log.Debugf("Token exchange failed for provider %s using token_endpoint_auth_method %s", provider.Key, authStyleName(provider.Oauth2Config.Endpoint.AuthStyle))
 
@@ -660,7 +658,7 @@ func exchangeOidcTokens(ctx context.Context, cb *Callback, providerKey string) (
 	verifier := provider.openIDProvider.Verifier(&oidc.Config{ClientID: provider.ClientID})
 
 	// Parse and verify ID Token payload.
-	idToken, err := verifier.Verify(ctx, rawIDToken)
+	idToken, err := verifier.Verify(context.Background(), rawIDToken)
 	if err != nil {
 		log.Errorf("Error verifying token for provider %s: %v", provider.Name, err)
 		return nil, nil, nil, "", err

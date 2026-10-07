@@ -20,7 +20,6 @@ import (
 	"net/http"
 
 	"code.vikunja.io/api/pkg/db"
-	"code.vikunja.io/api/pkg/events"
 
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/user"
@@ -66,7 +65,6 @@ func UserChangePassword(c *echo.Context) error {
 
 	s := db.NewSession()
 	defer s.Close()
-	defer events.CleanupPending(s)
 
 	if err := models.ChangeUserPassword(c.Request().Context(), s, doer, newPW.OldPassword, newPW.NewPassword); err != nil {
 		_ = s.Rollback()
@@ -77,7 +75,6 @@ func UserChangePassword(c *echo.Context) error {
 		_ = s.Rollback()
 		return err
 	}
-	events.DispatchPending(c.Request().Context(), s)
 
 	return c.JSON(http.StatusOK, models.Message{Message: "The password was updated successfully."})
 }

@@ -1,4 +1,4 @@
-export function scrollIntoView(el: HTMLElement | null | undefined, behavior: ScrollBehavior = 'smooth') {
+export function scrollIntoView(el: HTMLElement | null | undefined) {
 	if (!el) {
 		return
 	}
@@ -11,7 +11,7 @@ export function scrollIntoView(el: HTMLElement | null | undefined, behavior: Scr
 		boundingRect.top < scrollY
 	) {
 		el.scrollIntoView({
-			behavior,
+			behavior: 'smooth',
 			block: 'center',
 			inline: 'nearest',
 		})

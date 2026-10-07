@@ -1,0 +1,482 @@
+@import "@/styles/common-imports";
+
+.native-kanban-surface {
+  .control.is-loading {
+    &::after {
+      inset-block-start: 30%;
+      inset-inline-end: 50%;
+      transform: translate(-50%, 0);
+
+      --loader-border-color: var(--grey-500);
+    }
+  }
+
+  $ease-out: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  $bucket-width: 300px;
+  $bucket-header-height: 60px;
+  $bucket-right-margin: 1rem;
+  $crazy-height-calculation: "100vh - 4.5rem - 1.5rem - 1rem - 1.5rem - 11px";
+  $crazy-height-calculation-tasks: "#{$crazy-height-calculation} - 1rem - 2.5rem - 2rem - #{$button-height} - 1rem";
+  $filter-container-height: "1rem - #{$switch-view-height}";
+
+  .kanban {
+    overflow-x: auto;
+    overflow-y: hidden;
+    block-size: calc(#{$crazy-height-calculation});
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+
+    &:focus,
+    .bucket .tasks:focus {
+      box-shadow: none;
+    }
+
+    @media screen and (max-width: $tablet) {
+      block-size: calc(
+        #{$crazy-height-calculation} - #{$filter-container-height} + 9px
+      );
+      scroll-snap-type: x mandatory;
+      margin: 0 -0.5rem;
+    }
+
+    &-bucket-container {
+      display: flex;
+      list-style: none;
+    }
+
+    .ghost {
+      position: relative;
+
+      * {
+        opacity: 0;
+      }
+
+      &::after {
+        content: "";
+        position: absolute;
+        display: block;
+        inset-block-start: 0.25rem;
+        inset-inline-end: 0.5rem;
+        inset-block-end: 0.25rem;
+        inset-inline-start: 0.5rem;
+        border: 3px dashed var(--grey-300);
+        border-radius: $radius;
+      }
+    }
+
+    .bucket {
+      border-radius: $radius;
+      position: relative;
+
+      margin: 0 $bucket-right-margin 0 0;
+      max-block-size: calc(100% - 1rem); // 1rem spacing to the bottom
+      min-block-size: 20px;
+      inline-size: $bucket-width;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; // Make sure the edges are always rounded
+
+      @media screen and (max-width: $tablet) {
+        scroll-snap-align: center;
+      }
+
+      .tasks {
+        overflow: hidden auto;
+        block-size: 100%;
+        list-style: none;
+      }
+
+      .task-item {
+        background-color: var(--grey-100);
+        padding: 0.25rem 0.5rem;
+        position: relative;
+
+        &:first-of-type {
+          padding-block-start: 0.5rem;
+        }
+
+        &:last-of-type {
+          padding-block-end: 0.5rem;
+        }
+
+        .handle {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          opacity: 0;
+          touch-action: none;
+          -webkit-touch-callout: none;
+          user-select: none;
+        }
+      }
+
+      .no-move {
+        transition: transform 0s;
+      }
+
+      h2 {
+        font-size: 1rem;
+        margin: 0;
+        font-weight: 600 !important;
+      }
+
+      &.new-bucket {
+        // Because of reasons, this button ignores the margin we gave it to the right.
+        // To make it still look like it has some, we modify the container to have a padding of 1rem,
+        // which is the same as the margin it should have. Then we make the container itself bigger
+        // to hide the fact we just made the button smaller.
+        min-inline-size: calc(#{$bucket-width} + 1rem);
+        background: transparent;
+
+        .button {
+          background: var(--grey-100);
+          inline-size: 100%;
+        }
+      }
+
+      &.is-collapsed {
+        align-self: flex-start;
+        transform: rotate(90deg) translateY(-100%);
+        transform-origin: top left;
+        // Using negative margins instead of translateY here to make all other buckets fill the empty space
+        margin-inline-end: calc(
+          (
+              #{$bucket-width} - #{$bucket-header-height} - #{$bucket-right-margin}
+            ) * -1
+        );
+        cursor: pointer;
+
+        .tasks,
+        .bucket-footer {
+          display: none;
+        }
+      }
+    }
+
+    .bucket-header {
+      background-color: var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem;
+      block-size: $bucket-header-height;
+
+      .icon.has-text-success {
+        cursor: pointer;
+      }
+
+      .limit {
+        padding: 0 0.5rem;
+        font-weight: bold;
+
+        &.is-max {
+          color: var(--danger-text);
+        }
+      }
+
+      .title.input {
+        block-size: auto;
+        padding: 0.4rem 0.5rem;
+        display: inline-block;
+        cursor: pointer;
+      }
+    }
+
+    .dropdown-trigger {
+      padding: 0.5rem;
+    }
+
+    .bucket-footer {
+      position: sticky;
+      inset-block-end: 0;
+      z-index: 2;
+      block-size: min-content;
+      padding: 0.5rem;
+      background-color: var(--grey-100);
+      border-end-start-radius: $radius;
+      border-end-end-radius: $radius;
+      transform: none;
+
+      .button {
+        background-color: transparent;
+
+        &:hover {
+          background-color: var(--white);
+        }
+      }
+    }
+  }
+
+  // FIXME: This does not seem to work
+  .task-dragging {
+    transform: rotateZ(3deg);
+    transition: transform 0.18s ease;
+  }
+
+  .move-card-move {
+    transform: rotateZ(3deg);
+    transition: transform $transition-duration;
+  }
+
+  .move-card-leave-from,
+  .move-card-leave-to,
+  .move-card-leave-active {
+    display: none;
+  }
+
+  $task-background: var(--white);
+
+  .task {
+    -webkit-touch-callout: none; // iOS Safari
+    user-select: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-xs);
+    display: block;
+
+    font-size: 0.9rem;
+    border-radius: $radius;
+    background: $task-background;
+    overflow: hidden;
+
+    &.loader-container.is-loading::after {
+      inline-size: 1.5rem;
+      block-size: 1.5rem;
+      inset-block-start: calc(50% - 0.75rem);
+      inset-inline-start: calc(50% - 0.75rem);
+      border-width: 2px;
+    }
+
+    h3 {
+      font-family: $family-sans-serif;
+      font-size: 0.85rem;
+      word-break: break-word;
+    }
+
+    .kanban-card__title-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .due-date {
+      float: inline-end;
+      display: flex;
+      align-items: center;
+      padding: 0 0.25rem;
+      font-size: 0.85rem;
+
+      .icon {
+        margin-inline-end: 0.25rem;
+      }
+    }
+
+    &[data-is-overdue] .due-date {
+      color: var(--danger-text);
+    }
+
+    .label-wrapper .tag {
+      margin: 0;
+    }
+
+    .footer {
+      background: transparent;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem;
+      margin-block-start: 0.25rem;
+
+      .checklist-summary {
+        padding-inline-start: 0;
+      }
+
+      .assignees {
+        display: flex;
+
+        .user {
+          display: inline;
+          margin: 0;
+
+          img {
+            margin: 0;
+          }
+        }
+      }
+
+      .priority-label {
+        font-size: 0.75rem;
+        padding: 0 0.5rem 0 0.25rem;
+
+        .icon {
+          block-size: 1rem;
+          padding: 0 0.25rem;
+          margin-block-start: 0;
+        }
+      }
+    }
+
+    .footer .icon,
+    .due-date,
+    .priority-label {
+      background: var(--grey-100);
+      border-radius: $radius;
+      padding: 0 0.5rem;
+    }
+
+    .task-id,
+    .project-title {
+      color: var(--grey-500);
+      font-size: 0.8rem;
+      margin-block-end: 0.25rem;
+      display: flex;
+    }
+
+    &.is-moving {
+      opacity: 0.5;
+    }
+
+    span {
+      inline-size: auto;
+    }
+
+    &.has-custom-background-color {
+      color: #000000; // pure black, not grey-800: guarantees 4.5:1 at the luminance flip point
+
+      .footer .icon,
+      .due-date,
+      .priority-label {
+        background: hsl(220, 13%, 91%);
+      }
+
+      // beat component-level color: var(--grey-500) so secondary text tracks the guaranteed main text color
+      .task-id,
+      .project-title {
+        color: inherit;
+      }
+
+      .footer .checklist-summary {
+        color: inherit;
+      }
+    }
+
+    &.has-light-text {
+      --white: hsla(
+        var(--white-h),
+        var(--white-s),
+        var(--white-l),
+        var(--white-a)
+      ) !important;
+      color: var(--white);
+
+      .footer .icon,
+      .due-date,
+      .priority-label {
+        background: hsl(215, 27.9%, 16.9%); // grey-800
+      }
+
+      .footer {
+        .icon svg {
+          fill: var(--white);
+        }
+      }
+
+      // beat component-level color: var(--grey-500) so secondary text tracks the guaranteed main text color
+      .task-id,
+      .project-title {
+        color: inherit;
+      }
+
+      .footer .checklist-summary {
+        color: inherit;
+      }
+
+      // var(--danger-text)/PriorityLabel's --danger-text fail on the dark grey-800 chip bg; brightened red keeps hue/sat, hits >= 4.5:1
+      &[data-is-overdue] .due-date,
+      .priority-label.high-priority {
+        color: hsl(var(--danger-h), var(--danger-s), 68%);
+      }
+    }
+  }
+
+  .kanban-card__done {
+    margin-inline-end: 0.25rem;
+  }
+
+  .task-progress {
+    margin: 8px 0 0;
+    inline-size: 100%;
+    block-size: 0.5rem;
+  }
+
+  .comment-count {
+    background: var(--grey-100);
+    border-radius: $radius;
+    padding: 0.25rem;
+  }
+
+  .kanban > ul,
+  .kanban [data-buckets] > ul {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .bucket > [data-cards] {
+    display: contents;
+  }
+  .dropdown-content {
+    background-color: var(--scheme-main);
+    border-radius: $radius;
+    padding-block: 0.5rem;
+    box-shadow: var(--shadow-md);
+  }
+  .dropdown-item {
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    padding: $item-padding;
+    text-align: inherit;
+    white-space: nowrap;
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    &:hover:not(.is-disabled) {
+      background-color: var(--grey-100);
+    }
+    &.is-disabled {
+      cursor: not-allowed;
+    }
+  }
+  [hidden] {
+    display: none !important;
+  }
+  .bucket-footer {
+    background-color: var(--grey-100);
+    padding: 0.5rem;
+  }
+}
+
+// Original creation buttons use Button's shadow=false option.
+.native-kanban-surface {
+  .bucket-footer .button,
+  .new-bucket .button {
+    box-shadow: none !important;
+  }
+}
+
+.native-app .kanban {
+  .task-progress {
+    appearance: none;
+    border: none;
+    border-radius: $radius;
+    overflow: hidden;
+    padding: 0;
+    &::-webkit-progress-bar { background: var(--border-light); }
+    &::-webkit-progress-value { background: var(--grey-500); }
+    &::-moz-progress-bar { background: var(--grey-500); }
+  }
+  .priority-label.not-so-high { color: var(--warning); }
+  .priority-label.negligible { color: var(--info); }
+}

@@ -1,10 +1,9 @@
-import {parseDateOrNull} from '@/helpers/parseDateOrNull'
-import type {TaskResponse} from '@/client/queries/tasks'
+import type {ITask} from '@/modelTypes/ITask'
 
 const MAX_INDENT_LEVEL = 4
 
 export interface GanttTaskTreeNode {
-	task: TaskResponse
+	task: ITask
 	indentLevel: number
 	isParent: boolean
 	childIds: number[]
@@ -17,13 +16,13 @@ export interface GanttTaskTreeNode {
  * Builds a hierarchical task tree from a flat task map using relatedTasks data,
  * then flattens it in depth-first order for Gantt row rendering.
  */
-export function buildGanttTaskTree(tasks: Map<number, TaskResponse>): GanttTaskTreeNode[] {
+export function buildGanttTaskTree(tasks: Map<number, ITask>): GanttTaskTreeNode[] {
 	// Step 1: Build parent -> children mapping
 	const childrenMap = new Map<number, number[]>()
 	const hasParentInView = new Set<number>()
 
 	for (const [taskId, task] of tasks) {
-		const subtasks = task.related_tasks.subtask ?? []
+		const subtasks = task.relatedTasks?.subtask ?? []
 		const childIds = subtasks
 			.map(s => s.id)
 			.filter(id => tasks.has(id))
@@ -32,7 +31,7 @@ export function buildGanttTaskTree(tasks: Map<number, TaskResponse>): GanttTaskT
 			childrenMap.set(taskId, childIds)
 		}
 
-		const parents = task.related_tasks.parenttask ?? []
+		const parents = task.relatedTasks?.parenttask ?? []
 		for (const parent of parents) {
 			if (tasks.has(parent.id)) {
 				hasParentInView.add(taskId)
@@ -68,7 +67,7 @@ export function buildGanttTaskTree(tasks: Map<number, TaskResponse>): GanttTaskT
 		let derivedEndDate: Date | null = null
 		let hasDerivedDates = false
 
-		if (isParent && !parseDateOrNull(task.start_date) && !parseDateOrNull(task.end_date) && !parseDateOrNull(task.due_date)) {
+		if (isParent && !task.startDate && !task.endDate && !task.dueDate) {
 			const dates = collectChildDates(childIds, tasks, childrenMap)
 			derivedStartDate = dates.minStart
 			derivedEndDate = dates.maxEnd
@@ -115,7 +114,7 @@ export function buildGanttTaskTree(tasks: Map<number, TaskResponse>): GanttTaskT
 
 function collectChildDates(
 	childIds: number[],
-	tasks: Map<number, TaskResponse>,
+	tasks: Map<number, ITask>,
 	childrenMap: Map<number, number[]>,
 ): { minStart: Date | null; maxEnd: Date | null } {
 	let minStart: Date | null = null
@@ -125,8 +124,10 @@ function collectChildDates(
 		const child = tasks.get(childId)
 		if (!child) continue
 
-		const start = parseDateOrNull(child.start_date)
-		const end = parseDateOrNull(child.end_date) ?? parseDateOrNull(child.due_date)
+		const start = child.startDate ? new Date(child.startDate) : null
+		const end = child.endDate || child.dueDate
+			? new Date((child.endDate || child.dueDate) as Date)
+			: null
 
 		if (start && (!minStart || start < minStart)) {
 			minStart = start

@@ -44,10 +44,7 @@ func init() {
 func GetTables() []interface{} {
 	return []interface{}{
 		&Project{},
-		&ProjectAncestor{},
 		&Task{},
-		&ProjectTaskCounter{},
-		&TaskIndexAlias{},
 		&Team{},
 		&TeamMember{},
 		&TeamProject{},
@@ -75,8 +72,6 @@ func GetTables() []interface{} {
 		&Session{},
 		&OAuthCode{},
 		&TimeEntry{},
-		&UserInviteLink{},
-		&UserInviteLinkTeam{},
 	}
 }
 

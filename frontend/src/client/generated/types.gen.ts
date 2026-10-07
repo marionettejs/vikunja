@@ -310,46 +310,6 @@ export type BotUserReadBody = {
     username?: string;
 };
 
-export type BotUserUpdateBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    /**
-     * The id of the owning (human) user. Set by the server on creation; a non-zero value means this user is a bot.
-     */
-    readonly bot_owner_id?: number;
-    /**
-     * A timestamp when this user was created. You cannot change this value.
-     */
-    readonly created?: string;
-    /**
-     * The user's email address. Always empty for bot users.
-     */
-    email?: string;
-    /**
-     * The unique, numeric id of this user.
-     */
-    readonly id?: number;
-    readonly max_permission?: number;
-    /**
-     * The full name of the user.
-     */
-    name?: string;
-    /**
-     * The bot's status: 0=active, 2=disabled.
-     */
-    status: number;
-    /**
-     * A timestamp when this user was last updated. You cannot change this value.
-     */
-    readonly updated?: string;
-    /**
-     * The username of the user. Is always unique. For bot users it must start with the 'bot-' prefix.
-     */
-    username?: string;
-};
-
 export type Bucket = {
     /**
      * A URL to the JSON Schema for this object.
@@ -448,53 +408,6 @@ export type ColumnMapping = {
      * The header name of the CSV column, for display.
      */
     column_name?: string;
-};
-
-export type ConnectionSettings = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    /**
-     * Absolute URL of the streamable HTTP endpoint.
-     */
-    endpoint?: string;
-    presets?: TokenPresets;
-    /**
-     * Token permissions usable by exposed MCP tools, including mcp.access.
-     */
-    routes?: {
-        [key: string]: {
-            [key: string]: RouteDetail;
-        };
-    };
-};
-
-export type CreateInviteLinkBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    /**
-     * Null means no expiry.
-     */
-    expires_at?: string | null;
-    /**
-     * Null allows unlimited registrations.
-     */
-    max_uses?: number | null;
-    /**
-     * Name shown to admins and invitees.
-     */
-    name?: string;
-    /**
-     * Activate accounts without confirming email.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Local teams the invitees will join.
-     */
-    team_ids?: Array<number> | null;
 };
 
 export type CreateUserBody = {
@@ -704,28 +617,6 @@ export type Info = {
     licensed?: boolean;
     max_users?: number;
     validated_at?: string;
-};
-
-export type InviteLinkCheckBody = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    /**
-     * Secret invitation token.
-     */
-    token?: string;
-};
-
-export type InviteLinkTeam = {
-    /**
-     * Numeric team ID.
-     */
-    id?: number;
-    /**
-     * Team name.
-     */
-    name?: string;
 };
 
 export type JsonPatchOp = {
@@ -1230,18 +1121,6 @@ export type PaginatedImage = {
     total_pages?: number;
 };
 
-export type PaginatedInviteLinkTeam = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    items?: Array<InviteLinkTeam> | null;
-    page?: number;
-    per_page?: number;
-    total?: number;
-    total_pages?: number;
-};
-
 export type PaginatedLabelWithTaskId = {
     /**
      * A URL to the JSON Schema for this object.
@@ -1392,18 +1271,6 @@ export type PaginatedUser = {
      */
     readonly $schema?: string;
     items?: Array<User> | null;
-    page?: number;
-    per_page?: number;
-    total?: number;
-    total_pages?: number;
-};
-
-export type PaginatedUserInviteLink = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    items?: Array<UserInviteLink> | null;
     page?: number;
     per_page?: number;
     total?: number;
@@ -1822,25 +1689,6 @@ export type ProviderStatus = {
     key?: string;
 };
 
-export type PublicInviteLink = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    /**
-     * Name of this invitation.
-     */
-    name?: string;
-    /**
-     * Whether the link activates accounts without email confirmation.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Teams the new account will join.
-     */
-    teams?: Array<InviteLinkTeam> | null;
-};
-
 export type Reaction = {
     /**
      * A URL to the JSON Schema for this object.
@@ -1858,24 +1706,6 @@ export type Reaction = {
      * The reaction itself: any UTF text up to 20 characters, e.g. an emoji.
      */
     value?: string;
-};
-
-export type RegisterUserRequest = {
-    /**
-     * A URL to the JSON Schema for this object.
-     */
-    readonly $schema?: string;
-    email?: string;
-    /**
-     * Invitation token. Allows registration when public signup is disabled and joins the invited teams.
-     */
-    invite_token?: string;
-    /**
-     * The language of the new user as an IETF BCP 47 code (e.g. en, de-DE).
-     */
-    language?: string;
-    password?: string;
-    username?: string;
 };
 
 export type RenewTokenBodyBody = {
@@ -2023,14 +1853,6 @@ export type Status = {
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
-    /**
-     * Why the last migration failed, as a key the client translates: "reported", "interrupted", "credentials", "queue", "upload" or "detail". Empty when it succeeded, is still running or was never run.
-     */
-    readonly error_kind?: string;
-    /**
-     * The failure detail, only set when error_kind is "detail": the migration failed on the user's own data and this is the error itself, in English.
-     */
-    readonly error_message?: string;
     /**
      * When the last migration finished. Zero value while a migration is still running or was never run.
      */
@@ -2910,27 +2732,6 @@ export type Token = {
     readonly token?: string;
 };
 
-export type TokenPresets = {
-    /**
-     * Wildcard granting all advertised permissions.
-     */
-    full?: {
-        [key: string]: string;
-    };
-    /**
-     * Wildcard permissions expanded against routes.
-     */
-    read_only?: {
-        [key: string]: Array<string> | null;
-    };
-    /**
-     * Exact permissions used by the first-class tools.
-     */
-    typed?: {
-        [key: string]: Array<string> | null;
-    };
-};
-
 export type TokenRequest = {
     /**
      * A URL to the JSON Schema for this object.
@@ -3247,55 +3048,18 @@ export type UserInfoBody = {
     username?: string;
 };
 
-export type UserInviteLink = {
+export type UserRegister = {
     /**
      * A URL to the JSON Schema for this object.
      */
     readonly $schema?: string;
+    email?: string;
     /**
-     * Creation timestamp.
+     * The language of the new user as an IETF BCP 47 code (e.g. en, de-DE).
      */
-    created?: string;
-    /**
-     * The admin who created this link; null if their account was deleted.
-     */
-    readonly created_by?: User;
-    /**
-     * Null means no expiry.
-     */
-    expires_at?: string | null;
-    /**
-     * Numeric link ID.
-     */
-    id?: number;
-    /**
-     * Null allows unlimited registrations.
-     */
-    max_uses?: number | null;
-    /**
-     * Name shown to admins and invitees.
-     */
-    name?: string;
-    /**
-     * Activate invitees without confirming their email.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Teams the invitee will join.
-     */
-    teams?: Array<InviteLinkTeam> | null;
-    /**
-     * Secret token, returned only on creation.
-     */
-    token?: string;
-    /**
-     * Last update timestamp.
-     */
-    updated?: string;
-    /**
-     * Completed registrations.
-     */
-    uses?: number;
+    language?: string;
+    password?: string;
+    username?: string;
 };
 
 export type UserWithPermission = {
@@ -3414,7 +3178,7 @@ export type VikunjaInfos = {
     /**
      * The licensed pro features enabled on this instance.
      */
-    enabled_pro_features?: Array<string> | null;
+    enabled_pro_features?: Array<number> | null;
     /**
      * The publicly configured frontend URL of this instance.
      */
@@ -3643,25 +3407,6 @@ export type BotUserReadBodyWritable = {
     username?: string;
 };
 
-export type BotUserUpdateBodyWritable = {
-    /**
-     * The user's email address. Always empty for bot users.
-     */
-    email?: string;
-    /**
-     * The full name of the user.
-     */
-    name?: string;
-    /**
-     * The bot's status: 0=active, 2=disabled.
-     */
-    status: number;
-    /**
-     * The username of the user. Is always unique. For bot users it must start with the 'bot-' prefix.
-     */
-    username?: string;
-};
-
 export type BucketWritable = {
     count?: number;
     created?: string;
@@ -3717,45 +3462,6 @@ export type CallbackWritable = {
     redirect_url?: string;
     scope?: string;
     totp_passcode?: string;
-};
-
-export type ConnectionSettingsWritable = {
-    /**
-     * Absolute URL of the streamable HTTP endpoint.
-     */
-    endpoint?: string;
-    presets?: TokenPresets;
-    /**
-     * Token permissions usable by exposed MCP tools, including mcp.access.
-     */
-    routes?: {
-        [key: string]: {
-            [key: string]: RouteDetail;
-        };
-    };
-};
-
-export type CreateInviteLinkBodyWritable = {
-    /**
-     * Null means no expiry.
-     */
-    expires_at?: string | null;
-    /**
-     * Null allows unlimited registrations.
-     */
-    max_uses?: number | null;
-    /**
-     * Name shown to admins and invitees.
-     */
-    name?: string;
-    /**
-     * Activate accounts without confirming email.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Local teams the invitees will join.
-     */
-    team_ids?: Array<number> | null;
 };
 
 export type CreateUserBodyWritable = {
@@ -3850,13 +3556,6 @@ export type ImageWritable = {
      * The full-size URL of the image.
      */
     url?: string;
-};
-
-export type InviteLinkCheckBodyWritable = {
-    /**
-     * Secret invitation token.
-     */
-    token?: string;
 };
 
 export type LabelWritable = {
@@ -4049,14 +3748,6 @@ export type PaginatedImageWritable = {
     total_pages?: number;
 };
 
-export type PaginatedInviteLinkTeamWritable = {
-    items?: Array<InviteLinkTeam> | null;
-    page?: number;
-    per_page?: number;
-    total?: number;
-    total_pages?: number;
-};
-
 export type PaginatedLabelWithTaskIdWritable = {
     items?: Array<LabelWithTaskIdWritable> | null;
     page?: number;
@@ -4155,14 +3846,6 @@ export type PaginatedTokenWritable = {
 
 export type PaginatedUserWritable = {
     items?: Array<UserWritable> | null;
-    page?: number;
-    per_page?: number;
-    total?: number;
-    total_pages?: number;
-};
-
-export type PaginatedUserInviteLinkWritable = {
-    items?: Array<UserInviteLinkWritable> | null;
     page?: number;
     per_page?: number;
     total?: number;
@@ -4367,40 +4050,11 @@ export type ProjectViewReadBodyWritable = {
     view_kind?: 'list' | 'gantt' | 'table' | 'kanban';
 };
 
-export type PublicInviteLinkWritable = {
-    /**
-     * Name of this invitation.
-     */
-    name?: string;
-    /**
-     * Whether the link activates accounts without email confirmation.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Teams the new account will join.
-     */
-    teams?: Array<InviteLinkTeam> | null;
-};
-
 export type ReactionWritable = {
     /**
      * The reaction itself: any UTF text up to 20 characters, e.g. an emoji.
      */
     value?: string;
-};
-
-export type RegisterUserRequestWritable = {
-    email?: string;
-    /**
-     * Invitation token. Allows registration when public signup is disabled and joins the invited teams.
-     */
-    invite_token?: string;
-    /**
-     * The language of the new user as an IETF BCP 47 code (e.g. en, de-DE).
-     */
-    language?: string;
-    password?: string;
-    username?: string;
 };
 
 export type SavedFilterWritable = {
@@ -4876,47 +4530,14 @@ export type UserInfoBodyWritable = {
     username?: string;
 };
 
-export type UserInviteLinkWritable = {
+export type UserRegisterWritable = {
+    email?: string;
     /**
-     * Creation timestamp.
+     * The language of the new user as an IETF BCP 47 code (e.g. en, de-DE).
      */
-    created?: string;
-    /**
-     * Null means no expiry.
-     */
-    expires_at?: string | null;
-    /**
-     * Numeric link ID.
-     */
-    id?: number;
-    /**
-     * Null allows unlimited registrations.
-     */
-    max_uses?: number | null;
-    /**
-     * Name shown to admins and invitees.
-     */
-    name?: string;
-    /**
-     * Activate invitees without confirming their email.
-     */
-    skip_email_confirm?: boolean;
-    /**
-     * Teams the invitee will join.
-     */
-    teams?: Array<InviteLinkTeam> | null;
-    /**
-     * Secret token, returned only on creation.
-     */
-    token?: string;
-    /**
-     * Last update timestamp.
-     */
-    updated?: string;
-    /**
-     * Completed registrations.
-     */
-    uses?: number;
+    language?: string;
+    password?: string;
+    username?: string;
 };
 
 export type UserWithPermissionWritable = {
@@ -4997,7 +4618,7 @@ export type VikunjaInfosWritable = {
     /**
      * The licensed pro features enabled on this instance.
      */
-    enabled_pro_features?: Array<string> | null;
+    enabled_pro_features?: Array<number> | null;
     /**
      * The publicly configured frontend URL of this instance.
      */
@@ -5075,99 +4696,6 @@ export type WebhookWritable = {
     target_url?: string;
 };
 
-export type AdminInviteLinksListData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * 1-based page number.
-         */
-        page?: number;
-        /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
-         */
-        per_page?: number;
-        /**
-         * Search query; filters the list to items matching this string.
-         */
-        q?: string;
-    };
-    url: '/admin/invite-links';
-};
-
-export type AdminInviteLinksListErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type AdminInviteLinksListError = AdminInviteLinksListErrors[keyof AdminInviteLinksListErrors];
-
-export type AdminInviteLinksListResponses = {
-    /**
-     * OK
-     */
-    200: PaginatedUserInviteLink;
-};
-
-export type AdminInviteLinksListResponse = AdminInviteLinksListResponses[keyof AdminInviteLinksListResponses];
-
-export type AdminInviteLinksCreateData = {
-    body: CreateInviteLinkBodyWritable;
-    path?: never;
-    query?: never;
-    url: '/admin/invite-links';
-};
-
-export type AdminInviteLinksCreateErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type AdminInviteLinksCreateError = AdminInviteLinksCreateErrors[keyof AdminInviteLinksCreateErrors];
-
-export type AdminInviteLinksCreateResponses = {
-    /**
-     * Created
-     */
-    201: UserInviteLink;
-};
-
-export type AdminInviteLinksCreateResponse = AdminInviteLinksCreateResponses[keyof AdminInviteLinksCreateResponses];
-
-export type AdminInviteLinksDeleteData = {
-    body?: never;
-    path: {
-        /**
-         * Numeric invite link ID.
-         */
-        id: number;
-    };
-    query?: never;
-    url: '/admin/invite-links/{id}';
-};
-
-export type AdminInviteLinksDeleteErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type AdminInviteLinksDeleteError = AdminInviteLinksDeleteErrors[keyof AdminInviteLinksDeleteErrors];
-
-export type AdminInviteLinksDeleteResponses = {
-    /**
-     * No Content
-     */
-    204: void;
-};
-
-export type AdminInviteLinksDeleteResponse = AdminInviteLinksDeleteResponses[keyof AdminInviteLinksDeleteResponses];
-
 export type AdminOverviewData = {
     body?: never;
     path?: never;
@@ -5202,29 +4730,13 @@ export type AdminProjectsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
          * Search query; filters the list to items matching this string.
          */
         q?: string;
-        /**
-         * Only return projects owned by this user.
-         */
-        owner_id?: number;
-        /**
-         * Hide projects that are their owner's default project.
-         */
-        exclude_default_projects?: boolean;
-        /**
-         * Fields to sort by. Repeatable; pair positionally with order_by. owner sorts by the owner's username. Defaults to id descending.
-         */
-        sort_by?: Array<'id' | 'title' | 'owner' | 'created' | 'updated'> | null;
-        /**
-         * Sort order per sort_by field. Repeatable; defaults to asc.
-         */
-        order_by?: Array<'asc' | 'desc'> | null;
     };
     url: '/admin/projects';
 };
@@ -5277,44 +4789,6 @@ export type AdminProjectsPatchOwnerResponses = {
 
 export type AdminProjectsPatchOwnerResponse = AdminProjectsPatchOwnerResponses[keyof AdminProjectsPatchOwnerResponses];
 
-export type AdminTeamsListData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * 1-based page number.
-         */
-        page?: number;
-        /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
-         */
-        per_page?: number;
-        /**
-         * Search query; filters the list to items matching this string.
-         */
-        q?: string;
-    };
-    url: '/admin/teams';
-};
-
-export type AdminTeamsListErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type AdminTeamsListError = AdminTeamsListErrors[keyof AdminTeamsListErrors];
-
-export type AdminTeamsListResponses = {
-    /**
-     * OK
-     */
-    200: PaginatedInviteLinkTeam;
-};
-
-export type AdminTeamsListResponse = AdminTeamsListResponses[keyof AdminTeamsListResponses];
-
 export type AdminUsersListData = {
     body?: never;
     path?: never;
@@ -5324,7 +4798,7 @@ export type AdminUsersListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -5911,31 +5385,6 @@ export type InfoResponses = {
 
 export type InfoResponse = InfoResponses[keyof InfoResponses];
 
-export type InviteLinksCheckData = {
-    body: InviteLinkCheckBodyWritable;
-    path?: never;
-    query?: never;
-    url: '/invite-links/check';
-};
-
-export type InviteLinksCheckErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type InviteLinksCheckError = InviteLinksCheckErrors[keyof InviteLinksCheckErrors];
-
-export type InviteLinksCheckResponses = {
-    /**
-     * OK
-     */
-    200: PublicInviteLink;
-};
-
-export type InviteLinksCheckResponse = InviteLinksCheckResponses[keyof InviteLinksCheckResponses];
-
 export type LabelsListData = {
     body?: never;
     path?: never;
@@ -5945,7 +5394,7 @@ export type LabelsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -6193,31 +5642,6 @@ export type AuthLogoutResponses = {
 };
 
 export type AuthLogoutResponse = AuthLogoutResponses[keyof AuthLogoutResponses];
-
-export type McpInfoData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/mcp/info';
-};
-
-export type McpInfoErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type McpInfoError = McpInfoErrors[keyof McpInfoErrors];
-
-export type McpInfoResponses = {
-    /**
-     * OK
-     */
-    200: ConnectionSettings;
-};
-
-export type McpInfoResponse = McpInfoResponses[keyof McpInfoResponses];
 
 export type MigrationCsvDetectData = {
     body: {
@@ -6816,7 +6240,7 @@ export type NotificationsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -6981,7 +6405,7 @@ export type ProjectsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7181,7 +6605,7 @@ export type ProjectTimeEntriesListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7370,7 +6794,7 @@ export type SharesListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7514,7 +6938,7 @@ export type ProjectTasksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7713,7 +7137,7 @@ export type ProjectTeamsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7836,7 +7260,7 @@ export type ProjectUsersListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -7991,7 +7415,7 @@ export type ProjectViewsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8189,7 +7613,7 @@ export type BucketsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8264,7 +7688,7 @@ export type ProjectViewBucketsTasksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8426,7 +7850,7 @@ export type ProjectViewTasksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8494,7 +7918,7 @@ export type WebhooksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8607,7 +8031,7 @@ export type WebhooksUpdateResponses = {
 export type WebhooksUpdateResponse = WebhooksUpdateResponses[keyof WebhooksUpdateResponses];
 
 export type AuthRegisterData = {
-    body: RegisterUserRequestWritable;
+    body: UserRegisterWritable;
     path?: never;
     query?: never;
     url: '/register';
@@ -8767,7 +8191,7 @@ export type TasksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -8854,53 +8278,13 @@ export type TasksBulkUpdateResponses = {
 
 export type TasksBulkUpdateResponse = TasksBulkUpdateResponses[keyof TasksBulkUpdateResponses];
 
-export type TaskTimeEntriesListData = {
-    body?: never;
-    path: {
-        task_id: number;
-    };
-    query?: {
-        /**
-         * 1-based page number.
-         */
-        page?: number;
-        /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
-         */
-        per_page?: number;
-        /**
-         * Search query; filters the list to items matching this string.
-         */
-        q?: string;
-    };
-    url: '/tasks/{task_id}/time-entries';
-};
-
-export type TaskTimeEntriesListErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TaskTimeEntriesListError = TaskTimeEntriesListErrors[keyof TaskTimeEntriesListErrors];
-
-export type TaskTimeEntriesListResponses = {
-    /**
-     * OK
-     */
-    200: PaginatedTimeEntry;
-};
-
-export type TaskTimeEntriesListResponse = TaskTimeEntriesListResponses[keyof TaskTimeEntriesListResponses];
-
 export type TasksDeleteData = {
     body?: never;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: never;
-    url: '/tasks/{task}';
+    url: '/tasks/{projecttask}';
 };
 
 export type TasksDeleteErrors = {
@@ -8945,7 +8329,7 @@ export type TasksReadData = {
         /**
          * The numeric id of the task.
          */
-        task: number;
+        projecttask: number;
     };
     query?: {
         /**
@@ -8957,7 +8341,7 @@ export type TasksReadData = {
          */
         format?: 'html' | 'markdown';
     };
-    url: '/tasks/{task}';
+    url: '/tasks/{projecttask}';
 };
 
 export type TasksReadErrors = {
@@ -8981,10 +8365,10 @@ export type TasksReadResponse = TasksReadResponses[keyof TasksReadResponses];
 export type PatchTasksReadData = {
     body: Array<JsonPatchOp> | null;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: never;
-    url: '/tasks/{task}';
+    url: '/tasks/{projecttask}';
 };
 
 export type PatchTasksReadErrors = {
@@ -9008,7 +8392,7 @@ export type PatchTasksReadResponse = PatchTasksReadResponses[keyof PatchTasksRea
 export type TasksUpdateData = {
     body: TaskReadOneBodyWritable;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: {
         /**
@@ -9016,7 +8400,7 @@ export type TasksUpdateData = {
          */
         format?: 'html' | 'markdown';
     };
-    url: '/tasks/{task}';
+    url: '/tasks/{projecttask}';
 };
 
 export type TasksUpdateErrors = {
@@ -9040,7 +8424,7 @@ export type TasksUpdateResponse = TasksUpdateResponses[keyof TasksUpdateResponse
 export type TaskAssigneesListData = {
     body?: never;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: {
         /**
@@ -9048,7 +8432,7 @@ export type TaskAssigneesListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -9056,7 +8440,7 @@ export type TaskAssigneesListData = {
          */
         q?: string;
     };
-    url: '/tasks/{task}/assignees';
+    url: '/tasks/{projecttask}/assignees';
 };
 
 export type TaskAssigneesListErrors = {
@@ -9080,10 +8464,10 @@ export type TaskAssigneesListResponse = TaskAssigneesListResponses[keyof TaskAss
 export type TaskAssigneesCreateData = {
     body: TaskAssgineeWritable;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: never;
-    url: '/tasks/{task}/assignees';
+    url: '/tasks/{projecttask}/assignees';
 };
 
 export type TaskAssigneesCreateErrors = {
@@ -9107,10 +8491,10 @@ export type TaskAssigneesCreateResponse = TaskAssigneesCreateResponses[keyof Tas
 export type TaskAssigneesBulkData = {
     body: BulkAssigneesWritable;
     path: {
-        task: number;
+        projecttask: number;
     };
     query?: never;
-    url: '/tasks/{task}/assignees/bulk';
+    url: '/tasks/{projecttask}/assignees/bulk';
 };
 
 export type TaskAssigneesBulkErrors = {
@@ -9134,11 +8518,11 @@ export type TaskAssigneesBulkResponse = TaskAssigneesBulkResponses[keyof TaskAss
 export type TaskAssigneesDeleteData = {
     body?: never;
     path: {
-        task: number;
+        projecttask: number;
         user: number;
     };
     query?: never;
-    url: '/tasks/{task}/assignees/{user}';
+    url: '/tasks/{projecttask}/assignees/{user}';
 };
 
 export type TaskAssigneesDeleteErrors = {
@@ -9159,6 +8543,231 @@ export type TaskAssigneesDeleteResponses = {
 
 export type TaskAssigneesDeleteResponse = TaskAssigneesDeleteResponses[keyof TaskAssigneesDeleteResponses];
 
+export type TasksDuplicateData = {
+    body?: never;
+    path: {
+        /**
+         * The numeric id of the task to duplicate.
+         */
+        projecttask: number;
+    };
+    query?: never;
+    url: '/tasks/{projecttask}/duplicate';
+};
+
+export type TasksDuplicateErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TasksDuplicateError = TasksDuplicateErrors[keyof TasksDuplicateErrors];
+
+export type TasksDuplicateResponses = {
+    /**
+     * Created
+     */
+    201: TaskDuplicate;
+};
+
+export type TasksDuplicateResponse = TasksDuplicateResponses[keyof TasksDuplicateResponses];
+
+export type TaskLabelsListData = {
+    body?: never;
+    path: {
+        projecttask: number;
+    };
+    query?: {
+        /**
+         * 1-based page number.
+         */
+        page?: number;
+        /**
+         * Items per page (max 1000).
+         */
+        per_page?: number;
+        /**
+         * Search query; filters the list to items matching this string.
+         */
+        q?: string;
+    };
+    url: '/tasks/{projecttask}/labels';
+};
+
+export type TaskLabelsListErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TaskLabelsListError = TaskLabelsListErrors[keyof TaskLabelsListErrors];
+
+export type TaskLabelsListResponses = {
+    /**
+     * OK
+     */
+    200: PaginatedLabelWithTaskId;
+};
+
+export type TaskLabelsListResponse = TaskLabelsListResponses[keyof TaskLabelsListResponses];
+
+export type TaskLabelsCreateData = {
+    body: LabelTaskWritable;
+    path: {
+        projecttask: number;
+    };
+    query?: never;
+    url: '/tasks/{projecttask}/labels';
+};
+
+export type TaskLabelsCreateErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TaskLabelsCreateError = TaskLabelsCreateErrors[keyof TaskLabelsCreateErrors];
+
+export type TaskLabelsCreateResponses = {
+    /**
+     * Created
+     */
+    201: LabelTask;
+};
+
+export type TaskLabelsCreateResponse = TaskLabelsCreateResponses[keyof TaskLabelsCreateResponses];
+
+export type TaskLabelsBulkReplaceData = {
+    body: LabelTaskBulkWritable;
+    path: {
+        /**
+         * The numeric id of the task whose labels to replace.
+         */
+        projecttask: number;
+    };
+    query?: never;
+    url: '/tasks/{projecttask}/labels/bulk';
+};
+
+export type TaskLabelsBulkReplaceErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TaskLabelsBulkReplaceError = TaskLabelsBulkReplaceErrors[keyof TaskLabelsBulkReplaceErrors];
+
+export type TaskLabelsBulkReplaceResponses = {
+    /**
+     * OK
+     */
+    200: LabelTaskBulk;
+};
+
+export type TaskLabelsBulkReplaceResponse = TaskLabelsBulkReplaceResponses[keyof TaskLabelsBulkReplaceResponses];
+
+export type TaskLabelsDeleteData = {
+    body?: never;
+    path: {
+        projecttask: number;
+        label: number;
+    };
+    query?: never;
+    url: '/tasks/{projecttask}/labels/{label}';
+};
+
+export type TaskLabelsDeleteErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TaskLabelsDeleteError = TaskLabelsDeleteErrors[keyof TaskLabelsDeleteErrors];
+
+export type TaskLabelsDeleteResponses = {
+    /**
+     * No Content
+     */
+    204: void;
+};
+
+export type TaskLabelsDeleteResponse = TaskLabelsDeleteResponses[keyof TaskLabelsDeleteResponses];
+
+export type TasksMarkReadData = {
+    body?: never;
+    path: {
+        /**
+         * The numeric id of the task to mark as read.
+         */
+        projecttask: number;
+    };
+    query?: never;
+    url: '/tasks/{projecttask}/read';
+};
+
+export type TasksMarkReadErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TasksMarkReadError = TasksMarkReadErrors[keyof TasksMarkReadErrors];
+
+export type TasksMarkReadResponses = {
+    /**
+     * OK
+     */
+    200: TaskReadBodyBody;
+};
+
+export type TasksMarkReadResponse = TasksMarkReadResponses[keyof TasksMarkReadResponses];
+
+export type TaskTimeEntriesListData = {
+    body?: never;
+    path: {
+        task_id: number;
+    };
+    query?: {
+        /**
+         * 1-based page number.
+         */
+        page?: number;
+        /**
+         * Items per page (max 1000).
+         */
+        per_page?: number;
+        /**
+         * Search query; filters the list to items matching this string.
+         */
+        q?: string;
+    };
+    url: '/tasks/{task_id}/time-entries';
+};
+
+export type TaskTimeEntriesListErrors = {
+    /**
+     * Error
+     */
+    default: VikunjaErrorModel;
+};
+
+export type TaskTimeEntriesListError = TaskTimeEntriesListErrors[keyof TaskTimeEntriesListErrors];
+
+export type TaskTimeEntriesListResponses = {
+    /**
+     * OK
+     */
+    200: PaginatedTimeEntry;
+};
+
+export type TaskTimeEntriesListResponse = TaskTimeEntriesListResponses[keyof TaskTimeEntriesListResponses];
+
 export type TaskAttachmentsListData = {
     body?: never;
     path: {
@@ -9173,7 +8782,7 @@ export type TaskAttachmentsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -9326,7 +8935,7 @@ export type TaskCommentsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -9527,161 +9136,6 @@ export type TaskCommentsUpdateResponses = {
 
 export type TaskCommentsUpdateResponse = TaskCommentsUpdateResponses[keyof TaskCommentsUpdateResponses];
 
-export type TasksDuplicateData = {
-    body?: never;
-    path: {
-        /**
-         * The numeric id of the task to duplicate.
-         */
-        task: number;
-    };
-    query?: never;
-    url: '/tasks/{task}/duplicate';
-};
-
-export type TasksDuplicateErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TasksDuplicateError = TasksDuplicateErrors[keyof TasksDuplicateErrors];
-
-export type TasksDuplicateResponses = {
-    /**
-     * Created
-     */
-    201: TaskDuplicate;
-};
-
-export type TasksDuplicateResponse = TasksDuplicateResponses[keyof TasksDuplicateResponses];
-
-export type TaskLabelsListData = {
-    body?: never;
-    path: {
-        task: number;
-    };
-    query?: {
-        /**
-         * 1-based page number.
-         */
-        page?: number;
-        /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
-         */
-        per_page?: number;
-        /**
-         * Search query; filters the list to items matching this string.
-         */
-        q?: string;
-    };
-    url: '/tasks/{task}/labels';
-};
-
-export type TaskLabelsListErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TaskLabelsListError = TaskLabelsListErrors[keyof TaskLabelsListErrors];
-
-export type TaskLabelsListResponses = {
-    /**
-     * OK
-     */
-    200: PaginatedLabelWithTaskId;
-};
-
-export type TaskLabelsListResponse = TaskLabelsListResponses[keyof TaskLabelsListResponses];
-
-export type TaskLabelsCreateData = {
-    body: LabelTaskWritable;
-    path: {
-        task: number;
-    };
-    query?: never;
-    url: '/tasks/{task}/labels';
-};
-
-export type TaskLabelsCreateErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TaskLabelsCreateError = TaskLabelsCreateErrors[keyof TaskLabelsCreateErrors];
-
-export type TaskLabelsCreateResponses = {
-    /**
-     * Created
-     */
-    201: LabelTask;
-};
-
-export type TaskLabelsCreateResponse = TaskLabelsCreateResponses[keyof TaskLabelsCreateResponses];
-
-export type TaskLabelsBulkReplaceData = {
-    body: LabelTaskBulkWritable;
-    path: {
-        /**
-         * The numeric id of the task whose labels to replace.
-         */
-        task: number;
-    };
-    query?: never;
-    url: '/tasks/{task}/labels/bulk';
-};
-
-export type TaskLabelsBulkReplaceErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TaskLabelsBulkReplaceError = TaskLabelsBulkReplaceErrors[keyof TaskLabelsBulkReplaceErrors];
-
-export type TaskLabelsBulkReplaceResponses = {
-    /**
-     * OK
-     */
-    200: LabelTaskBulk;
-};
-
-export type TaskLabelsBulkReplaceResponse = TaskLabelsBulkReplaceResponses[keyof TaskLabelsBulkReplaceResponses];
-
-export type TaskLabelsDeleteData = {
-    body?: never;
-    path: {
-        task: number;
-        label: number;
-    };
-    query?: never;
-    url: '/tasks/{task}/labels/{label}';
-};
-
-export type TaskLabelsDeleteErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TaskLabelsDeleteError = TaskLabelsDeleteErrors[keyof TaskLabelsDeleteErrors];
-
-export type TaskLabelsDeleteResponses = {
-    /**
-     * No Content
-     */
-    204: void;
-};
-
-export type TaskLabelsDeleteResponse = TaskLabelsDeleteResponses[keyof TaskLabelsDeleteResponses];
-
 export type TasksPositionUpdateData = {
     body: TaskPositionWritable;
     path: {
@@ -9711,36 +9165,6 @@ export type TasksPositionUpdateResponses = {
 };
 
 export type TasksPositionUpdateResponse = TasksPositionUpdateResponses[keyof TasksPositionUpdateResponses];
-
-export type TasksMarkReadData = {
-    body?: never;
-    path: {
-        /**
-         * The numeric id of the task to mark as read.
-         */
-        task: number;
-    };
-    query?: never;
-    url: '/tasks/{task}/read';
-};
-
-export type TasksMarkReadErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type TasksMarkReadError = TasksMarkReadErrors[keyof TasksMarkReadErrors];
-
-export type TasksMarkReadResponses = {
-    /**
-     * OK
-     */
-    200: TaskReadBodyBody;
-};
-
-export type TasksMarkReadResponse = TasksMarkReadResponses[keyof TasksMarkReadResponses];
 
 export type TasksRelationsCreateData = {
     body: TaskRelationWritable;
@@ -9819,7 +9243,7 @@ export type TeamsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -10120,7 +9544,7 @@ export type TimeEntriesListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -10392,7 +9816,7 @@ export type TokensListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -10511,7 +9935,7 @@ export type BotsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -10665,7 +10089,7 @@ export type PatchBotsReadResponses = {
 export type PatchBotsReadResponse = PatchBotsReadResponses[keyof PatchBotsReadResponses];
 
 export type BotsUpdateData = {
-    body: BotUserUpdateBodyWritable;
+    body: BotUserReadBodyWritable;
     path: {
         bot: number;
     };
@@ -10950,7 +10374,7 @@ export type SessionsListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -11189,56 +10613,6 @@ export type UserResendEmailConfirmationResponses = {
 
 export type UserResendEmailConfirmationResponse = UserResendEmailConfirmationResponses[keyof UserResendEmailConfirmationResponses];
 
-export type UserSettingsReadData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/user/settings/general';
-};
-
-export type UserSettingsReadErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type UserSettingsReadError = UserSettingsReadErrors[keyof UserSettingsReadErrors];
-
-export type UserSettingsReadResponses = {
-    /**
-     * OK
-     */
-    200: UserGeneralSettings;
-};
-
-export type UserSettingsReadResponse = UserSettingsReadResponses[keyof UserSettingsReadResponses];
-
-export type PatchUserSettingsReadData = {
-    body: Array<JsonPatchOp> | null;
-    path?: never;
-    query?: never;
-    url: '/user/settings/general';
-};
-
-export type PatchUserSettingsReadErrors = {
-    /**
-     * Error
-     */
-    default: VikunjaErrorModel;
-};
-
-export type PatchUserSettingsReadError = PatchUserSettingsReadErrors[keyof PatchUserSettingsReadErrors];
-
-export type PatchUserSettingsReadResponses = {
-    /**
-     * OK
-     */
-    200: UserActionMessageBody;
-};
-
-export type PatchUserSettingsReadResponse = PatchUserSettingsReadResponses[keyof PatchUserSettingsReadResponses];
-
 export type UserUpdateSettingsData = {
     body: UserGeneralSettingsWritable;
     path?: never;
@@ -11273,7 +10647,7 @@ export type CaldavTokensListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**
@@ -11491,7 +10865,7 @@ export type UserWebhooksListData = {
          */
         page?: number;
         /**
-         * Items per page. Defaults to the instance's configured maximum (service.maxitemsperpage, reported as max_items_per_page by /info) and is silently capped at it; asking for more is not an error.
+         * Items per page (max 1000).
          */
         per_page?: number;
         /**

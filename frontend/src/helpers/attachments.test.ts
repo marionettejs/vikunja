@@ -1,228 +1,121 @@
 import {describe, it, expect, beforeEach, vi} from 'vitest'
 
-import {fetchAttachmentBlob, fetchAttachmentUrl, generateAttachmentUrl, releaseAttachmentUrl} from './attachments'
-import {queryClient} from '@/client/queryClient'
-import {attachmentKeys} from '@/client/queries/attachments'
+import {clearAttachmentBlobCache, fetchAttachmentBlobUrl, uploadFilesForEditor} from './attachments'
+import {PREVIEW_SIZE} from '@/services/attachment'
 
-const {getBlobUrl} = vi.hoisted(() => ({getBlobUrl: vi.fn()}))
+const {getAttachmentBlobUrl} = vi.hoisted(() => ({getAttachmentBlobUrl: vi.fn()}))
 
-const requestContext = vi.hoisted(() => ({
-	identity: {id: 1, type: 1} as {id: number, type: number} | null,
-	sessionEpoch: 1,
-	apiBaseUrl: 'https://identity-a.example/api/v2/',
+vi.mock('@/services/attachment', async importOriginal => ({
+	...await importOriginal<typeof import('@/services/attachment')>(),
+	default: class {
+		getAttachmentBlobUrl = getAttachmentBlobUrl
+	},
 }))
 
-vi.mock('@/client/generated', () => ({taskAttachmentsDownload: getBlobUrl}))
-vi.mock('@/message', () => ({
-	error: vi.fn(),
-	success: vi.fn(),
-}))
-vi.mock(import('@/helpers/auth'), async importOriginal => ({
-	...await importOriginal(),
-	getAuthSessionEpoch: () => requestContext.sessionEpoch,
-	getToken: () => null,
-	getTokenIdentity: () => requestContext.identity,
-}))
-vi.mock(import('@/helpers/apiUrl'), async importOriginal => ({
-	...await importOriginal(),
-	getApiBaseUrl: () => requestContext.apiBaseUrl,
-}))
-
-const attachment = {task_id: 5, id: 9}
+const attachment = {taskId: 5, id: 9}
 
 beforeEach(() => {
-	vi.useRealTimers()
-	vi.unstubAllGlobals()
-	requestContext.identity = {id: 1, type: 1}
-	requestContext.sessionEpoch = 1
-	requestContext.apiBaseUrl = 'https://identity-a.example/api/v2/'
-	URL.createObjectURL = vi.fn(blob => (blob as Blob & {testUrl?: string}).testUrl ?? 'blob:real-attachment')
-	queryClient.removeQueries({queryKey: attachmentKeys.blobs})
-	getBlobUrl.mockReset()
+	clearAttachmentBlobCache()
+	getAttachmentBlobUrl.mockReset()
 	window.URL.revokeObjectURL = vi.fn()
 })
 
-describe('fetchAttachmentUrl', () => {
-	it('returns an inert data url for svg, which would otherwise script in our origin', async () => {
-		getBlobUrl.mockResolvedValue({data: new Blob(['<svg />'], {type: 'image/svg+xml'})})
-
-		expect(await fetchAttachmentUrl(attachment)).toMatch(/^data:image\/svg\+xml/)
-		expect(URL.createObjectURL).not.toHaveBeenCalled()
-	})
-
-	it('returns an inert data url for svg with a charset parameter', async () => {
-		getBlobUrl.mockResolvedValue({data: new Blob(['<svg />'], {type: 'image/svg+xml; charset=utf-8'})})
-
-		expect(await fetchAttachmentUrl(attachment)).toMatch(/^data:image\/svg\+xml/)
-		expect(URL.createObjectURL).not.toHaveBeenCalled()
-	})
-
-	it('returns a blob url for html, which never reaches a rendering context', async () => {
-		const html = Object.assign(new Blob(['<script />'], {type: 'text/html'}), {testUrl: 'blob:html'})
-		getBlobUrl.mockResolvedValue({data: html})
-
-		expect(await fetchAttachmentUrl(attachment)).toBe('blob:html')
-		expect(URL.createObjectURL).toHaveBeenCalledTimes(1)
-	})
-
-	it('rejects when reading fails instead of handing out a scriptable blob url', async () => {
-		getBlobUrl.mockResolvedValue({data: new Blob(['<svg />'], {type: 'image/svg+xml'})})
-		vi.stubGlobal('FileReader', class {
-			onerror: (() => void) | null = null
-			error = new Error('read failed')
-			readAsDataURL() {
-				this.onerror?.()
-			}
-		})
-
-		await expect(fetchAttachmentUrl(attachment)).rejects.toThrow('read failed')
-		expect(URL.createObjectURL).not.toHaveBeenCalled()
-	})
-
-	it('rejects when the identity changes while the file is being read', async () => {
-		getBlobUrl.mockResolvedValue({data: new Blob(['<svg />'], {type: 'image/svg+xml'})})
-		let startRead: (fire: () => void) => void = () => {}
-		const reading = new Promise<() => void>(resolve => {
-			startRead = resolve
-		})
-		vi.stubGlobal('FileReader', class {
-			onload: (() => void) | null = null
-			result = 'data:image/svg+xml;base64,PHN2ZyAvPg=='
-			readAsDataURL() {
-				startRead(() => this.onload?.())
-			}
-		})
-
-		const pending = fetchAttachmentUrl(attachment)
-		const finishRead = await reading
-		requestContext.identity = {id: 2, type: 1}
-		finishRead()
-
-		await expect(pending).rejects.toMatchObject({
-			name: 'AbortError',
-			message: 'Client request context changed',
-		})
-		expect(URL.createObjectURL).not.toHaveBeenCalled()
-	})
-
-	it('rejects when the identity changed while the file was downloading', async () => {
-		getBlobUrl.mockResolvedValue({data: new Blob(['%PDF'], {type: 'application/pdf'})})
-		const pending = fetchAttachmentUrl(attachment)
-		requestContext.identity = {id: 2, type: 1}
-
-		await expect(pending).rejects.toMatchObject({
-			name: 'AbortError',
-			message: 'Client request context changed',
-		})
-	})
-
-	it('returns a blob url for every other mime', async () => {
-		const pdf = Object.assign(new Blob(['%PDF'], {type: 'application/pdf'}), {testUrl: 'blob:pdf'})
-		getBlobUrl.mockResolvedValue({data: pdf})
-
-		expect(await fetchAttachmentUrl(attachment)).toBe('blob:pdf')
-		expect(URL.createObjectURL).toHaveBeenCalledTimes(1)
-	})
-
-	it('hands every caller its own url over a single request', async () => {
-		getBlobUrl.mockResolvedValue({data: Object.assign(new Blob(['bytes']), {testUrl: 'blob:a'})})
-
-		expect(await fetchAttachmentUrl(attachment)).toBe('blob:a')
-		expect(await fetchAttachmentUrl(attachment)).toBe('blob:a')
-
-		expect(getBlobUrl).toHaveBeenCalledTimes(1)
-		expect(URL.createObjectURL).toHaveBeenCalledTimes(2)
-	})
-})
-
-describe('fetchAttachmentBlob', () => {
+describe('fetchAttachmentBlobUrl', () => {
 	it('fetches once for repeated calls with the same key', async () => {
-		const blob = new Blob(['bytes'])
-		getBlobUrl.mockResolvedValue({data: blob})
+		getAttachmentBlobUrl.mockResolvedValue('blob:a')
 
-		expect(await fetchAttachmentBlob(attachment)).toBe(blob)
-		expect(await fetchAttachmentBlob(attachment)).toBe(blob)
+		expect(await fetchAttachmentBlobUrl(attachment)).toBe('blob:a')
+		expect(await fetchAttachmentBlobUrl(attachment)).toBe('blob:a')
 
-		expect(getBlobUrl).toHaveBeenCalledTimes(1)
+		expect(getAttachmentBlobUrl).toHaveBeenCalledTimes(1)
 	})
 
 	it('shares one request between concurrent callers', async () => {
-		const blob = new Blob(['bytes'])
-		let resolveBlob: (result: {data: Blob}) => void = () => {}
-		getBlobUrl.mockReturnValue(new Promise<{data: Blob}>(resolve => {
-			resolveBlob = resolve
+		let resolveBlobUrl: (url: string) => void = () => {}
+		getAttachmentBlobUrl.mockReturnValue(new Promise<string>(resolve => {
+			resolveBlobUrl = resolve
 		}))
 
-		const both = Promise.all([fetchAttachmentBlob(attachment), fetchAttachmentBlob(attachment)])
-		resolveBlob({data: blob})
+		const both = Promise.all([fetchAttachmentBlobUrl(attachment), fetchAttachmentBlobUrl(attachment)])
+		resolveBlobUrl('blob:a')
 
-		expect(await both).toEqual([blob, blob])
-		expect(getBlobUrl).toHaveBeenCalledTimes(1)
+		expect(await both).toEqual(['blob:a', 'blob:a'])
+		expect(getAttachmentBlobUrl).toHaveBeenCalledTimes(1)
 	})
 
 	it('retries after a rejected fetch', async () => {
 		const failed = new Error('nope')
-		const blob = new Blob(['bytes'])
-		getBlobUrl.mockRejectedValueOnce(failed).mockResolvedValueOnce({data: blob})
+		getAttachmentBlobUrl.mockRejectedValueOnce(failed).mockResolvedValueOnce('blob:a')
 
-		await expect(fetchAttachmentBlob(attachment)).rejects.toThrow(failed)
-		expect(await fetchAttachmentBlob(attachment)).toBe(blob)
+		await expect(fetchAttachmentBlobUrl(attachment)).rejects.toThrow(failed)
+		expect(await fetchAttachmentBlobUrl(attachment)).toBe('blob:a')
 
-		expect(getBlobUrl).toHaveBeenCalledTimes(2)
+		expect(getAttachmentBlobUrl).toHaveBeenCalledTimes(2)
 	})
 
 	it('caches every preview size separately', async () => {
-		getBlobUrl.mockResolvedValueOnce({data: new Blob(['original'])})
-			.mockResolvedValueOnce({data: new Blob(['md'])})
-			.mockResolvedValueOnce({data: new Blob(['lg'])})
+		getAttachmentBlobUrl.mockResolvedValueOnce('blob:original')
+			.mockResolvedValueOnce('blob:md')
+			.mockResolvedValueOnce('blob:lg')
 
-		expect(await (await fetchAttachmentBlob(attachment)).text()).toBe('original')
-		expect(await (await fetchAttachmentBlob(attachment, 'md')).text()).toBe('md')
-		expect(await (await fetchAttachmentBlob(attachment, 'lg')).text()).toBe('lg')
-		expect(await (await fetchAttachmentBlob(attachment, 'md')).text()).toBe('md')
+		expect(await fetchAttachmentBlobUrl(attachment)).toBe('blob:original')
+		expect(await fetchAttachmentBlobUrl(attachment, PREVIEW_SIZE.MD)).toBe('blob:md')
+		expect(await fetchAttachmentBlobUrl(attachment, PREVIEW_SIZE.LG)).toBe('blob:lg')
+		expect(await fetchAttachmentBlobUrl(attachment, PREVIEW_SIZE.MD)).toBe('blob:md')
 
-		expect(getBlobUrl).toHaveBeenCalledTimes(3)
+		expect(getAttachmentBlobUrl).toHaveBeenCalledTimes(3)
 	})
 
 	it('caches every attachment separately', async () => {
-		getBlobUrl.mockResolvedValueOnce({data: new Blob(['nine'])})
-			.mockResolvedValueOnce({data: new Blob(['ten'])})
+		getAttachmentBlobUrl.mockResolvedValueOnce('blob:a').mockResolvedValueOnce('blob:b')
 
-		expect(await (await fetchAttachmentBlob({task_id: 5, id: 9})).text()).toBe('nine')
-		expect(await (await fetchAttachmentBlob({task_id: 5, id: 10})).text()).toBe('ten')
+		expect(await fetchAttachmentBlobUrl({taskId: 5, id: 9})).toBe('blob:a')
+		expect(await fetchAttachmentBlobUrl({taskId: 5, id: 10})).toBe('blob:b')
 
-		expect(getBlobUrl).toHaveBeenCalledTimes(2)
-	})
-
-	it('never revokes a url its caller may still show when the bytes are dropped', async () => {
-		getBlobUrl.mockResolvedValue({data: Object.assign(new Blob(['bytes']), {testUrl: 'blob:a'})})
-		const url = await fetchAttachmentUrl(attachment)
-
-		queryClient.removeQueries({queryKey: attachmentKeys.blobs})
-
-		expect(url).toBe('blob:a')
-		expect(window.URL.revokeObjectURL).not.toHaveBeenCalled()
+		expect(getAttachmentBlobUrl).toHaveBeenCalledTimes(2)
 	})
 })
 
-describe('releaseAttachmentUrl', () => {
-	it('revokes an object url', () => {
-		releaseAttachmentUrl('blob:a')
+describe('clearAttachmentBlobCache', () => {
+	it('revokes the cached urls and refetches afterwards', async () => {
+		getAttachmentBlobUrl.mockResolvedValueOnce('blob:a').mockResolvedValueOnce('blob:b')
+		await fetchAttachmentBlobUrl(attachment)
 
-		expect(window.URL.revokeObjectURL).toHaveBeenCalledExactlyOnceWith('blob:a')
-	})
+		clearAttachmentBlobCache()
 
-	it('leaves the inert svg data url alone, there is nothing to revoke', () => {
-		releaseAttachmentUrl('data:image/svg+xml;base64,PHN2ZyAvPg==')
-		releaseAttachmentUrl(undefined)
-
-		expect(window.URL.revokeObjectURL).not.toHaveBeenCalled()
+		expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:a')
+		expect(await fetchAttachmentBlobUrl(attachment)).toBe('blob:b')
 	})
 })
 
-describe('generateAttachmentUrl', () => {
-	it('points at the attachment under the configured API base', () => {
-		requestContext.apiBaseUrl = 'https://x/prefix/api/v2'
-		expect(generateAttachmentUrl(5, 9)).toBe('https://x/prefix/api/v2/tasks/5/attachments/9')
+describe('uploadFilesForEditor', () => {
+	it('collects the url of every uploaded file', async () => {
+		const upload = vi.fn((file: File, onSuccess: (url: string) => void) => {
+			onSuccess(`https://vikunja.io/${file.name}`)
+			return Promise.resolve()
+		})
+
+		const urls = await uploadFilesForEditor(upload, [new File([''], 'a.png'), new File([''], 'b.png')])
+
+		expect(urls).toEqual(['https://vikunja.io/a.png', 'https://vikunja.io/b.png'])
+	})
+
+	it('rejects when an upload fails instead of leaving the promise dangling', async () => {
+		const failed = new Error('failed to save file: no space left on device')
+
+		await expect(uploadFilesForEditor(() => Promise.reject(failed), [new File([''], 'a.png')]))
+			.rejects.toThrow(failed)
+	})
+
+	it('handles a FileList, which has no forEach', async () => {
+		const file = new File([''], 'a.png')
+		const files = {0: file, length: 1, [Symbol.iterator]: [file][Symbol.iterator].bind([file])} as unknown as FileList
+
+		const urls = await uploadFilesForEditor((f, onSuccess) => {
+			onSuccess(`https://vikunja.io/${f.name}`)
+			return Promise.resolve()
+		}, files)
+
+		expect(urls).toEqual(['https://vikunja.io/a.png'])
 	})
 })

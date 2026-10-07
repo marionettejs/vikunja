@@ -1,0 +1,19 @@
+.native-project-views {
+  [hidden] {
+    display: none !important;
+  }
+  .handle {
+    cursor: grab;
+    margin-inline-start: 0.25rem;
+  }
+  .radio + .radio {
+    margin-inline-start: 0.5em;
+  }
+  .filter-bucket-form {
+    margin-block-end: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--grey-200);
+    border-radius: $radius;
+    inline-size: 100%;
+  }
+}

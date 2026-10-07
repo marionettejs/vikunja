@@ -6,12 +6,12 @@
 
 	
 	@media screen and (max-width: $tablet) {
-		max-width: 100%;
+		max-inline-size: 100%;
 	}
 
 	&.short {
 		@media screen and (min-width: $tablet) {
-			max-width: 53vw;
+			max-inline-size: 53vw;
 		}
 	}
 
@@ -28,13 +28,13 @@
 		.tasktext,
 		&.tasktext {
 			@media screen and (max-width: $desktop) {
-				max-width: calc(100vw - 27px - 2rem - 1.5rem - 3rem - #{$navbar-width}); // 1.5rem is the padding of the tasks container, 3rem is the padding of .app-container
+				max-inline-size: calc(100vw - 27px - 2rem - 1.5rem - 3rem - #{$navbar-width}); // 1.5rem is the padding of the tasks container, 3rem is the padding of .app-container
 			}
 
 			// Duplicated rule to have it work properly in at least some browsers
 			// This should be fine as the ui doesn't work in rare edge cases to begin with
-			@media screen and (max-width: calc(#{$desktop} + #{$navbar-width})) {
-				max-width: calc(100vw - 27px - 2rem - 1.5rem - 3rem - #{$navbar-width}); // 1.5rem is the padding of the tasks container, 3rem is the padding of .app-container
+			@media screen and (width <= calc(#{$desktop} + #{$navbar-width})) {
+				max-inline-size: calc(100vw - 27px - 2rem - 1.5rem - 3rem - #{$navbar-width}); // 1.5rem is the padding of the tasks container, 3rem is the padding of .app-container
 			}
 		}
 	}
@@ -44,5 +44,5 @@
 // - Project.vue
 // -> Move the <card> wrapper including this class definition inside <edit-task>
 .is-max-width-desktop .tasks .task {
-	max-width: $desktop;
+	max-inline-size: $desktop;
 }

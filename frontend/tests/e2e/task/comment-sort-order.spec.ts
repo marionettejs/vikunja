@@ -92,9 +92,7 @@ test.describe('Comment sort order', () => {
 		await expect(newCommentEditor).toBeVisible({timeout: 10000})
 		await newCommentEditor.click()
 		await newCommentEditor.fill('Brand new comment')
-		const commentButton = page.locator('.task-view .comments').getByRole('button', {name: 'Comment', exact: true})
-		await expect(commentButton).not.toHaveAttribute('aria-disabled', 'true')
-		await commentButton.click()
+		await page.locator('.task-view .comments .media.comment .button:not([disabled])').filter({hasText: 'Comment'}).click()
 
 		await expect(page.locator('.global-notification')).toContainText('Success')
 
@@ -119,9 +117,7 @@ test.describe('Comment sort order', () => {
 		await expect(newCommentEditor).toBeVisible({timeout: 10000})
 		await newCommentEditor.click()
 		await newCommentEditor.fill('Scroll test comment')
-		const commentButton = page.locator('.task-view .comments').getByRole('button', {name: 'Comment', exact: true})
-		await expect(commentButton).not.toHaveAttribute('aria-disabled', 'true')
-		await commentButton.click()
+		await page.locator('.task-view .comments .media.comment .button:not([disabled])').filter({hasText: 'Comment'}).click()
 
 		await expect(page.locator('.global-notification')).toContainText('Success')
 
@@ -199,7 +195,7 @@ test.describe('Comment sort order', () => {
 	test('uses saved setting on page load', async ({page, apiContext}) => {
 		// Create a user with commentSortOrder already set to desc
 		const user = (await UserFactory.create(1, {
-			frontend_settings: JSON.stringify({comment_sort_order: 'desc'}),
+			frontend_settings: JSON.stringify({commentSortOrder: 'desc'}),
 		}))[0]
 		const project = (await ProjectFactory.create(1, {owner_id: user.id}))[0]
 		await TaskFactory.create(1, {id: 1, project_id: project.id, created_by_id: user.id})

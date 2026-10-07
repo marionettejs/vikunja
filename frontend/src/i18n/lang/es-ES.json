@@ -809,6 +809,9 @@
 			"newTeam": "Nuevo equipo"
 		}
 	},
+	"date": {
+		"altFormatShort": "j M Y"
+	},
 	"error": {
 		"1001": "Ya existe un usuario con este nombre de usuario.",
 		"1002": "Ya existe un usuario con esta dirección de correo electrónico.",

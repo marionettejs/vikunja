@@ -41,9 +41,15 @@ func (pa *projectAccess) permission(projectID int64) (Permission, bool) {
 	return p, has
 }
 
-// Binds the user id three times.
+// One row per project and granting ancestor-or-self, so MAX over a project's rows is
+// the greatest of its own grant and everything it inherits: a grant on a descendant
+// can raise an inherited permission, never lower it. Binds the user id three times.
+// tree uses UNION, not UNION ALL: deduplicating (id, permission) terminates on a
+// parent_project_id cycle and caps the row count at three per project.
+// The recursive step's join implies parent_project_id IS NOT NULL, which is why root
+// projects store NULL: the partial index then covers real children only.
 const projectAccessCTE = `
-WITH grants (project_id, permission) AS (
+WITH RECURSIVE grants (project_id, permission) AS (
     SELECT project_id, MAX(permission)
     FROM (
         SELECT id AS project_id, 2 AS permission FROM projects WHERE owner_id = ?
@@ -56,26 +62,22 @@ WITH grants (project_id, permission) AS (
         WHERE tm.user_id = ?
     ) direct_grants
     GROUP BY project_id
+),
+tree (id, permission) AS (
+    SELECT p.id, g.permission
+    FROM projects p
+    INNER JOIN grants g ON g.project_id = p.id
+    UNION
+    SELECT p.id, t.permission
+    FROM projects p
+    INNER JOIN tree t ON p.parent_project_id = t.id
 )`
 
-// Inherited admin is sticky (it could unshare the parent anyway); below that the nearest grant wins.
 const projectAccessQuery = projectAccessCTE + `
-SELECT id,
-    CASE WHEN MAX(permission) = 2 THEN 2
-         ELSE MAX(CASE WHEN nearest = 1 THEN permission END)
-    END AS permission
-FROM (
-    SELECT pa.project_id AS id, g.permission,
-        ROW_NUMBER() OVER (PARTITION BY pa.project_id ORDER BY pa.depth) AS nearest
-    FROM grants g
-    INNER JOIN project_ancestors pa ON pa.ancestor_id = g.project_id
-) ranked
-GROUP BY id`
+SELECT id, MAX(permission) AS permission FROM tree GROUP BY id`
 
 const projectAccessIDsQuery = projectAccessCTE + `
-SELECT DISTINCT pa.project_id AS id
-FROM grants g
-INNER JOIN project_ancestors pa ON pa.ancestor_id = g.project_id`
+SELECT DISTINCT id FROM tree`
 
 type projectAccessRow struct {
 	ID         int64 `xorm:"id"`
@@ -150,12 +152,21 @@ func accessibleProjectIDsCond(s *xorm.Session, a web.Auth, column string) (build
 func GetAllParentProjects(s *xorm.Session, projectID int64) (map[int64]*Project, error) {
 	chain, err := db.Remember(s, "parent-projects-"+strconv.FormatInt(projectID, 10), func() (map[int64]*Project, error) {
 		loaded := make(map[int64]*Project)
-		err := s.
-			Table("projects").
-			Select("projects.*").
-			Join("INNER", "project_ancestors", "project_ancestors.ancestor_id = projects.id").
-			Where(builder.Eq{"project_ancestors.project_id": projectID}).
-			Find(&loaded)
+		err := s.SQL(`WITH RECURSIVE all_projects AS (
+		    SELECT
+		        p.*
+		    FROM
+		        projects p
+		    WHERE
+		        p.id = ?
+		    UNION ALL
+		    SELECT
+		        p.*
+		    FROM
+		        projects p
+		            INNER JOIN all_projects pc ON p.ID = pc.parent_project_id
+		)
+		SELECT DISTINCT * FROM all_projects`, projectID).Find(&loaded)
 		if err != nil {
 			return nil, err
 		}

@@ -285,11 +285,9 @@ func (sf *SavedFilter) Update(s *xorm.Session, _ web.Auth) error {
 // @Failure 500 {object} models.Message "Internal error"
 // @Router /filters/{id} [delete]
 func (sf *SavedFilter) Delete(s *xorm.Session, _ web.Auth) error {
-	// The permission check loads the whole filter into sf; xorm would turn every
-	// loaded field into a condition, and a re-serialized filters JSON never matches.
 	_, err := s.
 		Where("id = ?", sf.ID).
-		Delete(&SavedFilter{})
+		Delete(sf)
 	return err
 }
 
@@ -365,7 +363,7 @@ type viewTask struct {
 // Existing bucket and position rows are preloaded so the per-task loop issues no
 // existence queries; default bucket ids are memoized on first use.
 type filterViewState struct {
-	bucketIDs        map[viewTask]int64
+	hasBucket        map[viewTask]bool
 	hasPosition      map[viewTask]bool
 	defaultBucketIDs map[int64]int64
 }
@@ -386,7 +384,7 @@ func (state *filterViewState) defaultBucketID(s *xorm.Session, view *ProjectView
 
 func preloadFilterViewState(s *xorm.Session, viewsByTask map[int64][]filterView) (state *filterViewState, err error) {
 	state = &filterViewState{
-		bucketIDs:        map[viewTask]int64{},
+		hasBucket:        map[viewTask]bool{},
 		hasPosition:      map[viewTask]bool{},
 		defaultBucketIDs: map[int64]int64{},
 	}
@@ -421,7 +419,7 @@ func preloadFilterViewState(s *xorm.Session, viewsByTask map[int64][]filterView)
 		return nil, err
 	}
 	for _, tb := range taskBuckets {
-		state.bucketIDs[viewTask{viewID: tb.ProjectViewID, taskID: tb.TaskID}] = tb.BucketID
+		state.hasBucket[viewTask{viewID: tb.ProjectViewID, taskID: tb.TaskID}] = true
 	}
 
 	taskPositions := []*TaskPosition{}
@@ -437,19 +435,12 @@ func preloadFilterViewState(s *xorm.Session, viewsByTask map[int64][]filterView)
 }
 
 func addTaskToFilterView(s *xorm.Session, filter *SavedFilter, view *ProjectView, task *Task, state *filterViewState) (taskBucket *TaskBucket, taskPosition *TaskPosition, err error) {
-	currentBucketID, hasBucket := state.bucketIDs[viewTask{viewID: view.ID, taskID: task.ID}]
-	var bucketID int64
-	switch {
-	case task.Done && view.DoneBucketID != 0:
-		bucketID = view.DoneBucketID
-	case !hasBucket || (view.DoneBucketID != 0 && currentBucketID == view.DoneBucketID):
-		bucketID, err = state.defaultBucketID(s, view)
+	if !state.hasBucket[viewTask{viewID: view.ID, taskID: task.ID}] {
+		bucketID, err := state.defaultBucketID(s, view)
 		if err != nil {
 			return nil, nil, err
 		}
-	}
 
-	if bucketID != 0 && bucketID != currentBucketID {
 		taskBucket = &TaskBucket{
 			BucketID:      bucketID,
 			TaskID:        task.ID,
@@ -615,7 +606,7 @@ func addTaskToFilterViews(s *xorm.Session, task *Task, views []filterView, state
 		}
 
 		if taskBucket != nil {
-			if err := taskBucket.upsert(s); err != nil {
+			if err := insertTaskBuckets(s, taskBucket.ProjectViewID, taskBucket.BucketID, []int64{task.ID}); err != nil {
 				return err
 			}
 		}

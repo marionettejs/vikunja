@@ -1,4 +1,5 @@
-import {getProjectFromPrefix, PrefixMode} from '@/modules/quickAddMagic'
+import {getProjectFromPrefix} from '@/modules/quickAddMagic/prefixParser'
+import {PrefixMode} from '@/modules/quickAddMagic/prefixes'
 
 export interface TaskWithParent {
 	title: string,

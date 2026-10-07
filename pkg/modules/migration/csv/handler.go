@@ -22,7 +22,6 @@ import (
 
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/modules/migration"
-	migrationHandler "code.vikunja.io/api/pkg/modules/migration/handler"
 	user2 "code.vikunja.io/api/pkg/user"
 	"github.com/labstack/echo/v5"
 )
@@ -32,8 +31,6 @@ type MigratorWeb struct{}
 
 // RegisterRoutes registers all CSV migration routes
 func (c *MigratorWeb) RegisterRoutes(g *echo.Group) {
-	migrationHandler.RegisterFileMigrator(func() migration.FileMigrator { return &Migrator{} })
-
 	g.GET("/csv/status", c.Status)
 	g.PUT("/csv/detect", c.Detect)
 	g.PUT("/csv/preview", c.Preview)
@@ -178,15 +175,20 @@ func (c *MigratorWeb) Migrate(ctx *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "No configuration provided")
 	}
 
+	var config ImportConfig
+	if err := json.Unmarshal([]byte(configStr), &config); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid configuration: "+err.Error())
+	}
+
 	src, err := file.Open()
 	if err != nil {
 		return err
 	}
 	defer src.Close()
 
-	if err := migrationHandler.StartFileMigration(&Migrator{}, u, src, file.Size, []byte(configStr)); err != nil {
+	if err := RunMigration(u, src, file.Size, &config); err != nil {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, models.Message{Message: "Migration was started successfully."})
+	return ctx.JSON(http.StatusOK, models.Message{Message: "Everything was migrated successfully."})
 }

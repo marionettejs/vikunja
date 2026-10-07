@@ -68,14 +68,9 @@ func (m *stubMigrator) Migrate(_ *user.User) error {
 
 func getTestUser(t *testing.T) *user.User {
 	t.Helper()
-	return getTestUserByID(t, 1)
-}
-
-func getTestUserByID(t *testing.T, id int64) *user.User {
-	t.Helper()
 	s := db.NewSession()
 	defer s.Close()
-	u, err := user.GetUserByID(s, id)
+	u, err := user.GetUserByID(s, 1)
 	require.NoError(t, err)
 	return u
 }
@@ -132,11 +127,6 @@ func TestStartMigrationCredentialFailureReleasesClaim(t *testing.T) {
 	require.EqualError(t, err, "bad credentials")
 	assert.Empty(t, events.GetDispatchedEvents((&MigrationRequestedEvent{}).Name()), "no event must be dispatched on credential failure")
 
-	failed, err := migration.GetMigrationStatus(&stubMigrator{NameValue: "stub"}, u)
-	require.NoError(t, err)
-	assert.Equal(t, migration.ErrorKindCredentials, failed.ErrorKind)
-	assert.Empty(t, failed.ErrorMessage)
-
 	require.NoError(t, StartMigration(&stubMigrator{NameValue: "stub"}, u))
 }
 
@@ -150,11 +140,6 @@ func TestStartMigrationDispatchFailureReleasesClaim(t *testing.T) {
 
 	err := StartMigration(&stubMigrator{NameValue: "stub"}, u)
 	require.Error(t, err)
-
-	failed, err := migration.GetMigrationStatus(&stubMigrator{NameValue: "stub"}, u)
-	require.NoError(t, err)
-	assert.Equal(t, migration.ErrorKindQueue, failed.ErrorKind)
-	assert.Empty(t, failed.ErrorMessage)
 
 	_, err = migration.ClaimMigration(&stubMigrator{NameValue: "stub"}, u)
 	require.NoError(t, err)
@@ -206,8 +191,6 @@ func TestMigrationListenerPanicReleasesClaim(t *testing.T) {
 	require.NoError(t, err)
 	assert.False(t, fetched.FinishedAt.IsZero())
 	assert.Nil(t, fetched.ActiveUserID)
-	assert.Equal(t, migration.ErrorKindDetail, fetched.ErrorKind)
-	assert.Equal(t, "migration panicked: boom", fetched.ErrorMessage)
 
 	_, err = migration.ClaimMigration(&stubMigrator{NameValue: "panic-stub"}, u)
 	require.NoError(t, err)

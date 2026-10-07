@@ -17,12 +17,10 @@
 package models
 
 import (
-	"context"
 	"time"
 
 	"code.vikunja.io/api/pkg/cron"
 	"code.vikunja.io/api/pkg/db"
-	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/log"
 	"code.vikunja.io/api/pkg/notifications"
 	"code.vikunja.io/api/pkg/user"
@@ -70,7 +68,6 @@ func deleteUsers() {
 		func() {
 			us := db.NewSession()
 			defer us.Close()
-			defer events.CleanupPending(us)
 
 			err = DeleteUser(us, u)
 			if err != nil {
@@ -84,9 +81,7 @@ func deleteUsers() {
 			err = us.Commit()
 			if err != nil {
 				log.Errorf("Could not commit transaction: %s", err)
-				return
 			}
-			events.DispatchPending(context.Background(), us)
 		}()
 	}
 }
@@ -174,7 +169,6 @@ func DeleteUser(s *xorm.Session, u *user.User) (err error) {
 		{"user_id", &Reaction{}},
 		{"user_id", &Favorite{}},
 		{"owner_id", &APIToken{}},
-		{"created_by_id", &Webhook{}},
 	}
 
 	for _, entity := range relatedEntities {
@@ -182,11 +176,6 @@ func DeleteUser(s *xorm.Session, u *user.User) (err error) {
 		if err != nil {
 			return err
 		}
-	}
-
-	err = DeleteAllUserSessions(s, u.ID)
-	if err != nil {
-		return err
 	}
 
 	// Notify before deleting the user row, because ShouldNotify will try to

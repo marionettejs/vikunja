@@ -1,4 +1,4 @@
-import type { Daytime } from '@/composables/useDaytimeSalutation'
+export type Daytime = 'night'|'morning'|'day'|'evening'
 
 export function hourToDaytime(now: Date): Daytime {
 	const hours = now.getHours()

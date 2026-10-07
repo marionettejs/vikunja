@@ -10,7 +10,7 @@ import {
 	LABEL_FIELDS,
 	PROJECT_FIELDS,
 } from '@/helpers/filters'
-import {getLabelByExactTitle} from '@/client/queries/labels'
+import {getLabelByExactTitle} from '@/helpers/labelLookup'
 import type {Label} from '@/client/generated'
 import {getLabelColor} from '@/composables/useLabelStyles'
 import {getTextColor} from '@/helpers/color/getTextColor'
@@ -60,12 +60,10 @@ export function decorateDocument(doc: Node, labels: Label[]) {
 		const pattern = getFilterFieldRegexPattern(dateField)
 		let dateMatch
 		while ((dateMatch = pattern.exec(text)) !== null) {
-			// Group 4 is a quoted value, group 5 an unquoted one (now/w+1w).
-			const rawValue = dateMatch[4] || dateMatch[5]
-			if (rawValue) {
-				const valueText = rawValue.trim()
-				const valueStart = dateMatch.index + dateMatch[0].lastIndexOf(rawValue)
-				const valueEnd = valueStart + rawValue.length
+			if (dateMatch[4]) { // If there's a value
+				const valueText = dateMatch[4].trim()
+				const valueStart = dateMatch.index + dateMatch[0].indexOf(dateMatch[4])
+				const valueEnd = valueStart + dateMatch[4].length
 
 				const from = findPosForIndex(doc, valueStart)
 				const to = findPosForIndex(doc, valueEnd)
@@ -88,7 +86,7 @@ export function decorateDocument(doc: Node, labels: Label[]) {
 		const pattern = getFilterFieldRegexPattern(labelField)
 		let labelMatch
 		while ((labelMatch = pattern.exec(text)) !== null) {
-			const labelValue = (labelMatch[4] || labelMatch[5])?.trim()
+			const labelValue = labelMatch[4]?.trim()
 			const operator = labelMatch[2]?.trim()
 
 			if(!labelValue) {
@@ -161,7 +159,7 @@ export function decorateDocument(doc: Node, labels: Label[]) {
 		const pattern = getFilterFieldRegexPattern(projectField)
 		let projectMatch
 		while ((projectMatch = pattern.exec(text)) !== null) {
-			const projectValue = (projectMatch[4] || projectMatch[5])?.trim()
+			const projectValue = projectMatch[4]?.trim()
 			const operator = projectMatch[2]?.trim()
 
 			if(!projectValue) {

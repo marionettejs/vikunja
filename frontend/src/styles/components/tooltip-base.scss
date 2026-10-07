@@ -1,0 +1,189 @@
+/*!
+ * Tooltip/popper base CSS from floating-vue 5.2.2 dist/style.css.
+ * Vue runtime, resize-observer, backdrop and dropdown theme rules omitted.
+ *
+ * MIT License
+ *
+ * Copyright (c) 2018 Guillaume Chau (alias Akryum)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+/* stylelint-disable csstools/use-logical, selector-attribute-quotes, color-hex-length -- Preserve exact vendor rules and physical floating-ui coordinates. */
+.v-popper__popper {
+  z-index: 10000;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+
+.v-popper__popper.v-popper__popper--hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s,visibility .15s;
+  pointer-events: none;
+}
+
+.v-popper__popper.v-popper__popper--shown {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.v-popper__popper.v-popper__popper--skip-transition,
+.v-popper__popper.v-popper__popper--skip-transition>.v-popper__wrapper {
+  transition: none !important;
+}
+
+.v-popper__inner {
+  position: relative;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.v-popper__inner>div {
+  position: relative;
+  z-index: 1;
+  max-width: inherit;
+  max-height: inherit;
+}
+
+.v-popper__arrow-container {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+
+.v-popper__popper--arrow-overflow .v-popper__arrow-container,
+.v-popper__popper--no-positioning .v-popper__arrow-container {
+  display: none;
+}
+
+.v-popper__arrow-inner,
+.v-popper__arrow-outer {
+  border-style: solid;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
+
+.v-popper__arrow-inner {
+  visibility: hidden;
+  border-width: 7px;
+}
+
+.v-popper__arrow-outer {
+  border-width: 6px;
+}
+
+.v-popper__popper[data-popper-placement^=top] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-inner {
+  left: -2px;
+}
+
+.v-popper__popper[data-popper-placement^=top] .v-popper__arrow-outer,
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-outer {
+  left: -1px;
+}
+
+.v-popper__popper[data-popper-placement^=top] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=top] .v-popper__arrow-outer {
+  border-bottom-width: 0;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+.v-popper__popper[data-popper-placement^=top] .v-popper__arrow-inner {
+  top: -2px;
+}
+
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-container {
+  top: 0;
+}
+
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-outer {
+  border-top-width: 0;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-top-color: transparent !important;
+}
+
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-inner {
+  top: -4px;
+}
+
+.v-popper__popper[data-popper-placement^=bottom] .v-popper__arrow-outer {
+  top: -6px;
+}
+
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-inner {
+  top: -2px;
+}
+
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-outer,
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-outer {
+  top: -1px;
+}
+
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-outer {
+  border-left-width: 0;
+  border-left-color: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-inner {
+  left: -4px;
+}
+
+.v-popper__popper[data-popper-placement^=right] .v-popper__arrow-outer {
+  left: -6px;
+}
+
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-container {
+  right: -10px;
+}
+
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-inner,
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-outer {
+  border-right-width: 0;
+  border-top-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+.v-popper__popper[data-popper-placement^=left] .v-popper__arrow-inner {
+  left: -2px;
+}
+
+.v-popper--theme-tooltip .v-popper__inner {
+  background: rgba(0,0,0,.8);
+  color: #fff;
+  border-radius: 6px;
+  padding: 7px 12px 6px;
+}
+
+.v-popper--theme-tooltip .v-popper__arrow-outer {
+  border-color: #000c;
+}

@@ -1,0 +1,50 @@
+// Scoped styles from the pinned misc/Dropdown.vue and DropdownItem.vue.
+.native-account-menu {
+  display: inline-flex;
+  position: relative;
+
+  .dropdown-menu::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--hover-offset) * -1);
+  }
+
+  .dropdown-menu {
+    min-inline-size: 12rem;
+    position: absolute;
+    z-index: 20;
+    display: block;
+
+    &[hidden] {display: none;}
+  }
+
+  .dropdown-content {
+    background-color: var(--scheme-main);
+    border-radius: $radius;
+    padding-block-end: 0.5rem;
+    padding-block-start: 0.5rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .dropdown-item {
+    color: var(--text);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    padding: $item-padding;
+    position: relative;
+    text-align: inherit;
+    white-space: nowrap;
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left !important;
+
+    &.is-active {
+      background-color: var(--link);
+      color: var(--link-invert);
+    }
+
+    &:hover:not(.is-disabled) {background-color: var(--grey-100);}
+    &.is-disabled {cursor: not-allowed;}
+  }
+}

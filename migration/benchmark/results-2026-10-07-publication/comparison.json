@@ -1,0 +1,704 @@
+[
+  {
+    "size": 50,
+    "workload": "Cold FCP",
+    "vue": {
+      "n": 20,
+      "median": 262.0,
+      "p95": 312,
+      "min": 232,
+      "max": 316
+    },
+    "published": {
+      "n": 20,
+      "median": 328.0,
+      "p95": 380,
+      "min": 284,
+      "max": 388
+    },
+    "current": {
+      "n": 20,
+      "median": 164.0,
+      "p95": 192,
+      "min": 124,
+      "max": 196
+    },
+    "currentVsPublishedPercent": -50.0,
+    "currentVsPublishedP95Percent": -49.47
+  },
+  {
+    "size": 50,
+    "workload": "Cold list ready",
+    "vue": {
+      "n": 20,
+      "median": 671.85,
+      "p95": 717.7,
+      "min": 605.9,
+      "max": 754.3
+    },
+    "published": {
+      "n": 20,
+      "median": 573.3,
+      "p95": 670.4,
+      "min": 525.1,
+      "max": 712.1
+    },
+    "current": {
+      "n": 20,
+      "median": 520.65,
+      "p95": 592.2,
+      "min": 423.3,
+      "max": 642.3
+    },
+    "currentVsPublishedPercent": -9.18,
+    "currentVsPublishedP95Percent": -11.66
+  },
+  {
+    "size": 50,
+    "workload": "Warm list ready",
+    "vue": {
+      "n": 20,
+      "median": 406.5,
+      "p95": 484.3,
+      "min": 376.9,
+      "max": 520.2
+    },
+    "published": {
+      "n": 20,
+      "median": 329.5,
+      "p95": 373.4,
+      "min": 290.6,
+      "max": 413.7
+    },
+    "current": {
+      "n": 20,
+      "median": 310.2,
+      "p95": 357.5,
+      "min": 278.8,
+      "max": 362.2
+    },
+    "currentVsPublishedPercent": -5.86,
+    "currentVsPublishedP95Percent": -4.26
+  },
+  {
+    "size": 50,
+    "workload": "First task",
+    "vue": {
+      "n": 20,
+      "median": 3625.85,
+      "p95": 4090.44,
+      "min": 3258.62,
+      "max": 4125.22
+    },
+    "published": {
+      "n": 20,
+      "median": 1251.61,
+      "p95": 1473.55,
+      "min": 1146.02,
+      "max": 1503.9
+    },
+    "current": {
+      "n": 20,
+      "median": 999.72,
+      "p95": 1138.08,
+      "min": 899.62,
+      "max": 1165.76
+    },
+    "currentVsPublishedPercent": -20.13,
+    "currentVsPublishedP95Percent": -22.77
+  },
+  {
+    "size": 50,
+    "workload": "First editor",
+    "vue": {
+      "n": 20,
+      "median": 604.88,
+      "p95": 872.99,
+      "min": 541.14,
+      "max": 886.8
+    },
+    "published": {
+      "n": 20,
+      "median": 242.45,
+      "p95": 318.49,
+      "min": 207.43,
+      "max": 346.1
+    },
+    "current": {
+      "n": 20,
+      "median": 225.36,
+      "p95": 275.65,
+      "min": 192.2,
+      "max": 280.08
+    },
+    "currentVsPublishedPercent": -7.05,
+    "currentVsPublishedP95Percent": -13.45
+  },
+  {
+    "size": 50,
+    "workload": "First Kanban",
+    "vue": {
+      "n": 20,
+      "median": 434.84,
+      "p95": 480.75,
+      "min": 350.4,
+      "max": 662.37
+    },
+    "published": {
+      "n": 20,
+      "median": 313.71,
+      "p95": 361.11,
+      "min": 278.4,
+      "max": 368.3
+    },
+    "current": {
+      "n": 20,
+      "median": 297.27,
+      "p95": 374.26,
+      "min": 276.93,
+      "max": 377.76
+    },
+    "currentVsPublishedPercent": -5.24,
+    "currentVsPublishedP95Percent": 3.64
+  },
+  {
+    "size": 50,
+    "workload": "Repeated task open",
+    "vue": {
+      "n": 20,
+      "median": 3428.8,
+      "p95": 3927.3,
+      "min": 3087.39,
+      "max": 3970.23
+    },
+    "published": {
+      "n": 20,
+      "median": 1128.28,
+      "p95": 1227.88,
+      "min": 1027.36,
+      "max": 1295.12
+    },
+    "current": {
+      "n": 20,
+      "median": 846.11,
+      "p95": 944.6,
+      "min": 778.81,
+      "max": 1006.06
+    },
+    "currentVsPublishedPercent": -25.01,
+    "currentVsPublishedP95Percent": -23.07
+  },
+  {
+    "size": 50,
+    "workload": "Edit/discard",
+    "vue": {
+      "n": 20,
+      "median": 619.58,
+      "p95": 706.04,
+      "min": 559.51,
+      "max": 719.2
+    },
+    "published": {
+      "n": 20,
+      "median": 227.44,
+      "p95": 257.89,
+      "min": 207.53,
+      "max": 260.87
+    },
+    "current": {
+      "n": 20,
+      "median": 225.73,
+      "p95": 244.59,
+      "min": 187.0,
+      "max": 260.44
+    },
+    "currentVsPublishedPercent": -0.75,
+    "currentVsPublishedP95Percent": -5.16
+  },
+  {
+    "size": 50,
+    "workload": "Search results",
+    "vue": {
+      "n": 20,
+      "median": 475.65,
+      "p95": 570.51,
+      "min": 415.08,
+      "max": 594.62
+    },
+    "published": {
+      "n": 20,
+      "median": 523.78,
+      "p95": 622.52,
+      "min": 504.31,
+      "max": 622.52
+    },
+    "current": {
+      "n": 20,
+      "median": 441.33,
+      "p95": 505.11,
+      "min": 391.79,
+      "max": 543.6
+    },
+    "currentVsPublishedPercent": -15.74,
+    "currentVsPublishedP95Percent": -18.86
+  },
+  {
+    "size": 50,
+    "workload": "Kanban ready",
+    "vue": {
+      "n": 20,
+      "median": 470.54,
+      "p95": 532.81,
+      "min": 355.22,
+      "max": 553.0
+    },
+    "published": {
+      "n": 20,
+      "median": 298.13,
+      "p95": 329.19,
+      "min": 274.35,
+      "max": 330.19
+    },
+    "current": {
+      "n": 20,
+      "median": 305.29,
+      "p95": 346.61,
+      "min": 259.36,
+      "max": 358.0
+    },
+    "currentVsPublishedPercent": 2.4,
+    "currentVsPublishedP95Percent": 5.29
+  },
+  {
+    "size": 50,
+    "workload": "Search input to publication",
+    "vue": {
+      "n": 20,
+      "median": 202.55,
+      "p95": 226.2,
+      "min": 190.7,
+      "max": 232.0
+    },
+    "published": {
+      "n": 20,
+      "median": 208.5,
+      "p95": 228,
+      "min": 168.9,
+      "max": 256.2
+    },
+    "current": {
+      "n": 20,
+      "median": 174.45,
+      "p95": 227.0,
+      "min": 158.7,
+      "max": 229.1
+    },
+    "currentVsPublishedPercent": -16.33,
+    "currentVsPublishedP95Percent": -0.44
+  },
+  {
+    "size": 50,
+    "workload": "Search publication to paint",
+    "vue": {
+      "n": 20,
+      "median": 11.85,
+      "p95": 53.1,
+      "min": 1.7,
+      "max": 56.4
+    },
+    "published": {
+      "n": 20,
+      "median": 19.75,
+      "p95": 93.3,
+      "min": 1.8,
+      "max": 96.5
+    },
+    "current": {
+      "n": 20,
+      "median": 22.15,
+      "p95": 29.0,
+      "min": 7.2,
+      "max": 30.1
+    },
+    "currentVsPublishedPercent": 12.15,
+    "currentVsPublishedP95Percent": -68.92
+  },
+  {
+    "size": 50,
+    "workload": "Search input to paint",
+    "vue": {
+      "n": 20,
+      "median": 216.2,
+      "p95": 254.2,
+      "min": 203.9,
+      "max": 258.9
+    },
+    "published": {
+      "n": 20,
+      "median": 232.7,
+      "p95": 276.5,
+      "min": 204.3,
+      "max": 294.8
+    },
+    "current": {
+      "n": 20,
+      "median": 194.45,
+      "p95": 236.3,
+      "min": 176.1,
+      "max": 257.1
+    },
+    "currentVsPublishedPercent": -16.44,
+    "currentVsPublishedP95Percent": -14.54
+  },
+  {
+    "size": 500,
+    "workload": "Cold FCP",
+    "vue": {
+      "n": 20,
+      "median": 296.0,
+      "p95": 368,
+      "min": 244,
+      "max": 400
+    },
+    "published": {
+      "n": 20,
+      "median": 334.0,
+      "p95": 372,
+      "min": 296,
+      "max": 412
+    },
+    "current": {
+      "n": 20,
+      "median": 164.0,
+      "p95": 188,
+      "min": 124,
+      "max": 192
+    },
+    "currentVsPublishedPercent": -50.9,
+    "currentVsPublishedP95Percent": -49.46
+  },
+  {
+    "size": 500,
+    "workload": "Cold list ready",
+    "vue": {
+      "n": 20,
+      "median": 738.95,
+      "p95": 874.2,
+      "min": 640,
+      "max": 887.9
+    },
+    "published": {
+      "n": 20,
+      "median": 611.55,
+      "p95": 650.7,
+      "min": 551.6,
+      "max": 732.5
+    },
+    "current": {
+      "n": 20,
+      "median": 527.35,
+      "p95": 569.8,
+      "min": 474.2,
+      "max": 1117.5
+    },
+    "currentVsPublishedPercent": -13.77,
+    "currentVsPublishedP95Percent": -12.43
+  },
+  {
+    "size": 500,
+    "workload": "Warm list ready",
+    "vue": {
+      "n": 20,
+      "median": 437.85,
+      "p95": 471.8,
+      "min": 409.7,
+      "max": 503.8
+    },
+    "published": {
+      "n": 20,
+      "median": 340.6,
+      "p95": 377.1,
+      "min": 323.4,
+      "max": 386.5
+    },
+    "current": {
+      "n": 20,
+      "median": 320.15,
+      "p95": 378.4,
+      "min": 296.9,
+      "max": 378.6
+    },
+    "currentVsPublishedPercent": -6.0,
+    "currentVsPublishedP95Percent": 0.34
+  },
+  {
+    "size": 500,
+    "workload": "First task",
+    "vue": {
+      "n": 20,
+      "median": 3719.43,
+      "p95": 4035.43,
+      "min": 3352.78,
+      "max": 4405.54
+    },
+    "published": {
+      "n": 20,
+      "median": 1295.65,
+      "p95": 1386.4,
+      "min": 1187.88,
+      "max": 1394.35
+    },
+    "current": {
+      "n": 20,
+      "median": 1035.77,
+      "p95": 1125.7,
+      "min": 989.79,
+      "max": 1216.54
+    },
+    "currentVsPublishedPercent": -20.06,
+    "currentVsPublishedP95Percent": -18.8
+  },
+  {
+    "size": 500,
+    "workload": "First editor",
+    "vue": {
+      "n": 20,
+      "median": 623.21,
+      "p95": 793.88,
+      "min": 572.79,
+      "max": 804.7
+    },
+    "published": {
+      "n": 20,
+      "median": 254.69,
+      "p95": 299.83,
+      "min": 213.86,
+      "max": 314.77
+    },
+    "current": {
+      "n": 20,
+      "median": 250.42,
+      "p95": 277.63,
+      "min": 209.68,
+      "max": 282.25
+    },
+    "currentVsPublishedPercent": -1.68,
+    "currentVsPublishedP95Percent": -7.4
+  },
+  {
+    "size": 500,
+    "workload": "First Kanban",
+    "vue": {
+      "n": 20,
+      "median": 410.1,
+      "p95": 529.42,
+      "min": 364.52,
+      "max": 687.32
+    },
+    "published": {
+      "n": 20,
+      "median": 334.87,
+      "p95": 368.59,
+      "min": 296.74,
+      "max": 377.36
+    },
+    "current": {
+      "n": 20,
+      "median": 322.96,
+      "p95": 360.57,
+      "min": 294.3,
+      "max": 360.7
+    },
+    "currentVsPublishedPercent": -3.56,
+    "currentVsPublishedP95Percent": -2.18
+  },
+  {
+    "size": 500,
+    "workload": "Repeated task open",
+    "vue": {
+      "n": 20,
+      "median": 3597.61,
+      "p95": 4270.05,
+      "min": 3155.55,
+      "max": 4707.55
+    },
+    "published": {
+      "n": 20,
+      "median": 1176.1,
+      "p95": 1307.19,
+      "min": 1044.53,
+      "max": 1372.89
+    },
+    "current": {
+      "n": 20,
+      "median": 909.35,
+      "p95": 960.07,
+      "min": 854.01,
+      "max": 996.42
+    },
+    "currentVsPublishedPercent": -22.68,
+    "currentVsPublishedP95Percent": -26.55
+  },
+  {
+    "size": 500,
+    "workload": "Edit/discard",
+    "vue": {
+      "n": 20,
+      "median": 703.96,
+      "p95": 772.99,
+      "min": 554.43,
+      "max": 789.26
+    },
+    "published": {
+      "n": 20,
+      "median": 242.12,
+      "p95": 337.25,
+      "min": 208.36,
+      "max": 348.62
+    },
+    "current": {
+      "n": 20,
+      "median": 231.3,
+      "p95": 307.56,
+      "min": 204.67,
+      "max": 315.56
+    },
+    "currentVsPublishedPercent": -4.47,
+    "currentVsPublishedP95Percent": -8.8
+  },
+  {
+    "size": 500,
+    "workload": "Search results",
+    "vue": {
+      "n": 20,
+      "median": 493.14,
+      "p95": 621.96,
+      "min": 427.27,
+      "max": 674.83
+    },
+    "published": {
+      "n": 20,
+      "median": 613.56,
+      "p95": 670.16,
+      "min": 550.44,
+      "max": 687.03
+    },
+    "current": {
+      "n": 20,
+      "median": 432.41,
+      "p95": 473.97,
+      "min": 407.14,
+      "max": 474.19
+    },
+    "currentVsPublishedPercent": -29.52,
+    "currentVsPublishedP95Percent": -29.28
+  },
+  {
+    "size": 500,
+    "workload": "Kanban ready",
+    "vue": {
+      "n": 20,
+      "median": 497.24,
+      "p95": 624.24,
+      "min": 412.18,
+      "max": 648.85
+    },
+    "published": {
+      "n": 20,
+      "median": 320.7,
+      "p95": 371.55,
+      "min": 260.79,
+      "max": 407.99
+    },
+    "current": {
+      "n": 20,
+      "median": 301.27,
+      "p95": 376.17,
+      "min": 239.2,
+      "max": 393.76
+    },
+    "currentVsPublishedPercent": -6.06,
+    "currentVsPublishedP95Percent": 1.24
+  },
+  {
+    "size": 500,
+    "workload": "Search input to publication",
+    "vue": {
+      "n": 20,
+      "median": 208.45,
+      "p95": 269.3,
+      "min": 194.4,
+      "max": 304.9
+    },
+    "published": {
+      "n": 20,
+      "median": 195.85,
+      "p95": 238.0,
+      "min": 167.8,
+      "max": 243.9
+    },
+    "current": {
+      "n": 20,
+      "median": 173.15,
+      "p95": 193.0,
+      "min": 159.2,
+      "max": 193.5
+    },
+    "currentVsPublishedPercent": -11.59,
+    "currentVsPublishedP95Percent": -18.91
+  },
+  {
+    "size": 500,
+    "workload": "Search publication to paint",
+    "vue": {
+      "n": 20,
+      "median": 12.75,
+      "p95": 22.1,
+      "min": 1.6,
+      "max": 103.2
+    },
+    "published": {
+      "n": 20,
+      "median": 86.9,
+      "p95": 109.6,
+      "min": 9.0,
+      "max": 123.6
+    },
+    "current": {
+      "n": 20,
+      "median": 24.45,
+      "p95": 30.9,
+      "min": 13.4,
+      "max": 31.3
+    },
+    "currentVsPublishedPercent": -71.86,
+    "currentVsPublishedP95Percent": -71.81
+  },
+  {
+    "size": 500,
+    "workload": "Search input to paint",
+    "vue": {
+      "n": 20,
+      "median": 221.25,
+      "p95": 326.2,
+      "min": 200.7,
+      "max": 327.0
+    },
+    "published": {
+      "n": 20,
+      "median": 262.65,
+      "p95": 307.4,
+      "min": 235.6,
+      "max": 324.2
+    },
+    "current": {
+      "n": 20,
+      "median": 194.8,
+      "p95": 213.9,
+      "min": 176.0,
+      "max": 223.9
+    },
+    "currentVsPublishedPercent": -25.83,
+    "currentVsPublishedP95Percent": -30.42
+  }
+]

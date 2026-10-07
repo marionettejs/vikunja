@@ -5,9 +5,9 @@
 }
 
 .is-pulled-end {
-  float: right !important;
+  float: inline-end !important;
 }
 
 [dir="rtl"] .is-pulled-end {
-  float: left !important;
+  float: inline-start !important;
 }

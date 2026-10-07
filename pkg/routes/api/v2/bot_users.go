@@ -22,7 +22,6 @@ import (
 	"net/http"
 
 	"code.vikunja.io/api/pkg/models"
-	"code.vikunja.io/api/pkg/user"
 	"code.vikunja.io/api/pkg/web/handler"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -67,7 +66,7 @@ func RegisterBotUserRoutes(api huma.API) {
 	Register(api, huma.Operation{
 		OperationID: "bots-update",
 		Summary:     "Update a bot user",
-		Description: "Replaces an owned bot user's name, status, and username; status is required. Only the owner may update it. Use PATCH for a partial update.",
+		Description: "Updates an owned bot user's name, status, and username. Only the owner may update it. Use PATCH for a partial update.",
 		Method:      http.MethodPut,
 		Path:        "/user/bots/{bot}",
 		Tags:        tags,
@@ -137,18 +136,10 @@ func botUsersCreate(ctx context.Context, in *struct {
 	return &singleBody[models.BotUser]{Body: &in.Body}, nil
 }
 
-// botUserUpdateBody matches the read shape so AutoPatch's GET→PUT echo of
-// max_permission validates. Status is required: PUT replaces, and a zero
-// default would silently re-enable a disabled bot.
-type botUserUpdateBody struct {
-	models.BotUser
-	MaxPermission models.Permission `json:"max_permission" readOnly:"true"`
-	Status        user.Status       `json:"status" required:"true" valid:"bot_status" doc:"The bot's status: 0=active, 2=disabled."`
-}
-
+// Body matches the read shape so AutoPatch's GET→PUT echo of max_permission validates.
 func botUsersUpdate(ctx context.Context, in *struct {
 	ID   int64 `path:"bot"`
-	Body botUserUpdateBody
+	Body botUserReadBody
 }) (*singleBody[models.BotUser], error) {
 	a, err := authFromCtx(ctx)
 	if err != nil {
@@ -156,7 +147,6 @@ func botUsersUpdate(ctx context.Context, in *struct {
 	}
 	bot := &in.Body.BotUser
 	bot.ID = in.ID // URL wins over body
-	bot.Status = &in.Body.Status
 	if err := handler.DoUpdate(ctx, bot, a); err != nil {
 		return nil, translateDomainError(err)
 	}

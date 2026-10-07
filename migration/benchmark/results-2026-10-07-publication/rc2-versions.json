@@ -1,0 +1,7 @@
+{
+  "marionette": "5.0.0-rc.2",
+  "@mnjs/adapters": "5.0.0-rc.2",
+  "@mnjs/data": "5.0.0-rc.2",
+  "@mnjs/radio": "5.0.0-rc.2",
+  "@mnjs/utils": "5.0.0-rc.2"
+}

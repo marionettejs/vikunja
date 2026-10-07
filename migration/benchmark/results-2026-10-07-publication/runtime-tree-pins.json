@@ -1,0 +1,34 @@
+{
+  "LICENSE": {
+    "frozen": "be3f7b28e564e7dd05eaf59d64adba1a4065ac0e",
+    "upstream": "be3f7b28e564e7dd05eaf59d64adba1a4065ac0e"
+  },
+  "pkg/license": {
+    "frozen": "755c03aa7050c6266f3fc45727129ed6bde01c07",
+    "upstream": "755c03aa7050c6266f3fc45727129ed6bde01c07"
+  },
+  "pkg": {
+    "frozen": "a06b133bfc68b9c34d61711938d54d4304e1d076",
+    "upstream": "a06b133bfc68b9c34d61711938d54d4304e1d076"
+  },
+  "go.mod": {
+    "frozen": "f13d62ac850ef6c37ad3bd2a1445c35fb087d330",
+    "upstream": "f13d62ac850ef6c37ad3bd2a1445c35fb087d330"
+  },
+  "go.sum": {
+    "frozen": "e7aa4f44cb229c98eaa4d2ac28d16097d2173236",
+    "upstream": "e7aa4f44cb229c98eaa4d2ac28d16097d2173236"
+  },
+  "magefile.go": {
+    "frozen": "3ae24b34e6902f43775d119d067bedab1c9495f5",
+    "upstream": "3ae24b34e6902f43775d119d067bedab1c9495f5"
+  },
+  "frontend": {
+    "frozen": "50662d98588496fcc100d19b9b0412a84ed9ab05",
+    "upstream": "7c15706aa02e31bd19448040c6b3f8c9da10ecc9"
+  },
+  "frontend/vite.config.ts": {
+    "frozen": "70cdb8e4f7998fa05dc07754d60330361b89e22e",
+    "upstream": "08475e84637151d6d610bf792b0359e90c1fa3fe"
+  }
+}

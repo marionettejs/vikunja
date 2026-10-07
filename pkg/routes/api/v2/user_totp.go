@@ -22,7 +22,6 @@ import (
 
 	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/db"
-	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/user"
 
@@ -201,7 +200,6 @@ func totpEnable(ctx context.Context, in *totpEnableBody) (*totpMessageBody, erro
 		return nil, err
 	}
 	defer s.Close()
-	defer events.CleanupPending(s)
 
 	if err := user.EnableTOTP(s, &user.TOTPPasscode{User: u, Passcode: in.Body.Passcode}); err != nil {
 		_ = s.Rollback()
@@ -214,7 +212,6 @@ func totpEnable(ctx context.Context, in *totpEnableBody) (*totpMessageBody, erro
 	if err := s.Commit(); err != nil {
 		return nil, translateDomainError(err)
 	}
-	events.DispatchPending(ctx, s)
 	return &totpMessageBody{Body: models.Message{Message: "TOTP was enabled successfully."}}, nil
 }
 

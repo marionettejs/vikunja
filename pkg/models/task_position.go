@@ -400,9 +400,6 @@ func RecalculateTaskPositions(s *xorm.Session, view *ProjectView, a web.Auth) (e
 	if err != nil {
 		return err
 	}
-	if len(projects) == 0 {
-		return nil
-	}
 
 	for _, p := range projects {
 		opts.projectIDs = append(opts.projectIDs, p.ID)

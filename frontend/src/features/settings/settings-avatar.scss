@@ -1,0 +1,32 @@
+.native-avatar-settings {
+  label.radio {
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1.25;
+    position: relative;
+    input {
+      cursor: pointer;
+    }
+    &:hover {
+      color: var(--input-hover-color);
+    }
+    & + .radio {
+      margin-inline-start: 0.5em;
+    }
+  }
+  .avatar-cropper {
+    block-size: 80vh;
+    background: var(--white);
+    img {
+      display: block;
+      max-inline-size: 100%;
+    }
+  }
+  .message.info {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--primary);
+    background: hsla(var(--primary-hsl), 0.05);
+    color: var(--text);
+    border-radius: 4px;
+  }
+}

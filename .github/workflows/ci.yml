@@ -7,10 +7,9 @@ on:
   pull_request:
   merge_group:
   push:
-    tags:
-      - v*
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
   # main merges use a unique run_id so they don't cancel each other
@@ -24,12 +23,4 @@ jobs:
   test:
     name: Test
     uses: ./.github/workflows/test.yml
-    secrets: inherit
-
-  release:
-    name: Release
-    if: ${{ github.ref_type == 'tag' || github.ref_name == 'main' }}
-    uses: ./.github/workflows/release.yml
-    needs:
-      - test
     secrets: inherit

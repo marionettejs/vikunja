@@ -50,9 +50,6 @@ test.describe('Related tasks quick add magic', () => {
 		await page.goto(`/tasks/${parent.id}`)
 		const input = await openRelatedTasksForm(page)
 		await input.fill('Important work !4')
-		const createOption = relationSearchResults(page).and(page.locator('.is-create-option'))
-		await expect(createOption.locator('.search-result')).toHaveText('Important work !4')
-		await expect(createOption.locator('.hint-text')).toHaveText('Add this as related task')
 		await input.press('Enter')
 
 		const relatedTaskLink = page.locator('.task-relations .related-tasks .task a').filter({hasText: 'Important work'})
@@ -140,7 +137,7 @@ test.describe('Related tasks quick add magic', () => {
 	test('Keeps the title literal when quick add magic is disabled', async ({page, apiContext}) => {
 		const user = (await UserFactory.create(1, {
 			frontend_settings: JSON.stringify({
-				quick_add_magic_mode: 'disabled',
+				quickAddMagicMode: 'disabled',
 			}),
 		}))[0]
 		const project = (await ProjectFactory.create(1, {id: 1, title: 'Project A', owner_id: user.id}))[0]

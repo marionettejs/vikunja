@@ -22,7 +22,6 @@ import (
 	"net/http"
 
 	"code.vikunja.io/api/pkg/db"
-	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/log"
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/user"
@@ -102,7 +101,6 @@ func UserTOTPEnable(c *echo.Context) error {
 		return err
 	}
 	defer s.Close()
-	defer events.CleanupPending(s)
 
 	passcode := &user.TOTPPasscode{
 		User: u,
@@ -131,7 +129,6 @@ func UserTOTPEnable(c *echo.Context) error {
 		_ = s.Rollback()
 		return err
 	}
-	events.DispatchPending(c.Request().Context(), s)
 
 	return c.JSON(http.StatusOK, models.Message{Message: "TOTP was enabled successfully."})
 }

@@ -1,14 +1,17 @@
 import {getFullBaseUrl} from './helpers/getFullBaseUrl'
 
+import type {PrecacheEntry} from 'workbox-precaching'
+
 declare let self: ServiceWorkerGlobalScope & {
-	__precacheManifest?: Parameters<typeof precacheAndRoute>[0],
+ __WB_MANIFEST: (PrecacheEntry | string)[]
+ __precacheManifest?: (PrecacheEntry | string)[]
 }
 declare const workbox: {
-	core: typeof import('workbox-core'),
-	routing: typeof import('workbox-routing'),
-	strategies: typeof import('workbox-strategies'),
-	precaching: typeof import('workbox-precaching'),
-	setConfig(options: {modulePathPrefix: string}): void,
+ setConfig(config: {modulePathPrefix: string}): void
+ core: typeof import('workbox-core')
+ routing: typeof import('workbox-routing')
+ strategies: typeof import('workbox-strategies')
+ precaching: typeof import('workbox-precaching')
 }
 declare const __WORKBOX_VERSION__: string
 

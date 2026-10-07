@@ -18,7 +18,6 @@ package models
 
 import (
 	"sort"
-	"strconv"
 	"testing"
 	"time"
 
@@ -2087,7 +2086,8 @@ func TestTaskCollection_ExpandSubtasksPaginatesRoots(t *testing.T) {
 	u := &user.User{ID: 1}
 
 	project := &Project{Title: "pagination-roots", OwnerID: u.ID}
-	insertTestProject(t, s, project)
+	_, err := s.Insert(project)
+	require.NoError(t, err)
 
 	// 40 top-level tasks
 	topLevel := make([]*Task, 0, 40)
@@ -2098,7 +2098,7 @@ func TestTaskCollection_ExpandSubtasksPaginatesRoots(t *testing.T) {
 			CreatedByID: u.ID,
 			Index:       int64(i),
 		}
-		_, err := s.Insert(task)
+		_, err = s.Insert(task)
 		require.NoError(t, err)
 		topLevel = append(topLevel, task)
 	}
@@ -2112,7 +2112,7 @@ func TestTaskCollection_ExpandSubtasksPaginatesRoots(t *testing.T) {
 			CreatedByID: u.ID,
 			Index:       int64(41 + i),
 		}
-		_, err := s.Insert(sub)
+		_, err = s.Insert(sub)
 		require.NoError(t, err)
 
 		rel := &TaskRelation{
@@ -2242,7 +2242,8 @@ func setupSubtaskExpansionFixture(t *testing.T, u *user.User, title string, appl
 	defer s.Close()
 
 	project = &Project{Title: title, OwnerID: u.ID}
-	insertTestProject(t, s, project)
+	_, err := s.Insert(project)
+	require.NoError(t, err)
 
 	parent = &Task{Title: "parent", ProjectID: project.ID, CreatedByID: u.ID, Index: 1}
 	sub = &Task{Title: "sub", ProjectID: project.ID, CreatedByID: u.ID, Index: 2}
@@ -2250,7 +2251,7 @@ func setupSubtaskExpansionFixture(t *testing.T, u *user.User, title string, appl
 		apply(parent, sub)
 	}
 
-	_, err := s.Insert(parent)
+	_, err = s.Insert(parent)
 	require.NoError(t, err)
 	_, err = s.Insert(sub)
 	require.NoError(t, err)
@@ -2482,10 +2483,11 @@ func TestTaskCollection_ExpandSubtasksMultiParentCrossScope(t *testing.T) {
 	defer s.Close()
 
 	otherProject := &Project{Title: "multi-parent-out-of-scope", OwnerID: u.ID}
-	insertTestProject(t, s, otherProject)
+	_, err := s.Insert(otherProject)
+	require.NoError(t, err)
 
 	otherParent := &Task{Title: "out of scope parent", ProjectID: otherProject.ID, CreatedByID: u.ID, Index: 1}
-	_, err := s.Insert(otherParent)
+	_, err = s.Insert(otherParent)
 	require.NoError(t, err)
 
 	rel := &TaskRelation{TaskID: otherParent.ID, OtherTaskID: sub.ID, RelationKind: RelationKindSubtask}
@@ -2559,58 +2561,4 @@ func TestTaskCollection_DateFilterTimezoneBoundary(t *testing.T) {
 		}
 	}
 	assert.Truef(t, found, "task due %s (one hour before local midnight) should match", task.DueDate)
-}
-
-// TestTaskCollection_SavedFilterIncludeNulls guards #4009: the gantt view of a saved
-// filter sends filter_include_nulls to show dateless tasks. It must apply to the gantt's
-// date filter, but not leak into the saved filter's own conditions.
-func TestTaskCollection_SavedFilterIncludeNulls(t *testing.T) {
-	db.LoadAndAssertFixtures(t)
-	u := &user.User{ID: 1}
-
-	s := db.NewSession()
-	defer s.Close()
-
-	project := &Project{Title: "gantt saved filter", OwnerID: u.ID}
-	insertTestProject(t, s, project)
-
-	dated := &Task{Title: "dated", ProjectID: project.ID, CreatedByID: u.ID, Index: 1,
-		StartDate: time.Date(2020, 6, 1, 0, 0, 0, 0, time.UTC),
-		EndDate:   time.Date(2020, 6, 10, 0, 0, 0, 0, time.UTC)}
-	dateless := &Task{Title: "dateless", ProjectID: project.ID, CreatedByID: u.ID, Index: 2}
-	unassigned := &Task{Title: "dateless unassigned", ProjectID: project.ID, CreatedByID: u.ID, Index: 3}
-	for _, task := range []*Task{dated, dateless, unassigned} {
-		_, err := s.Insert(task)
-		require.NoError(t, err)
-	}
-	for _, task := range []*Task{dated, dateless} {
-		_, err := s.Insert(&TaskAssginee{TaskID: task.ID, UserID: u.ID})
-		require.NoError(t, err)
-	}
-
-	sf := &SavedFilter{
-		Title: "assigned to me",
-		Filters: &TaskCollection{
-			Filter: "done = false && project = " + strconv.FormatInt(project.ID, 10) + " && assignees in user1",
-		},
-	}
-	require.NoError(t, sf.Create(s, u))
-	require.NoError(t, s.Commit())
-
-	s2 := db.NewSession()
-	defer s2.Close()
-
-	tc := &TaskCollection{
-		ProjectID:          getProjectIDFromSavedFilterID(sf.ID),
-		Filter:             "(start_date >= '2020-01-01T00:00:00' && start_date <= '2020-12-31T00:00:00') || (end_date >= '2020-01-01T00:00:00' && end_date <= '2020-12-31T00:00:00')",
-		FilterIncludeNulls: true,
-	}
-	result, _, _, err := tc.ReadAll(s2, u, "", 1, 50)
-	require.NoError(t, err)
-
-	ids := []int64{}
-	for _, task := range result.([]*Task) {
-		ids = append(ids, task.ID)
-	}
-	assert.ElementsMatch(t, []int64{dated.ID, dateless.ID}, ids)
 }

@@ -1,0 +1,323 @@
+.native-comments {
+
+.media {
+	align-items: flex-start;
+	display: flex;
+	text-align: inherit;
+	padding-block-start: .5rem;
+
+	& + .media {
+		margin-block-start: .5rem;
+	}
+}
+
+.media-left {
+	flex-basis: auto;
+	flex-grow: 0;
+	flex-shrink: 0;
+	margin: 0 .5rem !important;
+}
+
+.comment-info {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+
+	img {
+		@media screen and (max-width: $tablet) {
+			display: block;
+			inline-size: 20px;
+			block-size: 20px;
+			padding-inline-end: 0;
+			margin-inline-end: .5rem;
+		}
+
+		@media screen and (min-width: $tablet) {
+			display: none;
+		}
+	}
+
+
+	span,
+	.comment-permalink {
+		font-size: .75rem;
+		line-height: 1;
+	}
+
+	.comment-permalink {
+		font-size: 1rem;
+		border: 1px solid transparent;
+		padding: 0.25rem;
+		border-radius: 1rem;
+		color: var(--grey, hsl(0, 0%, 48%));
+	}
+	.comment-permalink:hover {
+		color: var(--grey-dark, hsl(0, 0%, 29%));
+		border-color: var(--grey-dark, hsl(0, 0%, 29%));
+	}
+}
+
+.image.is-avatar {
+	border-radius: 100%;
+}
+
+.media-content {
+	flex-basis: auto;
+	flex-grow: 1;
+	flex-shrink: 1;
+	text-align: inherit;
+	inline-size: calc(100% - 48px - 2rem);
+}
+
+.comments-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.comment-sort-button {
+	font-size: .75rem;
+	font-weight: normal;
+	color: var(--grey-500);
+	display: inline-flex;
+	align-items: center;
+	gap: .25rem;
+
+	&:hover {
+		color: var(--grey-700);
+	}
+}
+
+.comments {
+	display: flex;
+	flex-direction: column;
+}
+
+.new-comment-top {
+	order: -1;
+}
+
+.comments-container {
+	scroll-margin-block-start: 4rem;
+}
+
+.media.comment {
+	scroll-margin-block-start: 4rem;
+	transition: background-color .3s ease-out;
+	border-radius: $radius;
+}
+
+.media.comment.comment-highlight {
+	background-color: hsla(var(--primary-hsl), 0.18);
+	transition: background-color .15s ease-in;
+}
+
+
+// Layout/scaffold rules ported from bulma-css-variables/sass/components/pagination.sass.
+// BasePagination only owns .pagination / .pagination-list / .pagination-ellipsis —
+// the actual pagination items (.pagination-previous / -next / -link) and their
+// styles live in PaginationItem.vue.
+
+.pagination {
+	align-items: center;
+	display: flex;
+	font-size: $size-normal;
+	justify-content: center;
+	margin: -0.25rem;
+	padding-block-end: 1rem;
+	text-align: center;
+}
+
+.pagination-list {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	text-align: center;
+
+	&, & li {
+		margin-block-start: 0;
+	}
+
+	li {
+		list-style: none;
+	}
+}
+
+.pagination-ellipsis {
+	appearance: none;
+	align-items: center;
+	border: 1px solid transparent;
+	border-radius: $radius;
+	box-shadow: none;
+	display: inline-flex;
+	font-size: 1em;
+	block-size: 2.5em;
+	justify-content: center;
+	line-height: 1.5;
+	margin: 0.25rem;
+	padding: calc(0.5em - 1px) 0.5em;
+	position: relative;
+	text-align: center;
+	vertical-align: top;
+
+	-webkit-touch-callout: none;
+	user-select: none;
+
+	color: var(--grey-light);
+	pointer-events: none;
+}
+
+@media screen and (max-width: $tablet - 1px) {
+	.pagination {
+		flex-wrap: wrap;
+	}
+
+	.pagination-list li {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+}
+
+@media screen and (min-width: $tablet), print {
+	.pagination-list {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+
+	.pagination-ellipsis {
+		margin-block: 0;
+	}
+
+	.pagination {
+		justify-content: space-between;
+		margin-block: 0;
+
+		&.is-centered {
+			.pagination-list {
+				justify-content: center;
+				order: 2;
+			}
+		}
+	}
+}
+
+
+// Rules ported from bulma-css-variables/sass/components/pagination.sass.
+// PaginationItem owns the .pagination-previous / .pagination-next /
+// .pagination-link markup, so scoped attributes attach directly to these
+// classes — no :deep() necessary.
+
+.pagination-previous,
+.pagination-next,
+.pagination-link {
+	appearance: none;
+	align-items: center;
+	border: 1px solid transparent;
+	border-radius: $radius;
+	box-shadow: none;
+	display: inline-flex;
+	font-size: 1em;
+	block-size: 2.5em;
+	justify-content: center;
+	line-height: 1.5;
+	margin: 0.25rem;
+	padding: calc(0.5em - 1px) 0.5em;
+	position: relative;
+	text-align: center;
+	vertical-align: top;
+
+	-webkit-touch-callout: none;
+	user-select: none;
+
+	&:focus,
+	&:active {
+		outline: none;
+	}
+
+	&[disabled],
+	&[aria-disabled='true'],
+	fieldset[disabled] & {
+		cursor: not-allowed;
+	}
+
+	border-color: var(--border);
+	color: var(--text-strong);
+	min-inline-size: 2.5em;
+
+	&:hover {
+		border-color: var(--link-hover-border);
+		color: var(--link-hover);
+	}
+
+	&:focus {
+		border-color: var(--link-focus-border);
+	}
+
+	&:active {
+		box-shadow: inset 0 1px 2px rgba($scheme-invert, 0.2);
+	}
+
+	&[disabled],
+	&[aria-disabled='true'] {
+		background-color: var(--border);
+		border-color: var(--border);
+		box-shadow: none;
+		color: var(--text-light);
+		opacity: 0.5;
+	}
+}
+
+.pagination-previous,
+.pagination-next {
+	padding-inline: 0.75em;
+	white-space: nowrap;
+
+	&:not([disabled], [aria-disabled='true']):hover {
+		background: $scheme-main;
+		cursor: pointer;
+	}
+}
+
+.pagination-link.is-current {
+	background-color: var(--link);
+	border-color: var(--link);
+	color: var(--link-invert);
+}
+
+@media screen and (max-width: $tablet - 1px) {
+	.pagination-previous,
+	.pagination-next {
+		flex-grow: 1;
+		flex-shrink: 1;
+	}
+}
+
+@media screen and (min-width: $tablet), print {
+	.pagination-previous,
+	.pagination-next,
+	.pagination-link {
+		margin-block: 0;
+	}
+
+	// BasePagination hardcodes `.is-centered`, so prev and next are flex-ordered
+	// around the centered page list (prev left, list middle, next right).
+	.pagination-previous {
+		order: 1;
+	}
+
+	.pagination-next {
+		order: 3;
+	}
+}
+
+
+// Unscoped: this rule relies on ancestors (.app-container.has-background /
+// .link-share-container.has-background) that live outside PaginationItem.
+// Previously lived in styles/theme/background.scss, then BasePagination.vue.
+.app-container.has-background .pagination-link:not(.is-current),
+.link-share-container.has-background .pagination-link:not(.is-current) {
+	background: var(--grey-100);
+}
+
+}

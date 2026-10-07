@@ -1,0 +1,101 @@
+.native-app .native-share-surface {
+  display: flow-root;
+  padding-block-start: 0.5rem;
+
+  .link-share-container.has-background .view {
+    background-color: transparent;
+    border: none;
+  }
+
+  .app-container-background {
+    pointer-events: none;
+  }
+
+  .logo {
+    display: block;
+    padding: 0;
+    max-inline-size: 300px;
+    inline-size: 90%;
+    margin: 1rem auto 2rem;
+    block-size: 100px;
+    max-block-size: 48px;
+  }
+
+  .share-logo {
+    max-inline-size: 168px;
+    max-block-size: 48px;
+  }
+  .menu-bottom-link {
+    color: var(--grey-300);
+    text-align: center;
+    display: block;
+    padding-block: 1rem;
+    font-size: 0.8rem;
+  }
+  .link-share-view > .view > .card-content {
+    padding: 0;
+  }
+  .link-share-view > .view {
+    margin-inline: 0.5rem;
+  }
+  .native-list-body > .card {
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+  .native-list-body > .card > .card-content.p-0 {
+    padding: 1.5rem;
+  }
+  .title {
+    text-shadow: 0 0 1rem var(--white);
+  }
+
+  .project-title-button {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    text-decoration: none !important;
+
+    &:hover .clickable-title {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+
+  .clickable-title {
+    text-shadow: 0 0 1rem var(--white);
+    margin: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .link-share-view {
+    inline-size: 100%;
+    max-inline-size: $desktop;
+    margin: 0 auto;
+  }
+
+  .link-share-container.link-share-is-fullwidth {
+    .link-share-view {
+      max-inline-size: 100vw;
+    }
+  }
+
+  .link-share-container:not(.has-background) {
+    .loader-container,
+    .gantt-chart-container > .card {
+      box-shadow: none !important;
+      border: none;
+
+      .task-add {
+        padding: 1rem 0 0;
+      }
+    }
+  }
+}
+.native-share-auth [hidden],
+.native-share-surface [hidden] {
+  display: none !important;
+}

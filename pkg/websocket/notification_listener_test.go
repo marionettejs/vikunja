@@ -33,14 +33,14 @@ import (
 	"xorm.io/xorm"
 )
 
-// Only some tests need a database, so the engine is built lazily instead of in
+// Only this test needs a database, so the engine is built lazily instead of in
 // TestMain where it would slow down every other test in the package.
-var dbOnce sync.Once
+var notificationListenerDBOnce sync.Once
 
 // Fixtures: project 3 is shared with user1 directly and via team 1.
 func TestNotificationListener(t *testing.T) {
 	t.Run("pushes a notification about a project the user can still read", func(t *testing.T) {
-		s := setupDBTest(t)
+		s := setupNotificationListenerTest(t)
 		InitHub()
 		conn := notificationConn(1)
 		GetHub().Register(conn)
@@ -57,7 +57,7 @@ func TestNotificationListener(t *testing.T) {
 	})
 
 	t.Run("does not push once project access is revoked", func(t *testing.T) {
-		s := setupDBTest(t)
+		s := setupNotificationListenerTest(t)
 		InitHub()
 		conn := notificationConn(1)
 		GetHub().Register(conn)
@@ -70,9 +70,9 @@ func TestNotificationListener(t *testing.T) {
 	})
 }
 
-func setupDBTest(t *testing.T) *xorm.Session {
+func setupNotificationListenerTest(t *testing.T) *xorm.Session {
 	t.Helper()
-	dbOnce.Do(func() {
+	notificationListenerDBOnce.Do(func() {
 		// The fixture loader cleans every registered table, so files and users
 		// have to be set up before models.
 		files.InitTests()

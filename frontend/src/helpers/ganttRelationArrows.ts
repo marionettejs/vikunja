@@ -1,4 +1,4 @@
-import type {TaskResponse} from '@/client/queries/tasks'
+import type {ITask} from '@/modelTypes/ITask'
 
 export interface GanttBarPosition {
 	x: number       // left edge x position
@@ -28,7 +28,7 @@ const ARROW_COLORS: Record<string, string> = {
  * Only processes `blocking` and `precedes` directions to avoid duplicates.
  */
 export function buildRelationArrows(
-	tasks: Map<number, TaskResponse>,
+	tasks: Map<number, ITask>,
 	positions: Map<number, GanttBarPosition>,
 	hiddenToAncestor: Map<number, number>,
 ): GanttArrow[] {
@@ -39,7 +39,7 @@ export function buildRelationArrows(
 		const sourceKinds = ['blocking', 'precedes'] as const
 
 		for (const kind of sourceKinds) {
-			const relatedTasks = task.related_tasks[kind] ?? []
+			const relatedTasks = task.relatedTasks?.[kind] ?? []
 
 			for (const related of relatedTasks) {
 				let fromId = taskId

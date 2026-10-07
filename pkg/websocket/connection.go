@@ -19,7 +19,6 @@ package websocket
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"sync"
 	"time"
 
@@ -36,8 +35,6 @@ const (
 	sendBufSize  = 64
 )
 
-var checkUserTokenSession = auth.CheckUserTokenSession
-
 // Connection wraps a single WebSocket connection.
 type Connection struct {
 	ws  *websocket.Conn
@@ -45,10 +42,8 @@ type Connection struct {
 
 	mu            sync.RWMutex
 	userID        int64
-	sessionID     string
 	authenticated bool
 	subscriptions map[string]bool
-	expiryTimer   *time.Timer
 
 	send chan OutgoingMessage
 }
@@ -99,27 +94,10 @@ func (c *Connection) UserID() int64 {
 	return c.userID
 }
 
-func (c *Connection) SessionID() string {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-	return c.sessionID
-}
-
-func (c *Connection) close(reason string) {
-	go func() {
-		_ = c.ws.Close(websocket.StatusPolicyViolation, reason)
-	}()
-}
-
 // ReadLoop reads messages from the WebSocket and handles auth/subscribe/unsubscribe.
 func (c *Connection) ReadLoop(ctx context.Context, cancel context.CancelFunc) {
 	defer func() {
 		cancel()
-		c.mu.Lock()
-		if c.expiryTimer != nil {
-			c.expiryTimer.Stop()
-		}
-		c.mu.Unlock()
 		if c.IsAuthenticated() {
 			c.hub.Unregister(c)
 		}
@@ -188,86 +166,36 @@ func (c *Connection) handleMessage(ctx context.Context, msg IncomingMessage) boo
 }
 
 func (c *Connection) handleAuth(ctx context.Context, token string) bool {
-	claims, err := auth.ParseUserToken(token)
+	if c.IsAuthenticated() {
+		c.sendError("already_authenticated", "")
+		return true
+	}
+
+	userID, err := auth.GetUserIDFromToken(token)
 	if err != nil {
-		c.failAuth(ctx, err)
+		log.Debugf("WebSocket: auth failed: %v", err)
+		// Write the error directly to the websocket since ReadLoop will close the
+		// connection immediately after we return false, before WriteLoop can drain the channel.
+		c.writeMessageDirect(ctx, OutgoingMessage{Error: "invalid_token"})
 		return false
 	}
 
-	if c.IsAuthenticated() {
-		return c.reauth(ctx, claims)
-	}
-
-	userID := claims.UserID
 	c.mu.Lock()
 	c.userID = userID
-	c.sessionID = claims.SessionID
 	c.authenticated = true
-	c.expiryTimer = c.expireAt(claims.ExpiresAt)
 	c.mu.Unlock()
 
-	// After Register, so a concurrent revocation can't slip between check and registration.
 	c.hub.Register(c)
-	if err := checkUserTokenSession(claims); err != nil {
-		c.failAuth(ctx, err)
-		return false
-	}
 
-	c.sendAuthSuccess()
-	log.Debugf("WebSocket: user %d authenticated", userID)
-	return true
-}
-
-// Switching sessions would escape DisconnectSession, which matches on the session the socket registered with.
-func (c *Connection) reauth(ctx context.Context, claims *auth.UserTokenClaims) bool {
-	if claims.UserID != c.UserID() || claims.SessionID != c.SessionID() {
-		c.failAuth(ctx, auth.ErrUserTokenRejected)
-		return false
-	}
-	if err := checkUserTokenSession(claims); err != nil {
-		c.failAuth(ctx, err)
-		return false
-	}
-
-	c.mu.Lock()
-	// A fired timer is already closing the socket.
-	if !c.expiryTimer.Stop() {
-		c.mu.Unlock()
-		return false
-	}
-	c.expiryTimer = c.expireAt(claims.ExpiresAt)
-	c.mu.Unlock()
-
-	c.sendAuthSuccess()
-	log.Debugf("WebSocket: user %d re-authenticated", claims.UserID)
-	return true
-}
-
-// Revocation events may not reach this node.
-func (c *Connection) expireAt(exp time.Time) *time.Timer {
-	return time.AfterFunc(time.Until(exp), func() {
-		c.close("token expired")
-	})
-}
-
-func (c *Connection) sendAuthSuccess() {
+	// Send auth success
 	select {
 	case c.send <- OutgoingMessage{Action: ActionAuthSuccess, Success: true}:
 	default:
-		log.Warningf("WebSocket: send buffer full for user %d", c.UserID())
+		log.Warningf("WebSocket: send buffer full for user %d", userID)
 	}
-}
 
-// failAuth sends invalid_token only when retrying cannot help; the client stops reconnecting on it.
-func (c *Connection) failAuth(ctx context.Context, err error) {
-	if !errors.Is(err, auth.ErrUserTokenRejected) {
-		log.Errorf("WebSocket: could not validate token: %v", err)
-		_ = c.ws.Close(websocket.StatusTryAgainLater, "")
-		return
-	}
-	log.Debugf("WebSocket: auth failed: %v", err)
-	// Written directly: ReadLoop closes the connection before WriteLoop could drain the channel.
-	c.writeMessageDirect(ctx, OutgoingMessage{Error: "invalid_token"})
+	log.Debugf("WebSocket: user %d authenticated", userID)
+	return true
 }
 
 // writeMessageDirect writes a message directly to the websocket, bypassing the send channel.

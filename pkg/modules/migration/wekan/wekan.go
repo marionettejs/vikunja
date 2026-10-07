@@ -385,7 +385,9 @@ func (m *Migrator) Migrate(user *user.User, file io.ReaderAt, size int64) error 
 		return &migration.ErrFileIsEmpty{}
 	}
 
-	board, err := parseWekanJSON(io.NewSectionReader(file, 0, size))
+	fr := io.NewSectionReader(file, 0, size)
+
+	board, err := parseWekanJSON(fr)
 	if err != nil {
 		return err
 	}

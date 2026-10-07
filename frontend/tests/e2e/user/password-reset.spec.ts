@@ -1,4 +1,3 @@
-import {setupApiUrl} from '../../support/authenticateUser'
 import {test, expect} from '../../support/fixtures'
 import {UserFactory, type UserAttributes} from '../../factories/user'
 import {TokenFactory, type TokenAttributes} from '../../factories/token'
@@ -7,7 +6,6 @@ test.describe('Password Reset', () => {
 	let user: UserAttributes
 
 	test.beforeEach(async ({page, apiContext}) => {
-		await setupApiUrl(page)
 		const users = await UserFactory.create(1)
 		user = users[0] as UserAttributes
 	})
@@ -43,7 +41,7 @@ test.describe('Password Reset', () => {
 		await page.locator('input[id=password]').fill(newPassword)
 		await page.locator('button').filter({hasText: 'Reset your password'}).click()
 
-		await expect(page.locator('.message')).toContainText('Invalid password reset token.')
+		await expect(page.locator('.message')).toContainText('Invalid token')
 	})
 
 	test('Should redirect to login if no token is present in query param when visiting /password-reset directly', async ({page, apiContext}) => {

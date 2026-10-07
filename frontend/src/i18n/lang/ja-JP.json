@@ -1352,6 +1352,10 @@
 			"newTeam": "新しいチームの作成"
 		}
 	},
+	"date": {
+		"altFormatLong": "Y/n/j H:i",
+		"altFormatShort": "Y/n/j"
+	},
 	"reaction": {
 		"reactedWith": "{user}が{value}でリアクションしました",
 		"reactedWithAnd": "{users}, {lastUser}が{value}でリアクションしました",

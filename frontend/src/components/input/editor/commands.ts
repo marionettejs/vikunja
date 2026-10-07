@@ -4,11 +4,11 @@ import Suggestion, {type SuggestionOptions} from '@tiptap/suggestion'
 
 // Copied and adjusted from https://github.com/ueberdosis/tiptap/tree/252acb32d27a0f9af14813eeed83d8a50059a43a/demos/src/Experiments/Commands/Vue
 
-export interface CommandProps {
+interface CommandProps {
 	command: (params: {editor: Editor, range: Range}) => void
 }
 
-export default Extension.create<{suggestion: Omit<SuggestionOptions<CommandProps>, 'editor'>}>({
+export default Extension.create<{suggestion: Partial<SuggestionOptions<CommandProps, CommandProps>>}>({
 	name: 'slash-menu-commands',
 
 	addOptions() {

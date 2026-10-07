@@ -248,7 +248,6 @@ func (w *Webhook) ReadAll(s *xorm.Session, a web.Auth, _ string, page int, perPa
 
 	ws := []*Webhook{}
 	err = s.Where(listCond).
-		OrderBy("id ASC").
 		Limit(getLimitFromPageIndex(page, perPage)).
 		Find(&ws)
 	if err != nil {

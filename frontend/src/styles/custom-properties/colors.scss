@@ -23,7 +23,7 @@
   --border-light: #ededed;
   --border-light-hover: #b5b5b5;
   --text: #4a4a4a;
-  --text-invert: #fff;
+  --text-invert: #ffffff;
   --text-light: #7a7a7a;
   --text-strong: #363636;
   --code: #da1039;
@@ -76,7 +76,7 @@
   --dark-a: 1;
   --dark: hsla(var(--dark-h), var(--dark-s), var(--dark-l), var(--dark-a));
   --dark-invert-l: 100%;
-  --dark-invert: #fff;
+  --dark-invert: #ffffff;
   --dark-light-l: 96%;
   --dark-light: hsla(var(--dark-h), var(--dark-s), var(--dark-light-l), var(--dark-a));
   --dark-dark-l: 54%;
@@ -87,7 +87,7 @@
   //--primary-a: 1;
   //--primary: hsla(var(--primary-h), var(--primary-s), var(--primary-l), var(--primary-a));
   --primary-invert-l: 100%;
-  --primary-invert: #fff;
+  --primary-invert: #ffffff;
   --primary-light-l: 96%;
   --primary-light: hsla(var(--primary-h), var(--primary-s), var(--primary-light-l), var(--primary-a));
   --primary-dark-l: 29%;
@@ -98,7 +98,7 @@
   --link-a: 1;
   //--link: hsla(var(--link-h), var(--link-s), var(--link-l), var(--link-a));
   --link-invert-l: 100%;
-  --link-invert: #fff;
+  --link-invert: #ffffff;
   --link-light-l: 96%;
   --link-light: hsla(var(--link-h), var(--link-s), var(--link-light-l), var(--link-a));
   --link-dark-l: 47%;
@@ -109,7 +109,7 @@
   --info-a: 1;
   --info: hsla(var(--info-h), var(--info-s), var(--info-l), var(--info-a));
   --info-invert-l: 100%;
-  --info-invert: #fff;
+  --info-invert: #ffffff;
   --info-light-l: 96%;
   --info-light: hsla(var(--info-h), var(--info-s), var(--info-light-l), var(--info-a));
   --info-dark-l: 41%;
@@ -120,7 +120,7 @@
   //--success-a: 1;
   //--success: hsla(var(--success-h), var(--success-s), var(--success-l), var(--success-a));
   --success-invert-l: 100%;
-  --success-invert: #fff;
+  --success-invert: #ffffff;
   --success-light-l: 96%;
   --success-light: hsla(var(--success-h), var(--success-s), var(--success-light-l), var(--success-a));
   --success-dark-l: 31%;
@@ -142,7 +142,7 @@
   //--danger-a: 1;
   //--danger: hsla(var(--danger-h), var(--danger-s), var(--danger-l), var(--danger-a));
   --danger-invert-l: 100%;
-  --danger-invert: #fff;
+  --danger-invert: #ffffff;
   --danger-light-l: 96%;
   --danger-light: hsla(var(--danger-h), var(--danger-s), var(--danger-light-l), var(--danger-a));
   --danger-dark-l: 43%;
@@ -203,14 +203,12 @@
   --grey-lighter: var(--grey-200);
   --grey-lightest: var(--grey-100);
   --input-border-color: var(--grey-200);
-
   --white-h: 0deg;
   --white-s: 0%;
   --white-l: 100%;
   --white-a: 1;
   --white: hsla(var(--white-h), var(--white-s), var(--white-l), var(--white-a));
   --white-translucent: hsla(var(--white-h), var(--white-s), var(--white-l), 0.75);
-
   --black-h: 0deg;
   --black-s: 0%;
   --black-l: 4%;
@@ -249,7 +247,6 @@
   --primary-a: 1;
   --primary-hsl: var(--primary-h), var(--primary-s), var(--primary-l);
   --primary: hsla(var(--primary-h), var(--primary-s), var(--primary-l), var(--primary-a));
-
   --link: var(--primary);
   --link-hover: hsla(var(--primary-h), var(--primary-s), var(--primary-l), .75);
   --border: var(--grey-200);
@@ -298,7 +295,7 @@
 
       // Text renders better in grey than black
       --text: var(--grey-800);
-      --text-invert: #000;
+      --text-invert: #000000;
       --text-light: var(--grey-300);
       --text-strong: var(--grey-900);
 
@@ -333,7 +330,6 @@
 
       // Bright values already pass contrast on dark backgrounds; skip the light-theme darkening
       --danger-text: var(--danger);
-
       --scheme-main-bis: var(--grey-100);
       --scheme-main-ter: var(--grey-100);
       --scheme-invert: var(--grey-900);

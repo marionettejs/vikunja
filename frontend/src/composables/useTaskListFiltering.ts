@@ -1,4 +1,4 @@
-import type {TaskResponse} from '@/client/queries/tasks'
+import type {ITask} from '@/modelTypes/ITask'
 
 /**
  * Determines if a task should be displayed in the List view.
@@ -12,17 +12,17 @@ import type {TaskResponse} from '@/client/queries/tasks'
  * @returns true if the task should be shown, false if it should be hidden
  */
 export function shouldShowTaskInListView(
-	task: TaskResponse,
-	allTasksInView: TaskResponse[],
+	task: ITask,
+	allTasksInView: ITask[],
 ): boolean {
 	// If task has no parent, always show it
-	const parentTasksCount = task.related_tasks.parenttask?.length ?? 0
+	const parentTasksCount = task.relatedTasks?.parenttask?.length ?? 0
 	if (parentTasksCount === 0) {
 		return true
 	}
 
 	// Task has parent(s) - only hide if parent is in the same view
-	const parentTasks = task.related_tasks.parenttask ?? []
+	const parentTasks = task.relatedTasks?.parenttask ?? []
 	const parentIds = parentTasks.map(p => p.id)
 	const hasParentInView = allTasksInView.some(t => parentIds.includes(t.id))
 

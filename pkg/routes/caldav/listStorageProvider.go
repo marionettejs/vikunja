@@ -1077,11 +1077,6 @@ func (vlra *VikunjaProjectResourceAdapter) IsCollection() bool {
 	return vlra.isCollection
 }
 
-// IsCalendar is false for the home sets, which only contain the project calendars.
-func (vlra *VikunjaProjectResourceAdapter) IsCalendar() bool {
-	return !vlra.isPrincipal
-}
-
 // CalculateEtag returns the etag of a resource
 func (vlra *VikunjaProjectResourceAdapter) CalculateEtag() string {
 

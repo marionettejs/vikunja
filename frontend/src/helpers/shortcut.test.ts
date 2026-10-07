@@ -411,8 +411,8 @@ function fireKeydown(code: string, mods: Partial<Pick<KeyboardEvent, 'ctrlKey' |
 describe('install / uninstall (sequence handling)', () => {
 	let elA: HTMLElement
 	let elB: HTMLElement
-	let clickA: ReturnType<typeof vi.fn<(event: MouseEvent) => void>>
-	let clickB: ReturnType<typeof vi.fn<(event: MouseEvent) => void>>
+	let clickA: ReturnType<typeof vi.fn<() => void>>
+	let clickB: ReturnType<typeof vi.fn<() => void>>
 
 	beforeEach(() => {
 		elA = document.createElement('button')

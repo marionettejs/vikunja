@@ -1,0 +1,8 @@
+{
+  "node": "24.19.0",
+  "chromium": "151.0.7922.173",
+  "installedPnpm": "11.19.0",
+  "declaredPnpm": "11.25.0",
+  "go": "1.27.0",
+  "note": "Actual browser from binary/raw profile, not synthetic153user-agent; package versions and frozen lock audited separately"
+}

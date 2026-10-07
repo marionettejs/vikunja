@@ -1,0 +1,254 @@
+.native-teams,
+.native-team-edit,
+.native-labels,
+.native-organization-create {
+  // Neutral frontend/src/views/teams/ListTeams.vue styles.
+
+  ul.teams {
+    padding: 0;
+    margin-block-start: 0;
+    margin-inline-start: 0;
+    border-radius: $radius;
+    overflow: hidden;
+
+    li {
+      list-style: none;
+      margin: 0;
+      border-inline-end: 1px solid var(--grey-200);
+
+      a {
+        color: var(--text);
+        display: block;
+        padding: 0.5rem 1rem;
+        transition: background-color $transition;
+
+        &:hover {
+          background: var(--grey-100);
+        }
+      }
+    }
+
+    li:last-child {
+      border-inline-end: none;
+    }
+  }
+
+  // Neutral frontend/src/views/teams/EditTeam.vue styles.
+
+  .card.is-fullwidth {
+    margin-block-end: 1rem;
+
+    .content {
+      padding: 0;
+    }
+  }
+
+  // Neutral frontend/src/views/labels/ListLabels.vue styles.
+
+  .label-edit-button {
+    border-radius: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    inline-size: 1rem;
+    block-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff; // always white
+    margin-inline-start: 0.25rem;
+
+    .icon {
+      block-size: 0.5rem;
+    }
+  }
+
+  // Neutral frontend/src/components/input/ColorPicker.vue styles.
+
+  .color-picker-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // reset / see https://stackoverflow.com/a/11471224/15522256
+    input[type="color"] {
+      appearance: none;
+      border: none;
+    }
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+    input[type="color"]::-webkit-color-swatch {
+      border: none;
+    }
+
+    $picker-size: 24px;
+    $border-width: 1px;
+    .picker {
+      display: grid;
+      inline-size: $picker-size;
+      block-size: $picker-size;
+      overflow: hidden;
+      border-radius: 100%;
+      border: $border-width solid var(--grey-300);
+      box-shadow: $shadow;
+
+      & > * {
+        grid-row: 1;
+        grid-column: 1;
+      }
+    }
+
+    input.picker__input {
+      padding: 0;
+      inline-size: $picker-size - 2 * $border-width;
+      block-size: $picker-size - 2 * $border-width;
+    }
+
+    .picker__input.is-empty {
+      opacity: 0;
+    }
+
+    .picker__pattern {
+      pointer-events: none;
+    }
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+  .has-horizontal-overflow {
+    overflow-x: auto;
+  }
+  .card-header-title {
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+  }
+  .card.is-fullwidth {
+    margin-block-end: 1rem;
+  }
+}
+@media print, screen and (max-width: $tablet) {
+  body:has(dialog[open].native-organization-create) #app {
+    display: block !important;
+  }
+}
+
+// FancyCheckbox.vue global checked-state rules also belong to these native controls.
+.native-team-edit,
+.native-organization-create {
+  .fancy-checkbox :not(input:checked) + .fancy-checkbox__icon path {
+    transition-delay: 0.05s;
+  }
+  .fancy-checkbox input:checked + .fancy-checkbox__icon {
+    path {
+      stroke-dashoffset: 60;
+    }
+    polyline {
+      stroke-dashoffset: 42;
+      transition-delay: 0.15s;
+    }
+  }
+}
+
+// Card.vue's header control is inside the modal content. Modal.vue's
+// fixed outer-close styles were scoped to its own control in the reference.
+.native-organization-create .card-header-icon.close {
+  position: static;
+  color: inherit;
+  font-size: inherit;
+  padding: 0.75rem 1rem;
+  transform: none;
+  align-items: center;
+  justify-content: center;
+}
+
+// User.vue styles for the existing Region-owned member user Views.
+.native-team-edit {
+
+.user {
+	display: flex;
+	justify-items: center;
+
+	&.is-inline {
+		display: inline-flex;
+	}
+}
+
+.avatar-wrapper {
+	position: relative;
+	display: inline-flex;
+	flex-shrink: 0;
+	margin-inline-end: .5rem;
+}
+
+.avatar {
+	inline-size: var(--avatar-size);
+	block-size: var(--avatar-size);
+	border-radius: 100%;
+	vertical-align: middle;
+}
+
+.bot-badge {
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline-start: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 40%;
+	block-size: 40%;
+	min-inline-size: 14px;
+	min-block-size: 14px;
+	max-inline-size: 22px;
+	max-block-size: 22px;
+	font-size: .65rem;
+	font-weight: 700;
+	line-height: 1;
+	color: var(--white);
+	background: var(--primary);
+	border: 2px solid var(--white);
+	border-radius: 100%;
+	text-transform: uppercase;
+	pointer-events: auto;
+}
+
+}
+
+// Multiselect.vue's inline container and input-wrapper rules also belong
+// to the team member search. SettingsSearchView's settings-only scope
+// does not supply them here.
+.native-team-edit .multiselect {
+  inline-size: 100%;
+  position: relative;
+  container-type: inline-size;
+
+  .input-wrapper {
+    padding: 0;
+    background: var(--white);
+    border-color: var(--grey-200);
+    flex-wrap: wrap;
+    block-size: auto;
+
+    &:hover {
+      border-color: var(--grey-300) !important;
+    }
+
+    .input {
+      display: flex;
+      max-inline-size: 100%;
+      inline-size: 100%;
+      align-items: center;
+      border: none !important;
+      background: transparent;
+      block-size: auto;
+
+      &::placeholder {
+        font-style: normal !important;
+      }
+    }
+
+    &:focus-within {
+      border-color: var(--primary) !important;
+      background: var(--white) !important;
+    }
+  }
+}

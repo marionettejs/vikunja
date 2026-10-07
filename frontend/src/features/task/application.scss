@@ -1,0 +1,384 @@
+
+.task-view-container {
+	// simulate sass lighten($primary, 30) by increasing lightness 30% to 73%
+	--primary-light: hsla(var(--primary-h), var(--primary-s), 73%, var(--primary-a));
+	padding-block-end: 0;
+
+	@media screen and (min-width: $desktop) {
+		padding-block-end: 1rem;
+	}
+}
+
+.task-view {
+	padding-block-start: 1rem;
+	padding-inline: .5rem;
+	background-color: var(--site-background);
+
+	@media screen and (min-width: $desktop) {
+		padding: 1rem;
+	}
+}
+
+.is-modal .task-view {
+	border-radius: $radius;
+	padding: 1rem;
+	color: var(--text);
+	background-color: var(--site-background) !important;
+
+	@media screen and (width <= calc(#{$desktop} + 1px)) {
+		border-radius: 0;
+	}
+}
+
+.task-view * {
+	transition: opacity 50ms ease;
+}
+
+.is-loading .task-view * {
+	opacity: 0;
+}
+
+
+.native-app .task-view-container {
+.subtitle {
+	color: var(--grey-500);
+	margin-block-end: 1rem;
+
+	a {
+		color: var(--grey-800);
+	}
+}
+
+h2 .button {
+	vertical-align: middle;
+}
+
+.icon.is-grey {
+	color: var(--grey-400);
+}
+
+.native-task-description .task-section-title .icon.is-grey,
+.native-comments .task-section-title .icon.is-grey {
+	color: inherit;
+}
+
+.date-input {
+	display: flex;
+	align-items: center;
+}
+
+.remove {
+	color: var(--danger);
+	vertical-align: middle;
+	padding-inline-start: .5rem;
+	line-height: 1;
+}
+
+.datepicker {
+	inline-size: 100%;
+
+	.show {
+		color: var(--text);
+		padding: .25rem .5rem;
+		transition: background-color $transition;
+		border-radius: $radius;
+		display: block;
+		margin: .1rem 0;
+		inline-size: 100%;
+		text-align: start;
+
+		&:hover {
+			background: var(--white);
+		}
+	}
+
+	&.disabled .show:hover {
+		background: transparent;
+	}
+}
+
+.details {
+	padding-block-end: 0.75rem;
+	flex-flow: row wrap;
+	margin-block-end: 0;
+
+	.detail-title {
+		display: block;
+		color: var(--grey-400);
+	}
+
+	.none {
+		font-style: italic;
+	}
+
+	// Break after the 2nd element
+	.column:nth-child(2n) {
+		page-break-after: always; // CSS 2.1 syntax
+		break-after: always; // New syntax
+	}
+
+}
+
+.details.labels-list,
+.assignees {
+	.multiselect {
+		.input-wrapper {
+			&:not(:focus-within, :hover) {
+				background: transparent;
+				border-color: transparent;
+			}
+		}
+	}
+}
+
+.details,
+.heading {
+	.input:not(.has-defaults),
+	.textarea,
+	.select:not(.has-defaults) select {
+		cursor: pointer;
+		transition: all $transition-duration;
+
+		&::placeholder {
+			color: var(--text-light);
+			opacity: 1;
+			font-style: italic;
+		}
+
+		&:not(:disabled) {
+			&:hover,
+			&:active,
+			&:focus {
+				background: var(--scheme-main);
+				border-color: var(--border);
+				cursor: text;
+			}
+
+			&:hover,
+			&:active {
+				cursor: text;
+				border-color: var(--link)
+			}
+		}
+	}
+
+	.select:not(.has-defaults):after {
+		opacity: 0;
+	}
+
+	.select:not(.has-defaults):hover:after {
+		opacity: 1;
+	}
+}
+
+.attachments {
+	margin-block-end: 0;
+
+	table tr:last-child td {
+		border-inline-end: none;
+	}
+}
+
+.action-buttons {
+	@media screen and (min-width: $tablet) {
+		position: sticky;
+		inset-block-start: $navbar-height + 1.5rem;
+		align-self: flex-start;
+	}
+
+	.button {
+		inline-size: 100%;
+		margin-block-end: .5rem;
+		justify-content: left;
+
+		&.has-light-text {
+			color: var(--white);
+		}
+
+		&.button--mark-done {
+			background-color: transparent;
+			box-shadow: none;
+
+			// bright brand green with fixed dark text passes contrast in both themes
+			&.is-pending {
+				background-color: var(--success);
+				color: hsl(215, 27.9%, 16.9%);
+
+				&:hover,
+				&:focus {
+					filter: brightness(1.05);
+				}
+			}
+		}
+	}
+}
+
+&.is-modal .action-buttons {
+	// we need same top margin for the modal close button 
+	@media screen and (min-width: $tablet) {
+		inset-block-start: 6.5rem;
+	}
+	// this is the moment when the fixed close button is outside the modal
+	// => we can fill up the space again
+	@media screen and (width >= calc(#{$desktop} + 84px)) {
+		inset-block-start: 0;
+	}
+}
+
+.checklist-summary {
+	padding-inline-start: .25rem;
+}
+
+.detail-content {
+	@media print {
+		inline-size: 100% !important;
+	}
+}
+
+.action-heading {
+	text-transform: uppercase;
+	color: var(--grey-700);
+	font-size: .75rem;
+	font-weight: 700;
+	margin: .5rem 0;
+	display: inline-block;
+}
+
+.scroll-to-comments-button {
+	position: fixed;
+	// Position above the keyboard shortcuts button (which is at bottom: calc(1rem - 4px))
+	inset-block-end: 2.5rem;
+	inset-inline-end: .75rem;
+	z-index: 10;
+	inline-size: 2rem;
+	block-size: 2rem;
+	border-radius: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	background-color: var(--site-background);
+	border: 1px solid var(--grey-300);
+	color: var(--grey-500);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	transition: all $transition;
+
+	&:hover {
+		background-color: var(--grey-100);
+		color: var(--grey-700);
+	}
+
+	@media screen and (max-width: $tablet) {
+		// Hide on mobile since keyboard shortcuts button is also hidden
+		display: none;
+	}
+}
+
+
+.task-view {
+	.heading {
+		display: flex;
+		justify-content: flex-start;
+		text-transform: none;
+		align-items: center;
+
+		@media screen and (max-width: $tablet) {
+			flex-direction: column;
+			align-items: start;
+		}
+	}
+
+	.title {
+		margin-block-end: 0;
+	}
+
+	.title.input {
+		// 1.8rem is the font-size, 1.125 is the line-height, .3rem padding everywhere, 1px border around the whole thing.
+		min-block-size: calc(1.8rem * 1.125 + .6rem + 2px);
+		margin-inline-end: 0;
+
+		@media screen and (max-width: $tablet) {
+			margin: 0 -.3rem .5rem; // the title has 0.3rem padding - this make the text inside of it align with the rest
+		}
+	}
+
+	.title.task-id {
+		color: var(--grey-400);
+		white-space: nowrap;
+	}
+
+
+	.close {
+		font-size: 2rem;
+		margin-inline-start: 0.5rem;
+		line-height: 1;
+
+		@media screen and (max-width: $tablet) {
+			display: none;
+		}
+
+		@media screen and (min-width: #{$desktop + 1px}) {
+			display: none;
+		}
+	}
+
+	.task-properties .close {
+		display: none;
+		position: absolute;
+		inset-inline-end: 1.25rem;
+		inset-block-start: 1.1rem;
+
+		@media screen and (max-width: $tablet) {
+			display: block;
+		}
+	}
+
+	.task-properties {
+		@media screen and (max-width: $tablet) {
+			flex-direction: row;
+		}
+	}
+
+	.color-bubble {
+		block-size: .75rem;
+		inline-size: .75rem;
+		display: inline-block;
+		border-radius: 100%;
+		flex-shrink: 0;
+	}
+	.is-done {
+		background: var(--success);
+		color: hsl(215, 27.9%, 16.9%);
+		padding: .5rem;
+		font-weight: bold;
+		line-height: 1;
+		border-radius: 4px;
+		text-align: center;
+	}
+}
+
+}
+.native-app .task-view [hidden] {display:none!important}
+
+// The shared Modal close color applies to its outer scrim button; the task
+// heading's mobile close control inherits the task text color in Vue.
+.native-task-dialog .task-properties .close {
+  color: var(--text);
+}
+
+.task-view-container .scroll-to-comments-button[hidden] {display:none !important;}
+.modal-content .scroll-to-comments-button {
+inset-block-end:.75rem;
+ inset-inline-end:1rem;
+}
+
+// Match the pinned mobile visibility despite shared BaseButton display rules.
+@media screen and (max-width: $tablet) {
+  .native-app .task-view-container .scroll-to-comments-button {display: none;}
+}
+
+.native-task-actions .created {
+  font-size: .75rem;
+  color: var(--text-muted);
+  text-align: end;
+}

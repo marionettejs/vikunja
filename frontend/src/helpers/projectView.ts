@@ -1,11 +1,13 @@
-export type ProjectViewSettings = Record<number, number>
+import type {IProject} from '@/modelTypes/IProject'
+
+export type ProjectViewSettings = Record<IProject['id'], number>
 
 const SETTINGS_KEY_PROJECT_VIEW = 'projectView'
 
 /**
  * Save the current project view to local storage
  */
-export function saveProjectView(projectId: number, viewId: number) {
+export function saveProjectView(projectId: IProject['id'], viewId: number) {
 	if (!projectId || !viewId) {
 		return
 	}
@@ -26,7 +28,7 @@ export function saveProjectView(projectId: number, viewId: number) {
 	localStorage.setItem(SETTINGS_KEY_PROJECT_VIEW, JSON.stringify(projectViewSettings))
 }
 
-export function getProjectViewId(projectId: number): number {
+export function getProjectViewId(projectId: IProject['id']): number {
 	const projectViewSettingsString = localStorage.getItem(SETTINGS_KEY_PROJECT_VIEW)
 	if (!projectViewSettingsString) {
 		return 0

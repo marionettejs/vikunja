@@ -1,0 +1,30 @@
+.native-app [data-notices] {
+  position: fixed;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 300px;
+  z-index: 9999;
+  padding: 0;
+
+  // Retained presentation from the pinned notification dependency; no Vue runtime.
+  .notification-title {font-weight: 600;}
+  .vue-notification {
+    display: block;
+ box-sizing: border-box;
+ text-align: start;
+ font-size: 12px;
+ padding: 10px;
+ margin: 0 5px 5px;
+ color: #ffffff;
+ background: #44a4fc;
+ border-inline-start: 5px solid #187fe7;
+    &.error {
+      background: #e54d42;
+      border-inline-start-color: #b82e24;
+    }
+    &.success {
+      background: #68cd86;
+      border-inline-start-color: #42a85f;
+    }
+  }
+}

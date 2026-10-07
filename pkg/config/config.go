@@ -499,7 +499,7 @@ func initDefaultConfig() {
 	MigrationTodoistEnable.setDefault(false)
 	MigrationTrelloEnable.setDefault(false)
 	MigrationMicrosoftTodoEnable.setDefault(false)
-	MigrationClaimTimeout.setDefault("5m")
+	MigrationClaimTimeout.setDefault("24h")
 	MigrationMaxCSVRows.setDefault(100000)
 	MigrationVikunjaFileMaxSize.setDefault("256MB")
 	MigrationVikunjaFileMaxFiles.setDefault(10000)
@@ -538,11 +538,9 @@ func initDefaultConfig() {
 	PluginsEnabled.setDefault(false)
 	PluginsDir.setDefault(ResolvePath("plugins"))
 	PluginsLoader.setDefault("native")
-}
 
-// migrateDeprecatedWebhookKeys must run after the config file and env are
-// loaded, before that only defaults are visible.
-func migrateDeprecatedWebhookKeys() {
+	// Migrate deprecated webhook config keys to outgoingrequests.*
+	// This allows removing the old keys in a single place later.
 	if WebhooksAllowNonRoutableIPs.GetBool() && !OutgoingRequestsAllowNonRoutableIPs.GetBool() {
 		log.Warningf("Config key %q is deprecated and will be removed in a future release. Please use %q instead.", WebhooksAllowNonRoutableIPs, OutgoingRequestsAllowNonRoutableIPs)
 		OutgoingRequestsAllowNonRoutableIPs.Set("true")
@@ -555,6 +553,8 @@ func migrateDeprecatedWebhookKeys() {
 		log.Warningf("Config key %q is deprecated and will be removed in a future release. Please use %q instead.", WebhooksProxyPassword, OutgoingRequestsProxyPassword)
 		OutgoingRequestsProxyPassword.Set(proxyPassword)
 	}
+	// License
+	LicenseKey.setDefault("")
 }
 
 // generateServiceSecretIfEmpty sets a random service.secret when none was configured.
@@ -772,8 +772,6 @@ func InitConfig() {
 		}
 	}
 
-	migrateDeprecatedWebhookKeys()
-
 	generateServiceSecretIfEmpty()
 
 	applyDefaultLogLevels()
@@ -822,18 +820,9 @@ func InitConfig() {
 		MigrationMicrosoftTodoRedirectURL.Set(ServicePublicURL.GetString() + "migrate/microsoft-todo")
 	}
 
-	if tz := ServiceTimeZone.GetString(); tz == "" {
-		log.Warning("service.timezone is not configured, falling back to UTC")
-		ServiceTimeZone.Set("UTC")
-	} else if _, err := time.LoadLocation(tz); err != nil {
-		log.Warningf("Configured service.timezone %q is invalid (%s), falling back to UTC", tz, err)
-		ServiceTimeZone.Set("UTC")
-	}
-
 	if tz := DefaultSettingsTimezone.GetString(); tz == "" {
 		DefaultSettingsTimezone.Set(ServiceTimeZone.GetString())
 	} else if _, err := time.LoadLocation(tz); err != nil {
-		log.Warningf("Configured defaultsettings.timezone %q is invalid (%s), falling back to %s", tz, err, ServiceTimeZone.GetString())
 		DefaultSettingsTimezone.Set(ServiceTimeZone.GetString())
 	}
 

@@ -21,11 +21,11 @@ import (
 	"strings"
 
 	"code.vikunja.io/api/pkg/config"
+	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/log"
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/modules/auth"
 	"code.vikunja.io/api/pkg/modules/humabridge"
-	"code.vikunja.io/api/pkg/modules/mcp"
 	"code.vikunja.io/api/pkg/web"
 
 	echojwt "github.com/labstack/echo-jwt/v5"
@@ -47,12 +47,19 @@ func SetupTokenMiddleware() echo.MiddlewareFunc {
 				return true
 			}
 
-			authHeader, ok := models.APITokenAuthorization(c.Request().Header)
-			if !ok {
-				return false // let the jwt middleware handle other or invalid headers
+			authHeader := c.Request().Header.Values("Authorization")
+			if len(authHeader) == 0 {
+				return false // let the jwt middleware handle invalid headers
 			}
 
-			return checkAPITokenAndPutItInContext(authHeader, c, shouldSkipRouteCheck(c)) == nil
+			for _, s := range authHeader {
+				if strings.HasPrefix(s, "Bearer "+models.APITokenPrefix) {
+					err := checkAPITokenAndPutItInContext(s, c, shouldSkipRouteCheck(c))
+					return err == nil
+				}
+			}
+
+			return false
 		},
 		ErrorHandler: func(c *echo.Context, err error) error {
 			if err != nil {
@@ -72,11 +79,6 @@ func SetupTokenMiddleware() echo.MiddlewareFunc {
 // resolves to the very route that PATCH was authorised against.
 func shouldSkipRouteCheck(c *echo.Context) bool {
 	if c.Path() == "/api/v1/token/test" || c.Path() == "/api/v2/token/test" {
-		return true
-	}
-
-	// Routes under the MCP prefix reject API tokens themselves; loopback routes still get checked here.
-	if c.Path() == mcp.RoutePrefix || strings.HasPrefix(c.Path(), mcp.RoutePrefix+"/") {
 		return true
 	}
 
@@ -105,10 +107,17 @@ func checkAPITokenAndPutItInContext(tokenHeaderValue string, c *echo.Context, sk
 	c.Set("api_token", token)
 	c.Set("api_user", u)
 
-	// Autopatch's internal legs are not requests the client made.
-	if _, internalDispatch := humabridge.InternalDispatchRoute(c.Request().Context()); !internalDispatch {
-		if err := models.RecordAPITokenUse(c.Request().Context(), token); err != nil {
-			log.Errorf("Could not dispatch api token used event: %s", err)
+	if config.AuditEnabled.GetBool() {
+		// Only the audit listener consumes this, and autopatch's internal legs are
+		// not requests the client made.
+		if _, internalDispatch := humabridge.InternalDispatchRoute(c.Request().Context()); !internalDispatch {
+			err = events.DispatchWithContext(c.Request().Context(), &models.APITokenUsedEvent{
+				TokenID: token.ID,
+				OwnerID: token.OwnerID,
+			})
+			if err != nil {
+				log.Errorf("Could not dispatch api token used event: %s", err)
+			}
 		}
 	}
 

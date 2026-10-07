@@ -21,9 +21,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/modules/migration"
 	"code.vikunja.io/api/pkg/modules/migration/csv"
-	migrationHandler "code.vikunja.io/api/pkg/modules/migration/handler"
 	"code.vikunja.io/api/pkg/user"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -58,8 +58,9 @@ type csvPreviewBody struct {
 // registered.
 func RegisterMigrationCSVRoutes(api huma.API) {
 	tags := []string{"migration"}
-
-	migrationHandler.RegisterFileMigrator(func() migration.FileMigrator { return &csv.Migrator{} })
+	// +2 MB mirrors Echo's global BodyLimit overhead so a max-sized file isn't rejected by multipart boundary/header bytes.
+	// #nosec G115 - configured value won't exceed int64 max in practice.
+	maxBody := (int64(config.GetMaxFileSizeInMBytes()) + 2) * 1024 * 1024
 
 	Register(api, huma.Operation{
 		OperationID: "migration-csv-status",
@@ -70,7 +71,7 @@ func RegisterMigrationCSVRoutes(api huma.API) {
 		Tags:        tags,
 	}, csvStatus)
 
-	Register(api, withUploadLimits(huma.Operation{
+	Register(api, huma.Operation{
 		OperationID:   "migration-csv-detect",
 		Summary:       "Detect a CSV file's structure",
 		Description:   "Analyzes an uploaded CSV file and returns its detected columns, delimiter, quote character and date format, plus a suggested column-to-attribute mapping the client can edit before previewing or migrating. Read-only: nothing is imported.",
@@ -78,9 +79,10 @@ func RegisterMigrationCSVRoutes(api huma.API) {
 		Path:          "/migration/csv/detect",
 		DefaultStatus: http.StatusOK,
 		Tags:          tags,
-	}), csvDetect)
+		MaxBodyBytes:  maxBody,
+	}, csvDetect)
 
-	Register(api, withUploadLimits(huma.Operation{
+	Register(api, huma.Operation{
 		OperationID:   "migration-csv-preview",
 		Summary:       "Preview a CSV import",
 		Description:   "Returns the first few tasks that would be imported from the uploaded CSV file with the given config, without importing anything. Read-only.",
@@ -88,19 +90,21 @@ func RegisterMigrationCSVRoutes(api huma.API) {
 		Path:          "/migration/csv/preview",
 		DefaultStatus: http.StatusOK,
 		Tags:          tags,
-	}), csvPreview)
+		MaxBodyBytes:  maxBody,
+	}, csvPreview)
 
-	Register(api, withUploadLimits(huma.Operation{
+	Register(api, huma.Operation{
 		OperationID: "migration-csv-migrate",
 		Summary:     "Import a CSV file",
-		Description: "Imports the tasks from the uploaded CSV file into Vikunja using the given config. The import runs in the background: the response only confirms it started. Poll the status endpoint for completion; the user is notified by mail when it finishes or fails.",
+		Description: "Imports the tasks from the uploaded CSV file into Vikunja using the given config. The import runs synchronously and returns once it has finished.",
 		Method:      http.MethodPost,
 		Path:        "/migration/csv/migrate",
 		// POST runs an import rather than creating a REST resource, so it
 		// returns 200 with a confirmation, not the wrapper's 201.
 		DefaultStatus: http.StatusOK,
 		Tags:          tags,
-	}), csvMigrate)
+		MaxBodyBytes:  maxBody,
+	}, csvMigrate)
 }
 
 func init() { AddRouteRegistrar(RegisterMigrationCSVRoutes) }
@@ -167,15 +171,20 @@ func csvMigrate(ctx context.Context, in *csvImportInput) (*migrationStartedBody,
 		return nil, translateDomainError(err)
 	}
 
+	cfg, err := parseCSVImportConfig(in.RawBody.Data().Config)
+	if err != nil {
+		return nil, err
+	}
+
 	src := in.RawBody.Data().Import
 	defer func() { _ = src.Close() }()
 
-	if err := migrationHandler.StartFileMigration(&csv.Migrator{}, u, src, src.Size, []byte(in.RawBody.Data().Config)); err != nil {
+	if err := csv.RunMigration(u, src, src.Size, cfg); err != nil {
 		return nil, translateDomainError(err)
 	}
 
 	out := &migrationStartedBody{}
-	out.Body.Message = "Migration was started successfully."
+	out.Body.Message = "Everything was migrated successfully."
 	return out, nil
 }
 

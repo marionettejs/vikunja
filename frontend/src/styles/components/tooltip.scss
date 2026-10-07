@@ -10,3 +10,7 @@
   background: var(--white);
   color: var(--grey-900);
 }
+
+// Original main.ts loads vendor tooltip defaults after the global theme.
+/* stylelint-disable-next-line no-invalid-position-at-import-rule -- Sass inlines the original later vendor cascade. */
+@import "tooltip-base";

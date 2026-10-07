@@ -1,0 +1,156 @@
+import {test, expect} from './fixtures'
+import {setupApiUrl} from '../../frontend/tests/support/authenticateUser'
+import {TEST_PASSWORD, TEST_PASSWORD_HASH} from '../../frontend/tests/support/constants'
+import {ProjectFactory} from '../../frontend/tests/factories/project'
+import {ProjectViewFactory} from '../../frontend/tests/factories/project_view'
+import {TaskFactory} from '../../frontend/tests/factories/task'
+import {LinkShareFactory} from '../../frontend/tests/factories/link_sharing'
+import {TaskCommentFactory} from '../../frontend/tests/factories/task_comment'
+import {BucketFactory} from '../../frontend/tests/factories/bucket'
+import {TaskBucketFactory} from '../../frontend/tests/factories/task_buckets'
+const hash = 'public-checkpoint'
+test.beforeEach(async ({page, currentUser}) => {
+	void currentUser
+	await setupApiUrl(page)
+	await ProjectFactory.create(1, {title: 'Shared checkpoint'})
+	await ProjectViewFactory.create(4, {project_id: 1, title: (id: number) => ['List', 'Gantt', 'Table', 'Kanban'][id - 1], view_kind: (id: number) => id - 1, bucket_configuration_mode: (id: number) => id === 4 ? 1 : 0})
+	await TaskFactory.create(3, {title: (id: number) => `Public task ${id}`})
+	await LinkShareFactory.create(1, {id: 1, hash, permission: 0})
+})
+test('anonymous share authenticates, renders public frame and reloads without persisting a token', async ({page}, info) => {
+	const requests: {path: string, method: string}[] = []
+	page.on('request', request => {if (request.url().includes('/api/')) requests.push({path: new URL(request.url()).pathname, method: request.method()})})
+	await page.goto(`/share/${hash}/auth`)
+	await expect(page.locator('.link-share-view h1.title').first()).toHaveText('Shared checkpoint')
+	await expect(page.locator('.tasks')).toContainText('Public task 1')
+	await expect(page.getByPlaceholder('Add a task…')).toHaveCount(0)
+	await expect(page.locator('.navbar')).toHaveCount(0)
+	await expect(page.locator('.link-share-view .logo')).toBeVisible()
+	await expect(page).toHaveURL(new RegExp(`/projects/1/1#share-auth-token=${hash}$`))
+	expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull()
+	await page.reload(); await expect(page.locator('.tasks')).toContainText('Public task 1')
+	expect(requests.filter(request => /\/user$/.test(request.path))).toEqual([])
+	await info.attach('share-requests', {body: JSON.stringify(requests), contentType: 'application/json'})
+	await info.attach('share-readonly-desktop', {body: await page.screenshot(), contentType: 'image/png'})
+})
+for (const width of [1440, 390]) test(`share task deep link and public project navigation preserve identity at ${width}`, async ({page}, info) => {
+	await page.setViewportSize({width, height: 900})
+	await page.goto(`/tasks/1#share-auth-token=${hash}`)
+	await expect(page.locator('.task-view h1.title.input')).toHaveText('Public task 1')
+	await expect(page.locator('.task-view h1.title.input')).not.toHaveAttribute('contenteditable', 'true')
+	await page.reload(); await expect(page.locator('.task-view h1.title.input')).toHaveText('Public task 1')
+	await info.attach('share-task', {body: await page.screenshot(), contentType: 'image/png'})
+	await page.locator('.project-title-button').click()
+	await expect(page.locator('.tasks')).toContainText('Public task 1')
+	expect(new URL(page.url()).hash).toBe(`#share-auth-token=${hash}`)
+})
+test('colliding user/share ids use share permissions without replacing the persisted user token', async ({authenticatedPage: page}, info) => {
+	await page.goto('/projects/1/1'); await expect(page.getByPlaceholder('Add a task…')).toBeVisible()
+	const original = await page.evaluate(() => localStorage.getItem('token'))
+	await page.goto(`/share/${hash}/auth`)
+	await expect(page.locator('.tasks')).toContainText('Public task 1')
+	await expect(page.getByPlaceholder('Add a task…')).toHaveCount(0)
+	expect(await page.evaluate(() => localStorage.getItem('token'))).toBe(original)
+	const other = await page.context().newPage()
+	await other.goto('/projects/1/1'); await expect(other.getByPlaceholder('Add a task…')).toBeVisible()
+	await expect(page.getByPlaceholder('Add a task…')).toHaveCount(0)
+	await info.attach('colliding-identities', {body: JSON.stringify({userId: 1, shareId: 1, persistedUnchanged: true}), contentType: 'application/json'})
+	await other.close()
+})
+test('password challenge keeps wrong password draft and blocks duplicate delayed submit', async ({page}, info) => {
+	await LinkShareFactory.create(1, {id: 1, hash, sharing_type: 2, password: TEST_PASSWORD_HASH, permission: 0})
+	await page.goto(`/share/${hash}/auth`)
+	const input = page.locator('#linkSharePassword'), submit = page.getByRole('button', {name: 'Login', exact: true})
+	await expect(input).toBeFocused(); await input.fill('wrong-password'); await input.press('Enter')
+	await expect(page.getByText('The password is invalid.', {exact: true})).toBeVisible()
+	await expect(input).toHaveValue('wrong-password')
+	await input.fill(TEST_PASSWORD)
+	let release!: () => void, started!: () => void
+	const gate = new Promise<void>(resolve => {release = resolve}), ready = new Promise<void>(resolve => {started = resolve})
+	await page.route(`**/shares/${hash}/auth`, async route => {started(); const response = await route.fetch(); await gate; await route.fulfill({response}).catch(() => {})})
+	const accepted = page.waitForResponse(response => response.url().endsWith(`/shares/${hash}/auth`) && response.request().method() === 'POST')
+	await submit.click(); await ready
+	await expect(submit).toBeDisabled(); await expect(submit).toHaveClass(/is-loading/)
+	await expect(input).toHaveValue(TEST_PASSWORD)
+	await info.attach('share-password-loading', {body: await page.screenshot(), contentType: 'image/png'})
+	release(); expect((await accepted).ok()).toBe(true)
+	await expect(page.locator('.tasks')).toContainText('Public task 1')
+})
+test('server auth failure uses original error message and reload retries', async ({page}) => {
+	let fail = true
+	await page.route(`**/shares/${hash}/auth`, route => fail ? route.fulfill({status: 500, json: {message: 'Fixture share failure'}}) : route.continue())
+	await page.goto(`/share/${hash}/auth`)
+	await expect(page.getByText('Server error occurred. Please try again later.', {exact: true})).toBeVisible()
+	await expect(page.locator('.tasks')).toHaveCount(0)
+	fail = false; await page.reload(); await expect(page.locator('.tasks')).toContainText('Public task 1')
+})
+test('write share creates a task through actual backend and retains hash through reload', async ({page}) => {
+	await LinkShareFactory.create(1, {id: 1, hash, permission: 1})
+	await page.goto(`/share/${hash}/auth`)
+	const input = page.getByPlaceholder('Add a task…'); await expect(input).toBeVisible(); await input.fill('Shared-created task')
+	const created = page.waitForResponse(response => /\/projects\/1\/tasks(?:\/bulk)?$/.test(response.url()) && ['POST', 'PUT'].includes(response.request().method()))
+	await input.press('Enter'); expect((await created).ok()).toBe(true)
+	await expect(page.locator('.tasks')).toContainText('Shared-created task')
+	await page.reload(); await expect(page.locator('.tasks')).toContainText('Shared-created task')
+	expect(new URL(page.url()).hash).toBe(`#share-auth-token=${hash}`)
+})
+test('explicit shared view and hidden logo open the source full task document and return to project', async ({page}, info) => {
+ await BucketFactory.create(1, {project_view_id: 4, title: 'Public bucket'})
+ await TaskBucketFactory.create(3, {project_view_id: 4, bucket_id: 1})
+ await page.goto(`/share/${hash}/auth?view=4&logoVisible=false`)
+ await expect(page.locator('.kanban')).toBeVisible()
+ await expect(page.locator('.link-share-view .logo')).toHaveCount(0)
+ await page.locator('.kanban-card__title-link').filter({hasText:'Public task 1'}).first().click()
+ await expect(page.getByRole('dialog')).toHaveCount(0)
+ await expect(page.locator('.kanban')).toHaveCount(0)
+ await expect(page.locator('.task-view h1.title.input')).toHaveText('Public task 1')
+ await expect(page.locator('.task-view h1.title.input')).not.toHaveAttribute('contenteditable','true')
+ expect(new URL(page.url()).hash).toBe(`#share-auth-token=${hash}`)
+ await page.reload(); await expect(page.locator('.task-view h1.title.input')).toHaveText('Public task 1')
+ await expect(page.getByRole('dialog')).toHaveCount(0)
+ await page.locator('.link-share-view .project-title-button').click()
+ await expect(page).toHaveURL(new RegExp(`/projects/1/1#share-auth-token=${hash}$`))
+ await expect(page.locator('.tasks')).toContainText('Public task 1')
+ await info.attach('share-full-task-return',{body:await page.screenshot(),contentType:'image/png'})
+})
+test('share id matching comment author never grants comment edit or deletion', async ({page}) => {
+	await LinkShareFactory.create(1, {id: 1, hash, permission: 1})
+	await TaskCommentFactory.create(1, {author_id: 1, task_id: 1, comment: '<p>Personal owner comment</p>'})
+	await page.goto(`/tasks/1#share-auth-token=${hash}`)
+	const row = page.locator('#comment-1')
+	await expect(row).toContainText('Personal owner comment')
+	await expect(row.getByRole('button', {name: 'Edit', exact: true})).toHaveCount(0)
+	await expect(row.getByRole('button', {name: 'Delete', exact: true})).toHaveCount(0)
+})
+test('generic denied share authentication leaves no public content or persisted token', async ({page}) => {
+	await page.route(`**/shares/${hash}/auth`, route => route.fulfill({status: 403, json: {message: 'Fixture access denied'}}))
+	await page.goto(`/share/${hash}/auth`)
+	await expect(page.getByText('Access denied. Please check your permissions and try again.', {exact: true})).toBeVisible()
+	await expect(page.locator('.tasks')).toHaveCount(0)
+	expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull()
+})
+test('leaving delayed share authentication cannot publish stale public content', async ({page}) => {
+	let release!: () => void, started!: () => void
+	const gate = new Promise<void>(resolve => {release = resolve}), ready = new Promise<void>(resolve => {started = resolve})
+	await page.route(`**/shares/${hash}/auth`, async route => {const response = await route.fetch(); started(); await gate; await route.fulfill({response}).catch(() => {})})
+	await page.goto(`/share/${hash}/auth`); await ready
+	await expect(page.getByText('Authenticating…', {exact: true}).first()).toBeVisible()
+	await page.evaluate(() => {history.pushState({}, '', '/login'); window.dispatchEvent(new PopStateEvent('popstate'))})
+	await expect(page.locator('#loginform')).toBeVisible()
+	release()
+	await page.unroute(`**/shares/${hash}/auth`)
+	await page.waitForLoadState('networkidle')
+	await expect(page).toHaveURL(/\/login$/)
+	await expect(page.locator('#username')).toBeFocused()
+	await expect(page.locator('.link-share-view')).toHaveCount(0)
+	expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull()
+})
+test('actual backend denies a shared token access to another project task', async ({page}) => {
+	await ProjectFactory.create(2, {title: (id: number) => id === 1 ? 'Shared checkpoint' : 'Private project'})
+	await TaskFactory.create(1, {id: 4, project_id: 2, title: 'Private task'})
+	const denied = page.waitForResponse(response => /\/api\/v1\/tasks\/4$/.test(new URL(response.url()).pathname) && response.request().method() === 'GET')
+	await page.goto(`/tasks/4#share-auth-token=${hash}`)
+	expect((await denied).status()).toBe(403)
+	await expect(page.locator('.task-view')).toHaveCount(0)
+	await expect(page.locator('body')).not.toContainText('Private task')
+})

@@ -68,7 +68,6 @@ import (
 	backgroundHandler "code.vikunja.io/api/pkg/modules/background/handler"
 	"code.vikunja.io/api/pkg/modules/background/unsplash"
 	"code.vikunja.io/api/pkg/modules/background/upload"
-	mcpmodule "code.vikunja.io/api/pkg/modules/mcp"
 	"code.vikunja.io/api/pkg/modules/migration"
 	csvmigrator "code.vikunja.io/api/pkg/modules/migration/csv"
 	migrationHandler "code.vikunja.io/api/pkg/modules/migration/handler"
@@ -120,14 +119,6 @@ func matchCORSOrigin(origin string, allowedOrigins []string) (string, bool, erro
 		}
 	}
 	return "", false, nil
-}
-
-func corsOriginAllowed(origin string) bool {
-	if !config.CorsEnable.GetBool() {
-		return false
-	}
-	_, ok, err := matchCORSOrigin(origin, config.CorsOrigins.GetStringSlice())
-	return ok && err == nil
 }
 
 // NewEcho registers a new Echo instance
@@ -259,8 +250,6 @@ func RegisterRoutes(e *echo.Echo) {
 	f.Use(middleware.BasicAuth(feeds.BasicAuth))
 	f.GET("/notifications.atom", feeds.NotificationsAtomFeed)
 
-	e.GET("/.well-known/change-password", ChangePasswordRedirect)
-
 	// healthcheck
 	e.GET("/health", HealthcheckHandler)
 
@@ -279,7 +268,6 @@ func RegisterRoutes(e *echo.Echo) {
 				return matchCORSOrigin(origin, allowedOrigins)
 			},
 			AllowCredentials: true,
-			ExposeHeaders:    []string{echo.HeaderRetryAfter},
 			MaxAge:           config.CorsMaxAge.GetInt(),
 			Skipper: func(context *echo.Context) bool {
 				// Since it is not possible to register this middleware just for the api group,
@@ -299,7 +287,7 @@ func RegisterRoutes(e *echo.Echo) {
 	setupPprof(e)
 
 	// /api/v2 — Huma-backed API, scaffolded alongside /api/v1.
-	a2 := e.Group(apiv2.GroupPrefix)
+	a2 := e.Group("/api/v2")
 	// Share the BasicAuth failure budget with CalDAV and feeds.
 	a2.Use(pathScoped(func(p string) bool { return p == "/api/v2/notifications.atom" }, basicAuthRateLimit))
 	registerAPIRoutesV2(e, a2, noAuthRateLimit, refreshRateLimit)
@@ -337,7 +325,6 @@ var unauthenticatedAPIPaths = map[string]bool{
 	"/api/v2/info":                      true,
 
 	"/api/v2/register":                       true,
-	"/api/v2/invite-links/check":             true,
 	"/api/v2/user/password/token":            true,
 	"/api/v2/user/password/reset":            true,
 	"/api/v2/user/confirm":                   true,
@@ -430,7 +417,6 @@ func unauthenticatedPathSet(paths ...string) pathSet {
 // The v2 counterparts of v1's unauthenticated route group - credential
 // endpoints only, never the docs/info/health ones.
 var v2CredentialPaths = unauthenticatedPathSet(
-	"/api/v2/invite-links/check",
 	"/api/v2/register",
 	"/api/v2/user/password/token",
 	"/api/v2/user/password/reset",
@@ -452,12 +438,9 @@ const v2AdminPathPrefix = "/api/v2/admin"
 func gateV2AdminRoutes() echo.MiddlewareFunc {
 	feature := RequireFeature(license.FeatureAdminPanel)
 	admin := RequireInstanceAdmin()
-	invites := pathScoped(func(p string) bool {
-		return p == v2AdminPathPrefix+"/teams" || p == v2AdminPathPrefix+"/invite-links" || strings.HasPrefix(p, v2AdminPathPrefix+"/invite-links/")
-	}, RequireFeature(license.FeatureUserInvites))
 	return pathScoped(
 		func(p string) bool { return strings.HasPrefix(p, v2AdminPathPrefix) },
-		func(next echo.HandlerFunc) echo.HandlerFunc { return feature(admin(invites(next))) },
+		func(next echo.HandlerFunc) echo.HandlerFunc { return feature(admin(next)) },
 	)
 }
 
@@ -492,12 +475,6 @@ func registerAPIRoutesV2(e *echo.Echo, a *echo.Group, noAuthRateLimit, refreshRa
 
 	// Resources self-register via init(); RegisterAll runs them all + AutoPatch.
 	apiv2.RegisterAll(api)
-	m, err := mcpmodule.New(api, corsOriginAllowed)
-	if err != nil {
-		panic(err)
-	}
-	m.Register(a)
-	apiv2.RegisterMCPInfo(api, m.ConnectionInfo)
 }
 
 func registerAPIRoutes(a *echo.Group, noAuthRateLimit, refreshRateLimit echo.MiddlewareFunc) {

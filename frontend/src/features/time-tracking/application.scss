@@ -1,0 +1,150 @@
+.native-time-tracking {
+  .time-tracking__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-block-end: 1.5rem;
+  }
+
+  .time-tracking__range {
+    color: var(--grey-500);
+    font-size: 0.9rem;
+  }
+
+  .time-tracking__buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .filter-columns {
+    display: flex;
+    gap: 1rem;
+
+    > .field {
+      flex: 1;
+      min-inline-size: 0;
+    }
+  }
+
+  // The multiselect's per-row "click or press enter to select" hint is
+  // transparent but still reserves its (long) width, clipping the project/task
+  // title to a few characters in the narrow side-by-side columns. Drop it.
+  .hint-text {
+    display: none;
+  }
+
+  $filter-bubble-size: 0.75rem;
+
+  // Blue dot on the filter button when any filter is active (mirrors project views).
+  .has-filters {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset-block-start: math.div($filter-bubble-size, -2);
+      inset-inline-end: math.div($filter-bubble-size, -2);
+
+      inline-size: $filter-bubble-size;
+      block-size: $filter-bubble-size;
+      border-radius: 100%;
+      background: var(--primary);
+    }
+  }
+
+  .field-columns {
+    display: flex;
+    gap: 1rem;
+
+    > .field {
+      flex: 1;
+      min-inline-size: 0;
+    }
+  }
+
+  .from-to-row {
+    align-items: flex-end;
+  }
+
+  .smart-fill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    block-size: 2.5em;
+    inline-size: 2.5em;
+    border-radius: $radius;
+    color: var(--primary);
+    transition: background-color $transition;
+
+    &:hover {
+      background-color: var(--grey-100);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .entry-action {
+    color: var(--grey-400);
+    transition: color $transition;
+
+    & + & {
+      margin-inline-start: 0.5rem;
+    }
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
+  .entry-delete:hover {
+    color: var(--danger);
+  }
+
+  .time-range-picker .datepicker-with-range {
+    display: flex;
+    gap: 1rem;
+  }
+  .datepicker-with-range-presets {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.timer-badge__elapsed {
+  padding-inline: 0.75rem 0.25rem;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.timer-badge__stop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 0.5rem;
+  color: var(--grey-400);
+  transition: color $transition;
+
+  &:hover {
+    color: var(--danger);
+  }
+}
+
+@media print, screen and (max-width: $tablet) {
+ body:has(dialog[open].native-time-tracking) #app {display:block!important;}
+}

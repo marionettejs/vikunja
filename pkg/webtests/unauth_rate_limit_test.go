@@ -22,7 +22,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-	"time"
 
 	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/routes"
@@ -124,22 +123,6 @@ func TestV2UnauthRateLimit(t *testing.T) {
 	})
 }
 
-// The basic auth limiter buckets its failure budget by wall-clock minute, so a
-// rollover mid-subtest resets the count and turns an expected 429 into a 401.
-func waitForFreshBasicAuthRateLimitWindow(t *testing.T) {
-	t.Helper()
-
-	const (
-		window = time.Minute
-		// Enough for a handful of bcrypt checks on a slow CI runner.
-		headroom = 10 * time.Second
-	)
-
-	if remaining := window - time.Duration(time.Now().UnixNano())%window; remaining < headroom {
-		time.Sleep(remaining)
-	}
-}
-
 // Guards the per-IP bcrypt budget (GHSA-m469-88xx-8rx2).
 func TestBasicAuthRateLimit(t *testing.T) {
 	_, err := setupTestEnv()
@@ -176,7 +159,6 @@ func TestBasicAuthRateLimit(t *testing.T) {
 
 	t.Run("wrong dav passwords eventually reach 429", func(t *testing.T) {
 		e := newRoutes()
-		waitForFreshBasicAuthRateLimitWindow(t)
 
 		for i := 0; i < basicAuthLimitForTest; i++ {
 			rec := caldavRequest(t, e, testuser15.Username, "wrong-password")
@@ -199,7 +181,6 @@ func TestBasicAuthRateLimit(t *testing.T) {
 
 	t.Run("rejection happens before the password check", func(t *testing.T) {
 		e := newRoutes()
-		waitForFreshBasicAuthRateLimitWindow(t)
 
 		for i := 0; i < basicAuthLimitForTest; i++ {
 			rec := caldavRequest(t, e, testuser15.Username, "wrong-password")
@@ -221,7 +202,6 @@ func TestBasicAuthRateLimit(t *testing.T) {
 
 	t.Run("the budget is isolated from the login budget", func(t *testing.T) {
 		e := newRoutes()
-		waitForFreshBasicAuthRateLimitWindow(t)
 
 		for i := 0; i < basicAuthLimitForTest; i++ {
 			rec := caldavRequest(t, e, testuser15.Username, "wrong-password")
@@ -236,7 +216,6 @@ func TestBasicAuthRateLimit(t *testing.T) {
 
 	t.Run("the feed route shares the basic auth budget", func(t *testing.T) {
 		e := newRoutes()
-		waitForFreshBasicAuthRateLimitWindow(t)
 
 		req := httptest.NewRequest(http.MethodGet, "/feeds/notifications.atom", nil)
 		req.SetBasicAuth(testuser15.Username, "wrong-password")

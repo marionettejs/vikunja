@@ -415,6 +415,7 @@ func linesToSkipBeforeHeader(file io.ReaderAt, size int64) (int, error) {
 // @Failure 500 {object} models.Message "Internal server error"
 // @Router /migration/ticktick/migrate [put]
 func (m *Migrator) Migrate(user *user.User, file io.ReaderAt, size int64) error {
+	// Check if file is empty
 	if size == 0 {
 		return &migration.ErrFileIsEmpty{}
 	}
@@ -432,14 +433,18 @@ func (m *Migrator) Migrate(user *user.User, file io.ReaderAt, size int64) error 
 	}
 
 	// Reset the reader position to start
-	if _, err = fr.Seek(0, io.SeekStart); err != nil {
+	_, err = fr.Seek(0, io.SeekStart)
+	if err != nil {
 		return err
 	}
 
-	if !isValidCSV(string(buf[:n])) {
+	// Check if the content looks like a CSV file
+	content := string(buf[:n])
+	if !isValidCSV(content) {
 		return &migration.ErrNotACSVFile{}
 	}
 
+	allTasks := []*tickTickTask{}
 	skip, err := linesToSkipBeforeHeader(file, size)
 	if err != nil {
 		return err
@@ -448,9 +453,8 @@ func (m *Migrator) Migrate(user *user.User, file io.ReaderAt, size int64) error 
 	if err != nil {
 		return err
 	}
-
-	allTasks := []*tickTickTask{}
-	if err := gocsv.UnmarshalDecoder(decode, &allTasks); err != nil {
+	err = gocsv.UnmarshalDecoder(decode, &allTasks)
+	if err != nil {
 		return err
 	}
 

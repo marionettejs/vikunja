@@ -19,7 +19,6 @@ package notifications
 import (
 	"testing"
 
-	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/db"
 	"code.vikunja.io/api/pkg/mail"
 
@@ -141,10 +140,6 @@ func TestRegistry(t *testing.T) {
 }
 
 func TestNotify(t *testing.T) {
-	oldMailer := config.MailerEnabled.GetBool()
-	config.MailerEnabled.Set(true)
-	t.Cleanup(func() { config.MailerEnabled.Set(oldMailer) })
-
 	t.Run("normal", func(t *testing.T) {
 
 		s := db.NewSession()

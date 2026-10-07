@@ -1,0 +1,26 @@
+{
+  "os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "cpu_count": 5,
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor",
+  "cpu_max": "400000 100000",
+  "memory_max": "17179869184",
+  "node": "v24.19.0",
+  "pnpm_cli": "11.19.0",
+  "frontend_tree": "a7d6970ef57cec104f6b56a5c0d2d09d33ff3474",
+  "vue_sha": "5d22d730aa35b0666d0849099c12a1e638baabc9",
+  "viewport": [
+    1440,
+    900
+  ],
+  "throttling": "none",
+  "service_workers": "blocked",
+  "cold": "fresh context, shared browser process",
+  "nativeFrontendTree": "a7d6970ef57cec104f6b56a5c0d2d09d33ff3474",
+  "chromium": "151.0.7922.173",
+  "duration_ms": 1026703.951,
+  "benchmarkCases": {
+    "passed": 2,
+    "failed": 0
+  },
+  "workboxInventory": "Identical copyLibraries outputs included for both bundle inventories. Vue copy completed after timings; service workers were blocked and these library files were not requested."
+}

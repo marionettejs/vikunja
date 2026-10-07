@@ -219,38 +219,6 @@ func (err ErrInvalidModel) HTTPError() web.HTTPError {
 	}
 }
 
-type ErrInviteLinkInvalid struct{}
-
-func (err ErrInviteLinkInvalid) Error() string { return "This invite link is invalid or expired." }
-
-const ErrCodeInviteLinkInvalid = 2005
-
-func (err ErrInviteLinkInvalid) HTTPError() web.HTTPError {
-	return web.HTTPError{HTTPCode: http.StatusNotFound, Code: ErrCodeInviteLinkInvalid, Message: err.Error()}
-}
-
-type ErrInviteLinkDoesNotExist struct{}
-
-func (err ErrInviteLinkDoesNotExist) Error() string { return "This invite link does not exist." }
-
-const ErrCodeInviteLinkDoesNotExist = 2006
-
-func (err ErrInviteLinkDoesNotExist) HTTPError() web.HTTPError {
-	return web.HTTPError{HTTPCode: http.StatusNotFound, Code: ErrCodeInviteLinkDoesNotExist, Message: err.Error()}
-}
-
-type ErrInviteLinkExternalTeam struct{}
-
-func (err ErrInviteLinkExternalTeam) Error() string {
-	return "Externally managed teams cannot be attached to an invite link."
-}
-
-const ErrCodeInviteLinkExternalTeam = 2007
-
-func (err ErrInviteLinkExternalTeam) HTTPError() web.HTTPError {
-	return web.HTTPError{HTTPCode: http.StatusBadRequest, Code: ErrCodeInviteLinkExternalTeam, Message: err.Error()}
-}
-
 // ===========
 // Project errors
 // ===========
@@ -619,33 +587,6 @@ const ErrCodeParentProjectIsArchived = 3016
 // HTTPError holds the http error description
 func (err ErrParentProjectIsArchived) HTTPError() web.HTTPError {
 	return web.HTTPError{HTTPCode: http.StatusPreconditionFailed, Code: ErrCodeParentProjectIsArchived, Message: "The parent project is archived. Un-archive the parent project first."}
-}
-
-// ErrInvalidDefaultProject represents an error where a user sets a default project they cannot write to
-type ErrInvalidDefaultProject struct {
-	ProjectID int64
-}
-
-// IsErrInvalidDefaultProject checks if an error is ErrInvalidDefaultProject.
-func IsErrInvalidDefaultProject(err error) bool {
-	_, ok := err.(*ErrInvalidDefaultProject)
-	return ok
-}
-
-func (err *ErrInvalidDefaultProject) Error() string {
-	return fmt.Sprintf("Invalid default project [ProjectID: %d]", err.ProjectID)
-}
-
-// ErrCodeInvalidDefaultProject holds the unique world-error code of this error
-const ErrCodeInvalidDefaultProject = 3017
-
-// HTTPError holds the http error description
-func (err *ErrInvalidDefaultProject) HTTPError() web.HTTPError {
-	return web.HTTPError{
-		HTTPCode: http.StatusBadRequest,
-		Code:     ErrCodeInvalidDefaultProject,
-		Message:  "The default project must be a project you can write to.",
-	}
 }
 
 // ==============
@@ -2503,32 +2444,6 @@ func (err *ErrRefreshTokenAlreadyUsed) HTTPError() web.HTTPError {
 		HTTPCode: http.StatusUnauthorized,
 		Code:     ErrCodeRefreshTokenAlreadyUsed,
 		Message:  "Refresh token already used.",
-	}
-}
-
-// ErrNoRefreshToken represents an error where the refresh request carried no
-// refresh-token cookie, so retrying it cannot succeed.
-type ErrNoRefreshToken struct{}
-
-// IsErrNoRefreshToken checks if an error is ErrNoRefreshToken.
-func IsErrNoRefreshToken(err error) bool {
-	_, ok := err.(*ErrNoRefreshToken)
-	return ok
-}
-
-func (err *ErrNoRefreshToken) Error() string {
-	return "No refresh token provided"
-}
-
-// ErrCodeNoRefreshToken holds the unique world-error code of this error
-const ErrCodeNoRefreshToken = 16005
-
-// HTTPError holds the http error description
-func (err *ErrNoRefreshToken) HTTPError() web.HTTPError {
-	return web.HTTPError{
-		HTTPCode: http.StatusUnauthorized,
-		Code:     ErrCodeNoRefreshToken,
-		Message:  "No refresh token provided.",
 	}
 }
 

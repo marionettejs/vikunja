@@ -1,0 +1,249 @@
+.native-project-directory,
+.native-daily-entry {
+  .project-card {
+    --project-card-padding: 1rem;
+    background: var(--white);
+    padding: var(--project-card-padding);
+    border-radius: $radius;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow $transition;
+    position: relative;
+    overflow: hidden; // hide background
+
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    &:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    &:active,
+    &:focus {
+      box-shadow: var(--shadow-xs) !important;
+    }
+
+    > * {
+      // so the elements are on top of the background
+      position: relative;
+    }
+  }
+
+  .has-background,
+  .project-background {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .project-background,
+  .project-button {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+  }
+
+  .is-archived {
+    font-size: 0.75rem;
+    float: inline-start;
+  }
+
+  .project-title {
+    align-self: flex-end;
+    font-family: $vikunja-font;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: var(--title-line-height);
+    color: var(--text);
+    inline-size: 100%;
+    margin-block-end: 0;
+    max-block-size: calc(
+      100% - (var(--project-card-padding) + 1rem)
+    ); // padding & height of the "is archived" badge
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .has-light-text .project-title {
+    color: var(--grey-100);
+  }
+
+  .has-background .project-title {
+    text-shadow:
+      0 0 10px var(--black),
+      1px 1px 5px var(--grey-700),
+      -1px -1px 5px var(--grey-700);
+    color: var(--white);
+  }
+
+  .project-card .favorite {
+    position: absolute;
+    inset-block-start: var(--project-card-padding);
+    inset-inline-end: var(--project-card-padding);
+    transition:
+      opacity $transition,
+      color $transition;
+    opacity: 1;
+
+    &:hover {
+      color: var(--warning);
+    }
+
+    &.is-favorite {
+      display: inline-block;
+      opacity: 1;
+      color: var(--warning);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .project-card .favorite {
+      opacity: 0;
+    }
+
+    .project-card:hover .favorite {
+      opacity: 1;
+    }
+  }
+
+  .background-fade-in {
+    opacity: 0;
+    transition: opacity $transition;
+    transition-delay: $transition-duration * 2; // To fake an appearing background
+
+    &.is-visible {
+      opacity: 1;
+    }
+  }
+
+  .saved-filter-icon {
+    color: var(--grey-300);
+    font-size: 0.75em;
+  }
+
+  .project-grid {
+    --project-grid-item-height: 150px;
+    --project-grid-gap: 1rem;
+    margin: 0; // reset li
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: repeat(var(--project-grid-columns), 1fr);
+    grid-auto-rows: var(--project-grid-item-height);
+    gap: var(--project-grid-gap);
+
+    @media screen and (min-width: $mobile) {
+      --project-grid-columns: 1;
+    }
+
+    @media screen and (min-width: $mobile) and (max-width: $tablet) {
+      --project-grid-columns: 2;
+    }
+
+    @media screen and (min-width: $tablet) and (max-width: $widescreen) {
+      --project-grid-columns: 3;
+    }
+
+    @media screen and (min-width: $widescreen) {
+      --project-grid-columns: 5;
+    }
+
+    &.show-even-number-of-projects {
+      @media screen and (min-width: $widescreen) {
+        .project-grid-item:nth-child(5) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .project-grid-item {
+    display: grid;
+    margin-block-start: 0; // remove padding coming form .content li + li
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-block-end: 1rem;
+
+    @media screen and (max-width: $tablet) {
+      flex-direction: column;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    @media screen and (max-width: $tablet) {
+      inline-size: 100%;
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  .project:not(:first-child) {
+    margin-block-start: 1rem;
+  }
+
+  .project-title {
+    display: flex;
+    align-items: center;
+  }
+
+  .is-archived {
+    font-size: 0.75rem;
+    border: 1px solid var(--grey-500);
+    color: $grey !important;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: $vikunja-font;
+    background: var(--white-translucent);
+    margin-inline-start: 0.5rem;
+  }
+}
+.native-project-dialog .card-footer {
+  padding: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.native-project-dialog .card {
+  background: var(--white);
+  color: var(--text);
+}
+.project-dropdown[open] .dropdown-menu {
+  display: block;
+}
+
+.native-daily-entry [hidden],
+.native-project-directory [hidden] {
+  display: none !important;
+}
+
+.native-daily-entry {
+  .list-view__add-task {
+    padding: 0;
+  }
+  .show-tasks {
+    margin-block-start: 2rem;
+  }
+}
+
+.native-daily-entry.native-list-surface .list-view__add-task { padding: 0; }
+
+.native-daily-entry .tasks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

@@ -38,15 +38,19 @@ func (t *APIToken) CanDelete(s *xorm.Session, a web.Auth) (bool, error) {
 		return true, nil
 	}
 
-	_, err = getOwnedBot(s, token.OwnerID, caller)
-	if user.IsErrUserDoesNotExist(err) {
-		return false, nil
-	}
+	botUser, err := user.GetUserByID(s, token.OwnerID)
 	if err != nil {
+		if user.IsErrUserDoesNotExist(err) {
+			return false, nil
+		}
 		return false, err
 	}
-	*t = *token
-	return true, nil
+	if botUser.IsBotOwnedBy(caller) {
+		*t = *token
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func (t *APIToken) CanCreate(_ *xorm.Session, a web.Auth) (bool, error) {

@@ -1,7 +1,7 @@
 {
   "extends": [
     "@tsconfig/node24/tsconfig.json",
-    "@vue/tsconfig/tsconfig.json"
+    "./tsconfig.base.json"
   ],
   "include": [
     "env.config.d.ts",

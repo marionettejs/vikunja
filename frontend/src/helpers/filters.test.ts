@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {hasFilterQuery, transformFilterStringForApi, transformFilterStringFromApi} from '@/helpers/filters'
+import {transformFilterStringForApi, transformFilterStringFromApi} from '@/helpers/filters'
 
 const nullTitleToIdResolver = (title: string) => null
 const nullIdToTitleResolver = (id: number) => null
@@ -587,12 +587,5 @@ describe('Filter Transformation', () => {
 
 			expect(transformed).toBe('priority = 2 && project = My Project')
 		})
-	})
-})
-
-describe('hasFilterQuery', () => {
-	it('returns a boolean for a filter expression', () => {
-		expect(hasFilterQuery('done = false')).toBe(true)
-		expect(hasFilterQuery('hello')).toBe(false)
 	})
 })

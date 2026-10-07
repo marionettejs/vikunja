@@ -1,0 +1,40 @@
+{
+  "stats": {
+    "startTime": "2026-10-07T06:19:35.344Z",
+    "duration": 1333379.114,
+    "expected": 477,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  },
+  "failures": [
+    [
+      "account-admin.spec.ts",
+      "bots actual creation name status token scope enable revoke delete and reload"
+    ],
+    [
+      "shortcut-scroll.spec.ts",
+      "rich task bottom navigation kanban-modal 390"
+    ],
+    [
+      "shortcut-scroll.spec.ts",
+      "rich task bottom navigation list-page 390"
+    ]
+  ],
+  "preservedBaselineFailures": [
+    [
+      "account-admin.spec.ts",
+      "bots actual creation name status token scope enable revoke delete and reload"
+    ],
+    [
+      "shortcut-scroll.spec.ts",
+      "rich task bottom navigation kanban-modal 390"
+    ],
+    [
+      "shortcut-scroll.spec.ts",
+      "rich task bottom navigation list-page 390"
+    ]
+  ],
+  "newFailures": [],
+  "gateMeaning": "No new failures versus preserved DD observation. Does not certify all480 pass or complete parity."
+}

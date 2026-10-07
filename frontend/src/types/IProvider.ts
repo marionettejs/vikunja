@@ -1,3 +1,8 @@
-import type {Provider} from '@/client/generated'
-
-export type IProvider = Provider & Required<Pick<Provider, 'name' | 'key' | 'auth_url' | 'client_id' | 'logout_url' | 'scope'>>
+export interface IProvider {
+	name: string;
+	key: string;
+	authUrl: string;
+	clientId: string;
+	logoutUrl: string;
+	scope: string;
+}

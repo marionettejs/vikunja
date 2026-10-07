@@ -1,0 +1,8 @@
+{
+  "source": "3581ed1a672a1c56df8bf78ca2b56dca14e3c67b",
+  "frontend": "50662d98588496fcc100d19b9b0412a84ed9ab05",
+  "runtimeCommit": "9fe99f7ae8d12ffe4a1038569996061cc09d8578",
+  "node": "v24.19.0",
+  "browserExecutable": "Chromium 151.0.7922.173 built on Debian GNU/Linux 13 (trixie)",
+  "protocol": "All3builds matched;3warmups+n20;30cycles,tripleGC at0/10/20/30; raw heap0/30; no profiler or throttling; browser.version in profile authoritative"
+}

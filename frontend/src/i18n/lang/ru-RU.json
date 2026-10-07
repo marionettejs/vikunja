@@ -867,6 +867,7 @@
 			"from": "С",
 			"fromto": "С {from} по {to}",
 			"date": "Дата",
+			"openCalendar": "Открыть календарь",
 			"ranges": {
 				"today": "Сегодня",
 				"tomorrow": "Завтра",
@@ -1378,6 +1379,10 @@
 			"newProject": "Создать проект",
 			"newTeam": "Создать команду"
 		}
+	},
+	"date": {
+		"altFormatLong": "j M Y, H:i",
+		"altFormatShort": "j M Y"
 	},
 	"reaction": {
 		"reactedWith": "Реакция от {user}: {value}",

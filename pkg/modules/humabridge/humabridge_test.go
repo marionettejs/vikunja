@@ -42,7 +42,7 @@ func newGroupAPI() (*echo.Echo, huma.API) {
 
 // TestAdapterRoundtrip proves that a Huma operation registered against the
 // group-mounted adapter is served by Echo and that the echo.Context is
-// retrievable from the handler's context.Context via EchoContextFrom.
+// retrievable from the handler's context.Context via EchoContextKey.
 func TestAdapterRoundtrip(t *testing.T) {
 	e, api := newGroupAPI()
 
@@ -61,9 +61,10 @@ func TestAdapterRoundtrip(t *testing.T) {
 		Method:      "GET",
 		Path:        "/ping/{name}",
 	}, func(ctx context.Context, in *pingInput) (*pingOutput, error) {
+		_, ok := ctx.Value(humabridge.EchoContextKey).(*echo.Context)
 		out := &pingOutput{}
 		out.Body.Echo = in.Name
-		out.Body.HasEchoCtx = humabridge.EchoContextFrom(ctx) != nil
+		out.Body.HasEchoCtx = ok
 		return out, nil
 	})
 

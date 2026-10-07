@@ -1,0 +1,134 @@
+[
+  {
+    "app": "native-3581ed1a6",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-3581ed1a6-50-0.heapsnapshot.gz",
+    "uncompressedBytes": 28177181,
+    "uncompressedSha256": "215126eb5a2d92647a0b8b29ecc2c7128a45853f6a7388e140526e22f2a34575",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5585885,
+    "verified": true
+  },
+  {
+    "app": "native-3581ed1a6",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-3581ed1a6-50-30.heapsnapshot.gz",
+    "uncompressedBytes": 29689473,
+    "uncompressedSha256": "33209348a91d452fa6f795b08bc7b1e42f9a0eb89dd27861d8fc7232506cb3d0",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5953935,
+    "verified": true
+  },
+  {
+    "app": "native-published-5a4e611e4",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-published-5a4e611e4-50-0.heapsnapshot.gz",
+    "uncompressedBytes": 29913481,
+    "uncompressedSha256": "5e07e0f13e33d58c5e2abab5b6cccd28eac627f2092afe118d08ec6c059b7e2c",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5834598,
+    "verified": true
+  },
+  {
+    "app": "native-published-5a4e611e4",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-published-5a4e611e4-50-30.heapsnapshot.gz",
+    "uncompressedBytes": 31283197,
+    "uncompressedSha256": "4cc9e8b3adb89957a468ef2224009128408ca4e12d240dbf960ae1c378877d7d",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 6149893,
+    "verified": true
+  },
+  {
+    "app": "vue-upstream",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/vue-upstream-50-0.heapsnapshot.gz",
+    "uncompressedBytes": 191914869,
+    "uncompressedSha256": "c71e9c2fcfec5af57301c6c7c7f7e82daee5846b3975605c9f4f4d4ba4b96fbe",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 28339775,
+    "verified": true
+  },
+  {
+    "app": "vue-upstream",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/vue-upstream-50-30.heapsnapshot.gz",
+    "uncompressedBytes": 212932225,
+    "uncompressedSha256": "d494f0382c871f5c0d5d3f38a67806e83f99e7b0bd44d65f6c1bd0fe1cc3c64e",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 29917881,
+    "verified": true
+  },
+  {
+    "app": "native-3581ed1a6",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-3581ed1a6-500-0.heapsnapshot.gz",
+    "uncompressedBytes": 28173566,
+    "uncompressedSha256": "915192fd9d4c0a8f66a801ccf7e6e171eda636fa13e4fdd378b478fd78df3919",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5537906,
+    "verified": true
+  },
+  {
+    "app": "native-3581ed1a6",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-3581ed1a6-500-30.heapsnapshot.gz",
+    "uncompressedBytes": 29432587,
+    "uncompressedSha256": "fbc17d355dc310cef48c38aad10fe562316d8071531b7d664f0e994ff61d72ed",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5926321,
+    "verified": true
+  },
+  {
+    "app": "native-published-5a4e611e4",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-published-5a4e611e4-500-0.heapsnapshot.gz",
+    "uncompressedBytes": 29659311,
+    "uncompressedSha256": "ad43de333dadeba15b26db928103d038515d44da3cb44455b4e97b19fa3798ac",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 5781478,
+    "verified": true
+  },
+  {
+    "app": "native-published-5a4e611e4",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/native-published-5a4e611e4-500-30.heapsnapshot.gz",
+    "uncompressedBytes": 32559874,
+    "uncompressedSha256": "63e62be0b1dd1b5de6dfe930ac2446bdbfda4cada609453cd423169db8de3964",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 6182649,
+    "verified": true
+  },
+  {
+    "app": "vue-upstream",
+    "cycle": 0,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/vue-upstream-500-0.heapsnapshot.gz",
+    "uncompressedBytes": 191008737,
+    "uncompressedSha256": "6017e2e8d2934d5f4700063aa64e4606a400f2418661bec33675b7694442a42c",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 28188980,
+    "verified": true
+  },
+  {
+    "app": "vue-upstream",
+    "cycle": 30,
+    "path": "/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/heaps/vue-upstream-500-30.heapsnapshot.gz",
+    "uncompressedBytes": 219063856,
+    "uncompressedSha256": "47f35a7fe46c5a1c8a38e32f10cd78967d9a59b7eae4d7ea9aa79c1afcb3fa78",
+    "storage": "lossless gzip; synchronous after captured counters, outside timed interactions",
+    "protocol": "Snapshot follows tripleGC/frame samples; sampling can alter later heap.",
+    "compressedBytes": 29856559,
+    "verified": true
+  }
+]

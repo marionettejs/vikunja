@@ -1,10 +1,5 @@
-import {getApiBaseUrl} from '@/helpers/apiUrl'
-import {canonicalApiBaseUrl} from '@/client/requestContext'
-import {authRefreshToken} from '@/client/generated'
-import {publicClient} from '@/client/publicClient'
+import {apiV2Url, HTTPFactory} from '@/helpers/fetcher'
 import {isDesktopApp, refreshDesktopToken} from '@/helpers/desktopAuth'
-import {clearServerClock, recordServerClock, serverNowSeconds} from '@/helpers/serverClock'
-import {MILLISECONDS_A_MINUTE, MILLISECONDS_A_SECOND} from '@/constants/date'
 
 let savedToken: string | null = null
 
@@ -13,11 +8,15 @@ let savedToken: string | null = null
  * It enables viewing multiple link shares indipendently from each in multiple tabs other without overriding any other open ones.
  */
 export const saveToken = (token: string, persist: boolean) => {
+	const previous = getTokenIdentity(savedToken ?? localStorage.getItem('token'))
+	if (JSON.stringify(previous) !== JSON.stringify(getTokenIdentity(token))) {
+		authEpoch++
+		inFlightRefresh = null
+	}
 	savedToken = token
 	if (persist) {
 		localStorage.setItem('token', token)
 	}
-	recordServerClock(getTokenPayload(token)?.iat, persist)
 }
 
 /**
@@ -32,7 +31,7 @@ export const getToken = (): string | null => {
 	return savedToken
 }
 
-function getTokenPayload(token: string | null): Record<string, unknown> | null {
+export function getTokenPayload(token: string | null): Record<string, unknown> | null {
 	if (!token) return null
 	try {
 		const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
@@ -45,11 +44,6 @@ function getTokenPayload(token: string | null): Record<string, unknown> | null {
 export function getTokenType(token: string | null): number | null {
 	const payload = getTokenPayload(token)
 	return typeof payload?.type === 'number' ? payload.type : null
-}
-
-export function isTokenExpired(token: string | null, marginSeconds = 0): boolean {
-	const exp = getTokenPayload(token)?.exp
-	return typeof exp !== 'number' || exp <= serverNowSeconds() + marginSeconds
 }
 
 export function getTokenIdentity(token: string | null): {id: number; type: number} | null {
@@ -68,7 +62,6 @@ export const removeToken = () => {
 	savedToken = null
 	localStorage.removeItem('token')
 	localStorage.removeItem('desktopOAuthRefreshToken')
-	clearServerClock()
 
 	// Bump the epoch and drop the in-flight refresh so a refresh that started
 	// before this logout can't re-persist a token after we cleared it.
@@ -82,75 +75,10 @@ export const removeToken = () => {
 // cookie and all but one get a 401.
 let inFlightRefresh: Promise<void> | null = null
 
-const refreshListeners: (() => void)[] = []
-
-export function onTokenRefreshed(listener: () => void) {
-	refreshListeners.push(listener)
-	return () => {
-		const index = refreshListeners.indexOf(listener)
-		if (index !== -1) {
-			refreshListeners.splice(index, 1)
-		}
-	}
-}
-
 // Incremented on every removeToken()/logout. A refresh captures the epoch when
 // it starts and only persists its result if the epoch is unchanged, so a
 // refresh that resolves after a logout can't undo it.
 let authEpoch = 0
-
-export function getAuthSessionEpoch(): number {
-	return authEpoch
-}
-
-// The backend's refresh limit window is a minute; this caps a bogus Retry-After.
-export const MAX_RETRY_AFTER_MS = 10 * MILLISECONDS_A_MINUTE
-
-export type RefreshFailure =
-	| {kind: 'network'}
-	| {kind: 'server', status: number}
-	| {kind: 'rate-limited', retryAt?: number}
-	| {kind: 'rejected', status: number, code?: number}
-
-// Desktop IPC failures and unusable 200 responses stay plain Errors: no HTTP status to classify.
-export class RefreshTokenError extends Error {
-	readonly failure: RefreshFailure
-
-	constructor(failure: RefreshFailure, cause: unknown) {
-		super('Error renewing token: ', {cause})
-		this.failure = failure
-	}
-}
-
-type TimedRateLimitError = RefreshTokenError & {readonly failure: {kind: 'rate-limited', retryAt: number}}
-
-function isTimedRateLimit(e: RefreshTokenError): e is TimedRateLimitError {
-	return e.failure.kind === 'rate-limited' && e.failure.retryAt !== undefined
-}
-
-// Not cleared on logout: the backend limits refreshes per IP, not per session.
-let rateLimit: {error: TimedRateLimitError, apiBase: string} | null = null
-
-function retryAtFromHeader(value: string | null): number | undefined {
-	if (value === null || !/^\d+$/.test(value)) {
-		return undefined
-	}
-	return Date.now() + Math.min(Number(value) * MILLISECONDS_A_SECOND, MAX_RETRY_AFTER_MS)
-}
-
-function httpRefreshFailure({status, code}: {status: number, code?: unknown}, headers: Headers): RefreshFailure {
-	if (status >= 500) {
-		return {kind: 'server', status}
-	}
-	if (status === 429) {
-		return {kind: 'rate-limited', retryAt: retryAtFromHeader(headers.get('Retry-After'))}
-	}
-	return {
-		kind: 'rejected',
-		status,
-		code: typeof code === 'number' ? code : undefined,
-	}
-}
 
 /**
  * Refreshes an auth token while ensuring it is updated everywhere.
@@ -160,14 +88,11 @@ function httpRefreshFailure({status, code}: {status: number, code?: unknown}, he
  * Same-tab concurrent calls share one in-flight refresh (always-on dedup); the
  * Web Locks API inside adds cross-tab coordination only in secure contexts.
  */
-export async function refreshToken(persist: boolean): Promise<void> {
+export async function refreshToken(persist: boolean, requestToken?: string): Promise<void> {
 	if (inFlightRefresh) {
 		return inFlightRefresh
 	}
-	if (rateLimit?.apiBase === getApiBaseUrl() && Date.now() < rateLimit.error.failure.retryAt) {
-		throw rateLimit.error
-	}
-	const p = doRefresh(persist)
+	const p = doRefresh(persist, requestToken)
 	inFlightRefresh = p
 	// Only clear if it still points to this promise — a logout (or a newer
 	// refresh started after it) may have replaced inFlightRefresh meanwhile.
@@ -177,27 +102,17 @@ export async function refreshToken(persist: boolean): Promise<void> {
 			inFlightRefresh = null
 		}
 	}).catch(() => {})
-	p.then(() => {
-		for (const listener of [...refreshListeners]) {
-			try {
-				listener()
-			} catch (e) {
-				console.error('Token refresh listener failed', e)
-			}
-		}
-	}, () => {})
 	return p
 }
 
-async function doRefresh(persist: boolean): Promise<void> {
+async function doRefresh(persist: boolean, requestToken?: string): Promise<void> {
 	// Snapshot the epoch so we can tell if a logout happened while we awaited.
 	const epochAtStart = authEpoch
-	const serverAtStart = getApiBaseUrl()
-	const loggedOutSinceStart = () => authEpoch !== epochAtStart || getApiBaseUrl() !== serverAtStart
+	const loggedOutSinceStart = () => authEpoch !== epochAtStart
 
-	// Capture the tokens before waiting for the lock so we can detect
-	// if another tab refreshed while we were queued.
-	const tokenBeforeLock = localStorage.getItem('token')
+	// A delayed401 must compare against the token sent, even if another tab
+	// completed its refresh before this response reached the interceptor.
+	const tokenBeforeLock = requestToken ?? localStorage.getItem('token')
 	const desktopRefreshTokenBeforeLock = localStorage.getItem('desktopOAuthRefreshToken')
 
 	const refreshUnderLock = async () => {
@@ -240,48 +155,35 @@ async function doRefresh(persist: boolean): Promise<void> {
 		// another tab already refreshed. Just adopt the new token.
 		const currentToken = localStorage.getItem('token')
 		if (currentToken && currentToken !== tokenBeforeLock) {
+			if (requestToken && JSON.stringify(getTokenIdentity(currentToken)) !== JSON.stringify(getTokenIdentity(requestToken))) throw new DOMException('Identity changed during refresh', 'AbortError')
 			savedToken = currentToken
 			return
 		}
 
 		// We hold the lock and no one else refreshed — make the API call.
+		const HTTP = HTTPFactory()
 		try {
-			const baseUrl = canonicalApiBaseUrl(getApiBaseUrl())
-			const {data, error, response} = await authRefreshToken({client: publicClient, baseUrl, throwOnError: false})
-			if (error) {
-				const body: unknown = error
-				// fetch and body reads reject with a TypeError when the connection drops.
-				if (body instanceof TypeError) {
-					throw new RefreshTokenError({kind: 'network'}, body)
+			let response
+			try {
+				response = await HTTP.post(apiV2Url('user/token/refresh'))
+			} catch (e) {
+				if ((e as {response?: {status?: number}})?.response?.status === 429) {
+					throw e
 				}
-				// hey-api sets `response` before reading the body, so body read/parse errors arrive with a 200 status.
-				if (!response || body instanceof Error) {
-					throw body
+				if (loggedOutSinceStart()) {
+					return
 				}
-				// Proxy error pages aren't JSON, so the status comes from the response.
-				const problem = typeof body === 'object'
-					? {...body, status: response.status}
-					: {status: response.status, detail: String(body)}
-				const failure = httpRefreshFailure(problem, response.headers)
-				const refreshError = new RefreshTokenError(failure, problem)
-				if (isTimedRateLimit(refreshError)) {
-					rateLimit = {error: refreshError, apiBase: serverAtStart}
-				}
-				throw refreshError
+				// Pre-v2 browsers only hold the v1-path cookie, and some deployments
+				// can't reach v2 at all; v1 re-seeds both cookies.
+				// Drop this fallback once pre-v2 clients have cycled out.
+				response = await HTTP.post('user/token/refresh')
 			}
 			if (loggedOutSinceStart()) {
 				return
 			}
-			if (!data?.token) throw new Error('Refresh response has no token')
-			saveToken(data.token, persist)
+			saveToken(response.data.token, persist)
 		} catch (e) {
-			// Another tab's refresh can land while our POST is in flight.
-			const storedToken = localStorage.getItem('token')
-			if (!loggedOutSinceStart() && storedToken && storedToken !== tokenBeforeLock) {
-				savedToken = storedToken
-				return
-			}
-			throw e instanceof RefreshTokenError ? e : new Error('Error renewing token: ', {cause: e})
+			throw new Error('Error renewing token: ', {cause: e})
 		}
 	}
 

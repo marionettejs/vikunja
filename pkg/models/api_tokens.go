@@ -21,12 +21,9 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/hex"
-	"net/http"
 	"slices"
-	"strings"
 	"time"
 
-	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/db"
 	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/log"
@@ -72,27 +69,6 @@ type APIToken struct {
 
 const APITokenPrefix = `tk_`
 
-// APITokenAuthorization returns the first Authorization value carrying an API token.
-func APITokenAuthorization(h http.Header) (string, bool) {
-	for _, v := range h.Values("Authorization") {
-		if strings.HasPrefix(v, "Bearer "+APITokenPrefix) {
-			return v, true
-		}
-	}
-	return "", false
-}
-
-// RecordAPITokenUse dispatches the audit event for a request this token authenticated.
-func RecordAPITokenUse(ctx context.Context, token *APIToken) error {
-	if token == nil || !config.AuditEnabled.GetBool() {
-		return nil
-	}
-	return events.DispatchWithContext(ctx, &APITokenUsedEvent{
-		TokenID: token.ID,
-		OwnerID: token.OwnerID,
-	})
-}
-
 func (*APIToken) TableName() string {
 	return "api_tokens"
 }
@@ -134,8 +110,12 @@ func (t *APIToken) Create(s *xorm.Session, a web.Auth) (err error) {
 	if t.OwnerID == 0 {
 		t.OwnerID = caller.ID
 	} else if t.OwnerID != caller.ID {
-		if _, err := getOwnedBot(s, t.OwnerID, caller); err != nil {
+		botUser, err := user.GetUserByID(s, t.OwnerID)
+		if err != nil {
 			return err
+		}
+		if !botUser.IsBotOwnedBy(caller) {
+			return &user.ErrBotNotOwned{UserID: t.OwnerID}
 		}
 	}
 
@@ -193,8 +173,12 @@ func (t *APIToken) ReadAll(s *xorm.Session, a web.Auth, search string, page int,
 
 	ownerID := caller.ID
 	if t.OwnerID != 0 && t.OwnerID != caller.ID {
-		if _, err := getOwnedBot(s, t.OwnerID, caller); err != nil {
-			return nil, 0, 0, err
+		botUser, lookupErr := user.GetUserByID(s, t.OwnerID)
+		if lookupErr != nil {
+			return nil, 0, 0, lookupErr
+		}
+		if !botUser.IsBotOwnedBy(caller) {
+			return nil, 0, 0, &user.ErrBotNotOwned{UserID: t.OwnerID}
 		}
 		ownerID = t.OwnerID
 	}
@@ -210,7 +194,6 @@ func (t *APIToken) ReadAll(s *xorm.Session, a web.Auth, search string, page int,
 
 	err = s.
 		Where(where).
-		OrderBy("id ASC").
 		Limit(getLimitFromPageIndex(page, perPage)).
 		Find(&tokens)
 	if err != nil {
@@ -253,24 +236,23 @@ func (t *APIToken) Delete(s *xorm.Session, a web.Auth) (err error) {
 	return nil
 }
 
-func (t *APIToken) HasPermission(group, permission string) bool {
-	if t == nil {
+// HasCaldavAccess checks whether the token has the caldav access permission.
+func (t *APIToken) HasCaldavAccess() bool {
+	perms, has := t.APIPermissions["caldav"]
+	if !has {
 		return false
 	}
-	group = canonicalAPITokenGroup(group)
-	for storedGroup, perms := range t.APIPermissions {
-		if canonicalAPITokenGroup(storedGroup) == group && slices.Contains(perms, permission) {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(perms, "access")
 }
 
-func (t *APIToken) HasCaldavAccess() bool { return t.HasPermission("caldav", "access") }
-func (t *APIToken) HasFeedsAccess() bool  { return t.HasPermission("feeds", "access") }
-
-// MCP's transport scope is checked in its handler, independently of the HTTP method.
-func (t *APIToken) HasMCPAccess() bool { return t.HasPermission("mcp", "access") }
+// HasFeedsAccess checks whether the token has the feeds access permission.
+func (t *APIToken) HasFeedsAccess() bool {
+	perms, has := t.APIPermissions["feeds"]
+	if !has {
+		return false
+	}
+	return slices.Contains(perms, "access")
+}
 
 // GetTokenFromTokenString returns the full token object from the original token string,
 // backfilling token_sha256 when the token was only found via the legacy pbkdf2 path.

@@ -18,12 +18,10 @@ package models
 
 import (
 	"code.vikunja.io/api/pkg/config"
-	"code.vikunja.io/api/pkg/db"
 	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/notifications"
 	"code.vikunja.io/api/pkg/user"
 
-	"xorm.io/builder"
 	"xorm.io/xorm"
 )
 
@@ -88,26 +86,12 @@ func SetUserStatusAsAdmin(s *xorm.Session, doer *user.User, id int64, status use
 		}
 	}
 
-	if err := ChangeUserStatus(s, doer, target, status); err != nil {
-		return nil, err
-	}
-	return target, nil
-}
-
-// ChangeUserStatus skips the last-admin guard.
-func ChangeUserStatus(s *xorm.Session, doer *user.User, target *user.User, status user.Status) error {
 	oldStatus := target.Status
 	if err := user.SetUserStatus(s, target, status); err != nil {
-		return err
+		return nil, err
 	}
-	// Reflect the change on the caller's struct; GetUserByID refuses disabled accounts.
+	// Reflect the change on the returned struct; GetUserByID refuses disabled accounts.
 	target.Status = status
-
-	if status != user.StatusActive {
-		if err := DeleteAllUserSessions(s, target.ID); err != nil {
-			return err
-		}
-	}
 
 	events.DispatchOnCommit(s, &AdminUserStatusChangedEvent{
 		User:      target,
@@ -115,7 +99,7 @@ func ChangeUserStatus(s *xorm.Session, doer *user.User, target *user.User, statu
 		OldStatus: oldStatus,
 		NewStatus: status,
 	})
-	return nil
+	return target, nil
 }
 
 // SetUserPasswordAsAdmin sets a new password for a local account and
@@ -210,16 +194,11 @@ func DeleteUserAsAdmin(s *xorm.Session, doer *user.User, id int64, mode string) 
 func ListUsersAsAdmin(s *xorm.Session, doer *user.User, search string, page, perPage int) ([]*user.User, int64, error) {
 	events.DispatchOnCommit(s, &AdminUsersListedEvent{Doer: doer})
 
-	query := s.Limit(perPage, (page-1)*perPage)
+	query := s.Limit(perPage, (page-1)*perPage).OrderBy("id ASC")
 	if search != "" {
-		query = query.Where(builder.Or(
-			db.ILIKE("username", search),
-			db.ILIKE("email", search),
-		))
-		order, args := db.SearchRelevanceOrder(search, "username", "email")
-		query = query.OrderBy(order, args...)
+		q := "%" + search + "%"
+		query = query.Where("username LIKE ? OR email LIKE ?", q, q)
 	}
-	query = query.OrderBy("id ASC")
 
 	var users []*user.User
 	total, err := query.FindAndCount(&users)

@@ -65,16 +65,9 @@ func RegisterUser(ctx context.Context, in *UserRegister) (*user.User, error) {
 		return nil, err
 	}
 
-	if err := CommitRegistration(ctx, s); err != nil {
-		return nil, err
-	}
-	return newUser, nil
-}
-
-func CommitRegistration(ctx context.Context, s *xorm.Session) error {
 	if err := s.Commit(); err != nil {
 		_ = s.Rollback()
-		return err
+		return nil, err
 	}
 
 	events.DispatchPending(ctx, s)
@@ -87,7 +80,7 @@ func CommitRegistration(ctx context.Context, s *xorm.Session) error {
 		}
 	}
 
-	return nil
+	return newUser, nil
 }
 
 // AuthenticateUserCredentials verifies a login against local (and, if configured,
@@ -215,35 +208,36 @@ func LogoutSession(sid string) (endSessionURL string, err error) {
 
 	s := db.NewSession()
 	defer s.Close()
-	defer events.CleanupPending(s)
 
+	// Read before deleting so the stored id_token survives for the logout URL.
 	// A missing session just means there is nothing to log out.
-	session, err := models.DeleteSessionByID(s, sid)
-	if models.IsErrSessionNotFound(err) {
-		return "", nil
-	}
-	if err != nil {
+	session, err := models.GetSessionByID(s, sid)
+	if err != nil && !models.IsErrSessionNotFound(err) {
 		_ = s.Rollback()
 		return "", err
 	}
-	if session.OIDCProviderKey != "" {
+	if session != nil && session.OIDCProviderKey != "" {
 		url, buildErr := openid.BuildEndSessionURL(session.OIDCProviderKey, &models.SessionOIDCData{
 			IDToken:     session.OIDCIDToken,
 			ProviderKey: session.OIDCProviderKey,
 		})
 		if buildErr != nil {
-			// A failed URL build must not block logout.
+			// A failed URL build must not block logout; the session is still deleted below.
 			log.Errorf("Could not build OIDC end-session URL for session %s: %v", sid, buildErr)
 		} else {
 			endSessionURL = url
 		}
 	}
 
+	if _, err := s.Where("id = ?", sid).Delete(&models.Session{}); err != nil {
+		_ = s.Rollback()
+		return "", err
+	}
+
 	if err := s.Commit(); err != nil {
 		_ = s.Rollback()
 		return "", err
 	}
-	events.DispatchPending(context.Background(), s)
 
 	return endSessionURL, nil
 }
@@ -254,7 +248,6 @@ func LogoutSession(sid string) (endSessionURL string, err error) {
 func ResetPassword(reset *user.PasswordReset) error {
 	s := db.NewSession()
 	defer s.Close()
-	defer events.CleanupPending(s)
 
 	userID, err := user.ResetPassword(s, reset)
 	if err != nil {
@@ -267,11 +260,7 @@ func ResetPassword(reset *user.PasswordReset) error {
 		return err
 	}
 
-	if err := s.Commit(); err != nil {
-		return err
-	}
-	events.DispatchPending(context.Background(), s)
-	return nil
+	return s.Commit()
 }
 
 // RequestPasswordResetToken issues a password-reset token for the account with

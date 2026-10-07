@@ -1,0 +1,836 @@
+{
+  "nativeFrontendTree": "a7d6970ef57cec104f6b56a5c0d2d09d33ff3474",
+  "vueCommit": "5d22d730aa35b0666d0849099c12a1e638baabc9",
+  "datasets": [
+    {
+      "size": 50,
+      "startup": {
+        "native-rc2": {
+          "cold": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 326.0,
+              "p95": 364,
+              "min": 296,
+              "max": 528
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 594.35,
+              "p95": 627.3,
+              "min": 542,
+              "max": 982.1
+            }
+          },
+          "warm": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 140.0,
+              "p95": 172,
+              "min": 116,
+              "max": 224
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 324.45,
+              "p95": 379.6,
+              "min": 291.7,
+              "max": 440.8
+            }
+          }
+        },
+        "vue-upstream": {
+          "cold": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 276.0,
+              "p95": 340,
+              "min": 244,
+              "max": 384
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 676.05,
+              "p95": 865.5,
+              "min": 626.8,
+              "max": 945.9
+            }
+          },
+          "warm": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 150.0,
+              "p95": 180,
+              "min": 132,
+              "max": 200
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 428.1,
+              "p95": 471.2,
+              "min": 377.4,
+              "max": 508.7
+            }
+          }
+        }
+      },
+      "interactions": {
+        "native-rc2": {
+          "editor-enter-discard": {
+            "n": 20,
+            "median": 235.59,
+            "p95": 276.21,
+            "min": 196.62,
+            "max": 279.34
+          },
+          "kanban-ready": {
+            "n": 20,
+            "median": 320.22,
+            "p95": 363.11,
+            "min": 273.22,
+            "max": 392.92
+          },
+          "search-results": {
+            "n": 20,
+            "median": 537.78,
+            "p95": 628.35,
+            "min": 461.87,
+            "max": 629.06
+          },
+          "task-open": {
+            "n": 20,
+            "median": 1150.0,
+            "p95": 1283.29,
+            "min": 1074.25,
+            "max": 1328.65
+          }
+        },
+        "vue-upstream": {
+          "editor-enter-discard": {
+            "n": 20,
+            "median": 628.28,
+            "p95": 739.99,
+            "min": 563.33,
+            "max": 828.36
+          },
+          "kanban-ready": {
+            "n": 20,
+            "median": 463.1,
+            "p95": 511.81,
+            "min": 383.71,
+            "max": 512.26
+          },
+          "search-results": {
+            "n": 20,
+            "median": 415.15,
+            "p95": 530.66,
+            "min": 379.9,
+            "max": 546.2
+          },
+          "task-open": {
+            "n": 20,
+            "median": 3370.22,
+            "p95": 3690.11,
+            "min": 3128.74,
+            "max": 3968.39
+          }
+        }
+      },
+      "retention": {
+        "native-rc2": [
+          {
+            "cycle": 0,
+            "heapMiB": {
+              "n": 3,
+              "median": 12.85,
+              "p95": 12.85,
+              "min": 12.85,
+              "max": 12.85
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7581,
+              "p95": 7581,
+              "min": 7581,
+              "max": 7581
+            },
+            "listeners": {
+              "n": 3,
+              "median": 867,
+              "p95": 867,
+              "min": 867,
+              "max": 867
+            }
+          },
+          {
+            "cycle": 10,
+            "heapMiB": {
+              "n": 3,
+              "median": 15.05,
+              "p95": 15.05,
+              "min": 15.05,
+              "max": 15.05
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7581,
+              "p95": 7581,
+              "min": 7581,
+              "max": 7581
+            },
+            "listeners": {
+              "n": 3,
+              "median": 867,
+              "p95": 867,
+              "min": 867,
+              "max": 867
+            }
+          },
+          {
+            "cycle": 20,
+            "heapMiB": {
+              "n": 3,
+              "median": 15.4,
+              "p95": 15.4,
+              "min": 15.39,
+              "max": 15.4
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7581,
+              "p95": 7581,
+              "min": 7581,
+              "max": 7581
+            },
+            "listeners": {
+              "n": 3,
+              "median": 867,
+              "p95": 867,
+              "min": 867,
+              "max": 867
+            }
+          },
+          {
+            "cycle": 30,
+            "heapMiB": {
+              "n": 3,
+              "median": 15.54,
+              "p95": 15.54,
+              "min": 15.54,
+              "max": 15.54
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7581,
+              "p95": 7581,
+              "min": 7581,
+              "max": 7581
+            },
+            "listeners": {
+              "n": 3,
+              "median": 867,
+              "p95": 867,
+              "min": 867,
+              "max": 867
+            }
+          }
+        ],
+        "vue-upstream": [
+          {
+            "cycle": 0,
+            "heapMiB": {
+              "n": 3,
+              "median": 56.84,
+              "p95": 56.84,
+              "min": 56.84,
+              "max": 56.84
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20403,
+              "p95": 20403,
+              "min": 20403,
+              "max": 20403
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3096,
+              "p95": 3096,
+              "min": 3096,
+              "max": 3096
+            }
+          },
+          {
+            "cycle": 10,
+            "heapMiB": {
+              "n": 3,
+              "median": 66.51,
+              "p95": 66.51,
+              "min": 66.51,
+              "max": 66.51
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20399,
+              "p95": 20399,
+              "min": 20399,
+              "max": 20399
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3095,
+              "p95": 3095,
+              "min": 3095,
+              "max": 3095
+            }
+          },
+          {
+            "cycle": 20,
+            "heapMiB": {
+              "n": 3,
+              "median": 66.61,
+              "p95": 66.61,
+              "min": 66.61,
+              "max": 66.61
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20403,
+              "p95": 20403,
+              "min": 20403,
+              "max": 20403
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3096,
+              "p95": 3096,
+              "min": 3096,
+              "max": 3096
+            }
+          },
+          {
+            "cycle": 30,
+            "heapMiB": {
+              "n": 3,
+              "median": 71.01,
+              "p95": 71.01,
+              "min": 71.01,
+              "max": 71.01
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 24773,
+              "p95": 24773,
+              "min": 24773,
+              "max": 24773
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3738,
+              "p95": 3738,
+              "min": 3738,
+              "max": 3738
+            }
+          }
+        ]
+      },
+      "api": {
+        "native-rc2": {
+          "responses": 1115,
+          "errors": [],
+          "decodedBytes": 10551857,
+          "bodyUnavailable": 0,
+          "arrayCardinalities": {
+            "0": 93,
+            "1": 116,
+            "50": 159,
+            "2": 112
+          }
+        },
+        "vue-upstream": {
+          "responses": 1234,
+          "errors": [],
+          "decodedBytes": 10539829,
+          "bodyUnavailable": 0,
+          "arrayCardinalities": {
+            "1": 116,
+            "0": 93,
+            "50": 159,
+            "2": 112
+          }
+        }
+      }
+    },
+    {
+      "size": 500,
+      "startup": {
+        "native-rc2": {
+          "cold": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 320.0,
+              "p95": 364,
+              "min": 272,
+              "max": 424
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 592.8,
+              "p95": 687.6,
+              "min": 527.5,
+              "max": 787.8
+            }
+          },
+          "warm": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 144.0,
+              "p95": 188,
+              "min": 128,
+              "max": 204
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 334.7,
+              "p95": 417.3,
+              "min": 307.3,
+              "max": 434.9
+            }
+          }
+        },
+        "vue-upstream": {
+          "cold": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 284.0,
+              "p95": 312,
+              "min": 224,
+              "max": 340
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 717.35,
+              "p95": 776.6,
+              "min": 613.8,
+              "max": 860.9
+            }
+          },
+          "warm": {
+            "fcp_ms": {
+              "n": 20,
+              "median": 156.0,
+              "p95": 168,
+              "min": 132,
+              "max": 200
+            },
+            "ready_ms": {
+              "n": 20,
+              "median": 428.55,
+              "p95": 511.5,
+              "min": 393.2,
+              "max": 577.7
+            }
+          }
+        }
+      },
+      "interactions": {
+        "native-rc2": {
+          "editor-enter-discard": {
+            "n": 20,
+            "median": 230.37,
+            "p95": 264.48,
+            "min": 213.71,
+            "max": 265.97
+          },
+          "kanban-ready": {
+            "n": 20,
+            "median": 297.84,
+            "p95": 331.27,
+            "min": 264.1,
+            "max": 361.12
+          },
+          "search-results": {
+            "n": 20,
+            "median": 511.75,
+            "p95": 597.5,
+            "min": 478.15,
+            "max": 652.32
+          },
+          "task-open": {
+            "n": 20,
+            "median": 1121.59,
+            "p95": 1199.56,
+            "min": 1033.12,
+            "max": 1211.52
+          }
+        },
+        "vue-upstream": {
+          "editor-enter-discard": {
+            "n": 20,
+            "median": 614.08,
+            "p95": 667.31,
+            "min": 544.88,
+            "max": 729.95
+          },
+          "kanban-ready": {
+            "n": 20,
+            "median": 445.62,
+            "p95": 524.61,
+            "min": 341.51,
+            "max": 662.11
+          },
+          "search-results": {
+            "n": 20,
+            "median": 423.05,
+            "p95": 513.93,
+            "min": 396.52,
+            "max": 531.45
+          },
+          "task-open": {
+            "n": 20,
+            "median": 3363.98,
+            "p95": 3601.48,
+            "min": 3179.24,
+            "max": 3748.91
+          }
+        }
+      },
+      "retention": {
+        "native-rc2": [
+          {
+            "cycle": 0,
+            "heapMiB": {
+              "n": 3,
+              "median": 12.44,
+              "p95": 12.44,
+              "min": 12.44,
+              "max": 12.44
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7646,
+              "p95": 7646,
+              "min": 7646,
+              "max": 7646
+            },
+            "listeners": {
+              "n": 3,
+              "median": 871,
+              "p95": 871,
+              "min": 871,
+              "max": 871
+            }
+          },
+          {
+            "cycle": 10,
+            "heapMiB": {
+              "n": 3,
+              "median": 14.41,
+              "p95": 14.41,
+              "min": 14.41,
+              "max": 14.41
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7648,
+              "p95": 7648,
+              "min": 7648,
+              "max": 7648
+            },
+            "listeners": {
+              "n": 3,
+              "median": 871,
+              "p95": 871,
+              "min": 871,
+              "max": 871
+            }
+          },
+          {
+            "cycle": 20,
+            "heapMiB": {
+              "n": 3,
+              "median": 15.33,
+              "p95": 15.33,
+              "min": 15.33,
+              "max": 15.33
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7648,
+              "p95": 7648,
+              "min": 7648,
+              "max": 7648
+            },
+            "listeners": {
+              "n": 3,
+              "median": 871,
+              "p95": 871,
+              "min": 871,
+              "max": 871
+            }
+          },
+          {
+            "cycle": 30,
+            "heapMiB": {
+              "n": 3,
+              "median": 14.45,
+              "p95": 15.74,
+              "min": 14.45,
+              "max": 15.74
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 7648,
+              "p95": 7648,
+              "min": 7648,
+              "max": 7648
+            },
+            "listeners": {
+              "n": 3,
+              "median": 871,
+              "p95": 871,
+              "min": 871,
+              "max": 871
+            }
+          }
+        ],
+        "vue-upstream": [
+          {
+            "cycle": 0,
+            "heapMiB": {
+              "n": 3,
+              "median": 57.12,
+              "p95": 57.12,
+              "min": 57.12,
+              "max": 57.12
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20501,
+              "p95": 20501,
+              "min": 20501,
+              "max": 20501
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3104,
+              "p95": 3104,
+              "min": 3104,
+              "max": 3104
+            }
+          },
+          {
+            "cycle": 10,
+            "heapMiB": {
+              "n": 3,
+              "median": 63.58,
+              "p95": 63.58,
+              "min": 63.58,
+              "max": 63.58
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20501,
+              "p95": 20501,
+              "min": 20501,
+              "max": 20501
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3104,
+              "p95": 3104,
+              "min": 3104,
+              "max": 3104
+            }
+          },
+          {
+            "cycle": 20,
+            "heapMiB": {
+              "n": 3,
+              "median": 63.71,
+              "p95": 63.71,
+              "min": 63.71,
+              "max": 63.71
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20501,
+              "p95": 20501,
+              "min": 20501,
+              "max": 20501
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3104,
+              "p95": 3104,
+              "min": 3104,
+              "max": 3104
+            }
+          },
+          {
+            "cycle": 30,
+            "heapMiB": {
+              "n": 3,
+              "median": 64.01,
+              "p95": 64.01,
+              "min": 64.01,
+              "max": 64.01
+            },
+            "documents": {
+              "n": 3,
+              "median": 3,
+              "p95": 3,
+              "min": 3,
+              "max": 3
+            },
+            "nodes": {
+              "n": 3,
+              "median": 20497,
+              "p95": 20497,
+              "min": 20497,
+              "max": 20497
+            },
+            "listeners": {
+              "n": 3,
+              "median": 3103,
+              "p95": 3103,
+              "min": 3103,
+              "max": 3103
+            }
+          }
+        ]
+      },
+      "api": {
+        "native-rc2": {
+          "responses": 1115,
+          "errors": [],
+          "decodedBytes": 10553985,
+          "bodyUnavailable": 0,
+          "arrayCardinalities": {
+            "0": 93,
+            "1": 116,
+            "50": 159,
+            "2": 112
+          }
+        },
+        "vue-upstream": {
+          "responses": 1232,
+          "errors": [],
+          "decodedBytes": 10540353,
+          "bodyUnavailable": 0,
+          "arrayCardinalities": {
+            "1": 116,
+            "0": 93,
+            "50": 159,
+            "2": 112
+          }
+        }
+      }
+    }
+  ]
+}

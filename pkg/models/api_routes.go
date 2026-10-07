@@ -43,12 +43,6 @@ func init() {
 			Method: "ANY",
 		},
 	}
-	apiTokenRoutesV2["mcp"] = APITokenRoute{
-		"access": &RouteDetail{
-			Path:   "/api/v2/mcp",
-			Method: http.MethodPost,
-		},
-	}
 	apiTokenRoutes["feeds"] = APITokenRoute{
 		"access": &RouteDetail{
 			Path:   "/feeds/*",
@@ -261,8 +255,6 @@ func CollectRoutesForAPITokenUsage(route echo.RouteInfo, requiresJWT bool) {
 		routeGroupName == "tokens" ||
 		routeGroupName == "*" ||
 		routeGroupName == "oauth_authorize" ||
-		routeGroupName == "mcp" ||
-		strings.HasPrefix(routeGroupName, "mcp_") ||
 		strings.HasPrefix(routeGroupName, "user_") {
 		return
 	}
@@ -366,17 +358,18 @@ func CollectRoutesForAPITokenUsage(route echo.RouteInfo, requiresJWT bool) {
 
 }
 
-// Keep discovery in sync with the request-time license gates.
-func licenseFeaturesForRoute(path string) []license.Feature {
+// licenseFeatureForRoute maps a route path to the license feature whose
+// request-time gate 404s it. Gated routes are always registered (the gates
+// react to license changes at runtime), so this must stay in sync with
+// timeTrackingGate and gateV2AdminRoutes in pkg/routes.
+func licenseFeatureForRoute(path string) (license.Feature, bool) {
 	switch {
-	case strings.HasPrefix(path, "/api/v2/admin/invite-links"), path == "/api/v2/admin/teams":
-		return []license.Feature{license.FeatureAdminPanel, license.FeatureUserInvites}
 	case strings.HasPrefix(path, "/api/v1/admin/"), strings.HasPrefix(path, "/api/v2/admin/"):
-		return []license.Feature{license.FeatureAdminPanel}
+		return license.FeatureAdminPanel, true
 	case strings.Contains(path, "/time-entries"):
-		return []license.Feature{license.FeatureTimeTracking}
+		return license.FeatureTimeTracking, true
 	}
-	return nil
+	return license.FeatureUnknown, false
 }
 
 // GetAPITokenRoutes exposes the registered scoped-token routes for the /routes
@@ -392,7 +385,7 @@ func GetAPITokenRoutes() map[string]APITokenRoute {
 	merged := make(map[string]APITokenRoute, len(apiTokenRoutes))
 	featureEnabled := make(map[license.Feature]bool)
 	add := func(group, perm string, rd *RouteDetail) {
-		for _, feature := range licenseFeaturesForRoute(rd.Path) {
+		if feature, gated := licenseFeatureForRoute(rd.Path); gated {
 			enabled, checked := featureEnabled[feature]
 			if !checked {
 				enabled = license.IsFeatureEnabled(feature)
@@ -464,11 +457,6 @@ func CanDoAPIRoute(c *echo.Context, token *APIToken) (can bool) {
 	return expandScopesSatisfied(c, token, path, method)
 }
 
-// CanUseRoute checks route scopes; query-dependent expand scopes stay in CanDoAPIRoute.
-func (t *APIToken) CanUseRoute(path, method string) bool {
-	return t != nil && tokenAuthorizesRoute(t, path, method)
-}
-
 func tokenAuthorizesRoute(token *APIToken, path, method string) bool {
 	for rawGroup, perms := range token.APIPermissions {
 		group := canonicalAPITokenGroup(rawGroup)
@@ -515,21 +503,11 @@ var expandScopeRoutes = map[string]bool{
 	"/api/v1/projects/:project/views/:view/tasks":         true,
 	"/api/v1/projects/:project/views/:view/buckets":       true,
 	"/api/v2/tasks":                                       true,
-	"/api/v2/tasks/:task":                                 true,
+	"/api/v2/tasks/:projecttask":                          true,
 	"/api/v2/projects/:project/tasks":                     true,
 	"/api/v2/projects/:project/tasks/by-index/:index":     true,
 	"/api/v2/projects/:project/views/:view/tasks":         true,
 	"/api/v2/projects/:project/views/:view/buckets/tasks": true,
-}
-
-// ExpandScopeRoutes exposes the keys so pkg/webtests can assert they still match
-// registered echo routes; pkg/models cannot import pkg/routes to check itself.
-func ExpandScopeRoutes() []string {
-	paths := make([]string, 0, len(expandScopeRoutes))
-	for path := range expandScopeRoutes {
-		paths = append(paths, path)
-	}
-	return paths
 }
 
 func requiredScopeForExpand(value string) (group, permission string, needsScope bool) {

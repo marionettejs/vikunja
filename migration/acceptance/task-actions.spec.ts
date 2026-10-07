@@ -1,0 +1,80 @@
+import {test,expect} from './fixtures'
+import {ProjectFactory} from '../../frontend/tests/factories/project'
+import {TaskFactory} from '../../frontend/tests/factories/task'
+import {createDefaultViews} from '../../frontend/tests/e2e/project/prepareProjects'
+test.beforeEach(async()=>{
+ await ProjectFactory.create(1,{title:'Action project'});await createDefaultViews(1)
+ await TaskFactory.create(1,{title:'Action task',project_id:1,description:'Description to duplicate'})
+})
+for(const width of [1440,390]){
+ test(`task subscription duplication draft flush deletion and cancel ${width}`,async({authenticatedPage:page,apiContext,userToken},info)=>{
+  await page.setViewportSize({width,height:900});await page.goto('/tasks/1')
+  if(width===390){const banner=page.locator('.add-to-home-screen');await expect(banner).toBeVisible();await banner.getByRole('button',{name:'Close banner',exact:true}).click();await expect(banner).not.toBeVisible()}
+  const headers={Authorization:`Bearer ${userToken}`},actions=page.locator('.task-view .action-buttons, .task-view .native-task-actions').last()
+  await actions.getByRole('button',{name:'Subscribe',exact:true}).click()
+  await expect(actions.getByRole('button',{name:'Unsubscribe',exact:true})).toBeVisible()
+  let response=await apiContext.get('tasks/1',{headers});expect((await response.json()).subscription).toMatchObject({entity:'task',entity_id:1})
+  await page.reload();await actions.getByRole('button',{name:'Unsubscribe',exact:true}).click()
+  await expect(actions.getByRole('button',{name:'Subscribe',exact:true})).toBeVisible()
+  response=await apiContext.get('tasks/1',{headers});expect(await response.json()).not.toHaveProperty('subscription')
+  const title=page.locator('.task-view h1.title.input');await title.fill('Duplicate latest draft')
+  const createdResponse=page.waitForResponse(response=>/\/tasks\/1\/duplicate$/.test(response.url())&&response.request().method()==='PUT')
+  await actions.getByRole('button',{name:'Duplicate',exact:true}).click()
+  const created=await (await createdResponse).json(),id=created.duplicated_task.id
+  expect(id).not.toBe(1)
+  await expect(page).toHaveURL(new RegExp(`/tasks/${id}$`))
+  await expect(title).toHaveText('Duplicate latest draft')
+  response=await apiContext.get(`tasks/${id}`,{headers});expect(await response.json()).toMatchObject({title:'Duplicate latest draft',description:'Description to duplicate'})
+  await actions.getByRole('button',{name:'Delete',exact:true}).click()
+  const dialog=page.getByRole('dialog').filter({hasText:'Delete this task'})
+  await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:'Cancel',exact:true}).click()
+  await expect(dialog).toHaveCount(0);await expect(actions.getByRole('button',{name:'Delete',exact:true})).toBeFocused();expect((await apiContext.get(`tasks/${id}`,{headers})).ok()).toBeTruthy()
+  await actions.getByRole('button',{name:'Delete',exact:true}).click()
+  await page.screenshot({path:info.outputPath('delete-confirmation.png')})
+  await dialog.getByRole('button',{name:'Do it!',exact:true}).click()
+  await expect(page).toHaveURL(/\/projects\/1/)
+  expect((await apiContext.get(`tasks/${id}`,{headers})).status()).toBe(404)
+  expect((await apiContext.get('tasks/1',{headers})).ok()).toBeTruthy()
+ })
+}
+test('task duplicate retry and cancelled delete preserve the current record',async({authenticatedPage:page,apiContext,userToken})=>{
+ await page.goto('/tasks/1');let attempts=0
+ await page.route('**/tasks/1/duplicate',async route=>{attempts++;if(attempts===1)return route.fulfill({status:503,json:{message:'duplicate unavailable'}});return route.continue()})
+ const actions=page.locator('.task-view .action-buttons, .task-view .native-task-actions').last()
+ await actions.getByRole('button',{name:'Duplicate',exact:true}).click()
+ await expect(page.getByText('duplicate unavailable',{exact:false}).first()).toBeVisible()
+ await expect(actions.getByRole('button',{name:'Duplicate',exact:true})).toBeEnabled()
+ const createdResponse=page.waitForResponse(response=>/\/tasks\/1\/duplicate$/.test(response.url())&&response.request().method()==='PUT')
+ await actions.getByRole('button',{name:'Duplicate',exact:true}).click();const id=(await (await createdResponse).json()).duplicated_task.id;await expect(page).toHaveURL(new RegExp(`/tasks/${id}$`));expect(attempts).toBe(2)
+ let release!:()=>void,deleteCalls=0
+ await page.route(`**/tasks/${id}`,async route=>{if(route.request().method()!=='DELETE')return route.continue();deleteCalls++;await new Promise<void>(ready=>release=ready);await route.fulfill({json:{message:'held fixture deletion'}}).catch(()=>{})})
+ await actions.getByRole('button',{name:'Delete',exact:true}).click()
+ const dialog=page.getByRole('dialog').filter({hasText:'Delete this task'})
+ await dialog.getByRole('button',{name:'Do it!',exact:true}).click();await expect.poll(()=>Boolean(release)).toBeTruthy()
+ await dialog.getByRole('button',{name:'Cancel',exact:true}).click();release()
+ await expect(dialog).toHaveCount(0);await expect(page).toHaveURL(new RegExp(`/tasks/${id}$`))
+ await expect(actions.getByRole('button',{name:'Delete',exact:true})).toBeEnabled();await expect(actions.getByRole('button',{name:'Delete',exact:true})).toBeFocused();expect(deleteCalls).toBe(1)
+ expect((await apiContext.get(`tasks/${id}`,{headers:{Authorization:`Bearer ${userToken}`}})).ok()).toBeTruthy()
+})
+test('task keyboard actions skip editable drafts and destroy shortcut listeners on navigation',async({authenticatedPage:page})=>{
+ await page.goto('/tasks/1');const title=page.locator('.task-view h1.title.input')
+ await title.fill('Draft remains');await title.press('t');await expect(page.getByRole('button',{name:'Mark task done!',exact:true})).toBeVisible()
+ await title.press('Escape');await page.locator('.task-id').click();await page.keyboard.press('t')
+ await expect(page.getByRole('button',{name:'Mark as undone',exact:true})).toBeVisible()
+ await page.keyboard.press('Delete')
+ const dialog=page.getByRole('dialog').filter({hasText:'Delete this task'})
+ await expect(dialog).toBeVisible();await page.keyboard.press('t');await expect(page.getByRole('button',{name:'Mark as undone',exact:true})).toBeVisible();await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0)
+ await page.getByRole('link',{name:'Projects',exact:true}).click();await page.keyboard.press('Delete');await expect(page.getByRole('dialog')).toHaveCount(0)
+})
+test('deleting a task modal returns to its project and refreshes the underlying list',async({authenticatedPage:page,apiContext,userToken})=>{
+ await page.goto('/projects/1/1')
+ await page.locator('.tasks .tasktext').filter({hasText:'Action task'}).click()
+ await expect(page).toHaveURL(/\/tasks\/1/)
+ const actions=page.locator('.task-view .action-buttons, .task-view .native-task-actions').last()
+ await actions.getByRole('button',{name:'Delete',exact:true}).click()
+ await page.getByRole('dialog').filter({hasText:'Delete this task'}).getByRole('button',{name:'Do it!',exact:true}).click()
+ await expect(page).toHaveURL(/\/projects\/1\/1/)
+ await expect(page.locator('.tasks .tasktext').filter({hasText:'Action task'})).toHaveCount(0)
+ expect((await apiContext.get('tasks/1',{headers:{Authorization:`Bearer ${userToken}`}})).status()).toBe(404)
+ await page.keyboard.press('Delete');await expect(page.getByRole('dialog')).toHaveCount(0)
+})

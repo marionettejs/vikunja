@@ -10,11 +10,11 @@ test.describe('Quick add default reminders', () => {
 	test('Auto-attaches default reminder when quick add task has a due date', async ({page, apiContext}) => {
 		const user = (await UserFactory.create(1, {
 			frontend_settings: JSON.stringify({
-				quick_add_default_reminders: [
+				quickAddDefaultReminders: [
 					{
 						reminder: null,
-						relative_period: -2 * SECONDS_A_HOUR,
-						relative_to: REMINDER_PERIOD_RELATIVE_TO_TYPES.DUEDATE,
+						relativePeriod: -2 * SECONDS_A_HOUR,
+						relativeTo: REMINDER_PERIOD_RELATIVE_TO_TYPES.DUEDATE,
 					},
 				],
 			}),

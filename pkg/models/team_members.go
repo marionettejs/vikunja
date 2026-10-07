@@ -114,19 +114,7 @@ func (tm *TeamMember) Delete(s *xorm.Session, a web.Auth) (err error) {
 	}
 	tm.UserID = user.ID
 
-	deleted, err := s.Where("team_id = ? AND user_id = ?", tm.TeamID, tm.UserID).Delete(&TeamMember{})
-	if err != nil {
-		return err
-	}
-	if deleted == 0 {
-		return nil
-	}
-
-	projectIDs, err := teamProjectIDs(s, tm.TeamID)
-	if err != nil {
-		return err
-	}
-	err = cleanupAfterProjectAccessLoss(s, tm.UserID, projectIDs)
+	_, err = s.Where("team_id = ? AND user_id = ?", tm.TeamID, tm.UserID).Delete(&TeamMember{})
 	if err != nil {
 		return err
 	}

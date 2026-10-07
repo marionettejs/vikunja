@@ -50,29 +50,13 @@ test.describe('WebSocket Protocol', () => {
 			expect(result.code).toBe(1008)
 		})
 
-		test('re-authenticates with a token of the same session', async ({userToken}) => {
+		test('rejects double authentication', async ({userToken}) => {
 			const ws = await openWs()
 			try {
 				await authenticateWs(ws, userToken)
 				sendMessage(ws, {action: 'auth', token: userToken})
 				const msg = await waitForMessage(ws)
-				expect(msg).toEqual({action: 'auth.success', success: true})
-			} finally {
-				closeWs(ws)
-			}
-		})
-
-		test('rejects re-authentication with a token of another session', async ({apiContext, userToken, currentUser}) => {
-			// A fresh login creates a new session for the same user
-			const {token: otherSessionToken} = await loginRaw(apiContext, currentUser)
-			const ws = await openWs()
-			try {
-				await authenticateWs(ws, userToken)
-				const closed = new Promise<void>((resolve) => ws.on('close', () => resolve()))
-				sendMessage(ws, {action: 'auth', token: otherSessionToken})
-				const msg = await waitForMessage(ws)
-				expect(msg.error).toBe('invalid_token')
-				await closed
+				expect(msg.error).toBe('already_authenticated')
 			} finally {
 				closeWs(ws)
 			}

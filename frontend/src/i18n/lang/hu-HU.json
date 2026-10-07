@@ -1007,6 +1007,9 @@
 			"newTeam": "Új csapat"
 		}
 	},
+	"date": {
+		"altFormatShort": "j M Y"
+	},
 	"reaction": {
 		"reactedWith": "{user} a következővel reagált: {value}",
 		"reactedWithAnd": "{users} és {lastUser} a következővel reagált: {value}",

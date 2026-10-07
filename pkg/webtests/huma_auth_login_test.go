@@ -24,7 +24,6 @@ import (
 
 	"code.vikunja.io/api/pkg/config"
 	"code.vikunja.io/api/pkg/db"
-	"code.vikunja.io/api/pkg/events"
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/modules/auth"
 	"code.vikunja.io/api/pkg/routes"
@@ -140,8 +139,8 @@ func TestHumaLogin(t *testing.T) {
 	})
 }
 
-// TestHumaLogout proves the v2 logout deletes the session server-side, clears
-// the refresh-token cookie and dispatches the audited logout event.
+// TestHumaLogout proves the v2 logout deletes the session server-side and clears
+// the refresh-token cookie.
 func TestHumaLogout(t *testing.T) {
 	e, err := setupTestEnv()
 	require.NoError(t, err)
@@ -157,14 +156,9 @@ func TestHumaLogout(t *testing.T) {
 	token, err := auth.NewUserJWTAuthtoken(&testuser1, session.ID)
 	require.NoError(t, err)
 
-	events.ClearDispatchedEvents()
 	rec := humaRequest(t, e, http.MethodPost, "/api/v2/logout", "", token, "")
 	require.Equal(t, http.StatusOK, rec.Code, rec.Body.String())
 	assert.Contains(t, rec.Body.String(), "Successfully logged out.")
-
-	dispatched := events.GetDispatchedEvents((&user.LogoutEvent{}).Name())
-	require.Len(t, dispatched, 1)
-	assert.Equal(t, testuser1.ID, dispatched[0].(*user.LogoutEvent).UserID)
 
 	cookie := refreshCookie(rec)
 	require.NotNil(t, cookie, "logout must clear the refresh cookie")

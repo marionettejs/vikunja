@@ -29,7 +29,6 @@ import (
 	"code.vikunja.io/api/pkg/modules/auth/ldap"
 	"code.vikunja.io/api/pkg/modules/auth/openid"
 	"code.vikunja.io/api/pkg/red"
-	"code.vikunja.io/api/pkg/utils"
 )
 
 // CheckOptionalServices runs the checks for all enabled optional services, passing
@@ -325,8 +324,7 @@ func checkOpenIDProvider(key string, rawProvider interface{}) (CheckResult, stri
 		}, ""
 	}
 
-	client := utils.NewUnguardedHTTPClient()
-	client.Timeout = 5 * time.Second
+	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Do(req) // #nosec G704 -- URL is from configured OIDC provider endpoints
 	if err != nil {
 		return CheckResult{

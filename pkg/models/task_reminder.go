@@ -17,7 +17,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"code.vikunja.io/api/pkg/config"
@@ -64,9 +63,8 @@ func (TaskReminder) TableName() string {
 }
 
 type taskUser struct {
-	Task       *Task      `xorm:"extends"`
-	User       *user.User `xorm:"extends"`
-	IsAssignee bool
+	Task *Task      `xorm:"extends"`
+	User *user.User `xorm:"extends"`
 }
 
 const dbTimeFormat = `2006-01-02 15:04:05`
@@ -97,9 +95,8 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 	// user_id -> project_id -> has read access
 	userPermissionOnProject := make(map[int64]map[int64]bool)
 
-	// First hit per (task, user) wins, so assignees must be appended first.
 	seen := make(map[int64]map[int64]struct{})
-	appendUser := func(taskID int64, u *user.User, isAssignee bool) (err error) {
+	appendUser := func(taskID int64, u *user.User) (err error) {
 		if u == nil {
 			return
 		}
@@ -141,7 +138,7 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 			return
 		}
 
-		taskUsers = append(taskUsers, &taskUser{Task: task, User: u, IsAssignee: isAssignee})
+		taskUsers = append(taskUsers, &taskUser{Task: task, User: u})
 
 		return
 	}
@@ -160,9 +157,25 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 		conditions = append(conditions, cond)
 	}
 
+	creators := []*userWithTask{}
+	err = s.Table("tasks").
+		Select("DISTINCT tasks.id AS task_id, users.id, users.name, users.username, users.email, users.email_reminders_enabled, users.overdue_tasks_reminders_enabled, users.overdue_tasks_reminders_time, users.language, users.timezone, users.created, users.updated").
+		Join("INNER", "users", "tasks.created_by_id = users.id").
+		Where(builder.And(conditions...)).
+		Find(&creators)
+	if err != nil {
+		return
+	}
+
+	for _, creator := range creators {
+		err = appendUser(creator.TaskID, &creator.User)
+		if err != nil {
+			return
+		}
+	}
+
 	assigneeConds := []builder.Cond{
 		builder.In("task_assignees.task_id", taskIDs),
-		builder.Eq{"users.status": user.StatusActive},
 	}
 	if cond != nil {
 		assigneeConds = append(assigneeConds, cond)
@@ -179,24 +192,7 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 	}
 
 	for i := range assignees {
-		err = appendUser(assignees[i].TaskID, &assignees[i].User, true)
-		if err != nil {
-			return
-		}
-	}
-
-	creators := []*userWithTask{}
-	err = s.Table("tasks").
-		Select("DISTINCT tasks.id AS task_id, users.id, users.name, users.username, users.email, users.email_reminders_enabled, users.overdue_tasks_reminders_enabled, users.overdue_tasks_reminders_time, users.language, users.timezone, users.created, users.updated").
-		Join("INNER", "users", "tasks.created_by_id = users.id").
-		Where(builder.And(conditions...)).
-		Find(&creators)
-	if err != nil {
-		return
-	}
-
-	for _, creator := range creators {
-		err = appendUser(creator.TaskID, &creator.User, false)
+		err = appendUser(assignees[i].TaskID, &assignees[i].User)
 		if err != nil {
 			return
 		}
@@ -236,7 +232,7 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 			if !has {
 				continue
 			}
-			err = appendUser(taskID, u, false)
+			err = appendUser(taskID, u)
 			if err != nil {
 				return
 			}
@@ -246,7 +242,7 @@ func getTaskUsersForTasks(s *xorm.Session, taskIDs []int64, cond builder.Cond) (
 	return
 }
 
-func getTasksWithRemindersDueAndTheirUsers(s *xorm.Session, now time.Time) (reminderNotifications []*ReminderDueNotification, err error) {
+func getTasksWithRemindersDueAndTheirUsers(s *xorm.Session, now time.Time, cond builder.Cond) (reminderNotifications []*ReminderDueNotification, err error) {
 	now = utils.GetTimeWithoutNanoSeconds(now)
 	reminderNotifications = []*ReminderDueNotification{}
 
@@ -281,7 +277,7 @@ func getTasksWithRemindersDueAndTheirUsers(s *xorm.Session, now time.Time) (remi
 		return
 	}
 
-	usersWithReminders, err := getTaskUsersForTasks(s, taskIDs, nil)
+	usersWithReminders, err := getTaskUsersForTasks(s, taskIDs, cond)
 	if err != nil {
 		return
 	}
@@ -348,49 +344,17 @@ func getTasksWithRemindersDueAndTheirUsers(s *xorm.Session, now time.Time) (remi
 	return
 }
 
-// The in-app notification is always stored; ReminderDueNotification.ToMail decides about mail.
-func sendDueReminders(s *xorm.Session, now time.Time, webhookEnabled bool) error {
-	reminders, err := getTasksWithRemindersDueAndTheirUsers(s, now)
-	if err != nil {
-		return fmt.Errorf("could not get tasks with reminders in the next minute: %w", err)
-	}
-
-	if len(reminders) == 0 {
-		return nil
-	}
-
-	log.Debugf("[Task Reminder Cron] Sending %d reminders", len(reminders))
-
-	for _, n := range reminders {
-		err = notifications.Notify(n.User, n, s)
-		if err != nil {
-			return fmt.Errorf("could not notify user %d: %w", n.User.ID, err)
-		}
-
-		if webhookEnabled {
-			err = events.Dispatch(&TaskReminderFiredEvent{
-				Task:     n.Task,
-				User:     n.User,
-				Project:  n.Project,
-				Reminder: n.TaskReminder,
-			})
-			if err != nil {
-				log.Errorf("[Task Reminder Cron] Could not dispatch reminder event for task %d: %s", n.Task.ID, err)
-			}
-		}
-
-		log.Debugf("[Task Reminder Cron] Sent reminder for task %d to user %d", n.Task.ID, n.User.ID)
-	}
-
-	return nil
-}
-
 // RegisterReminderCron registers a cron function which runs every minute to check if any reminders are due the
-// next minute to send notifications.
+// next minute to send emails.
 func RegisterReminderCron() {
 	webhookEnabled := config.WebhooksEnabled.GetBool()
+	emailEnabled := config.ServiceEnableEmailReminders.GetBool() && config.MailerEnabled.GetBool()
 
-	if !config.ServiceEnableEmailReminders.GetBool() || !config.MailerEnabled.GetBool() {
+	if !emailEnabled && !webhookEnabled {
+		return
+	}
+
+	if !emailEnabled {
 		log.Info("Mailer is disabled, not sending reminders per mail")
 	}
 
@@ -401,10 +365,50 @@ func RegisterReminderCron() {
 		s := db.NewSession()
 		defer s.Close()
 
-		if err := sendDueReminders(s, time.Now(), webhookEnabled); err != nil {
-			log.Errorf("[Task Reminder Cron] %s", err)
-			_ = s.Rollback()
+		now := time.Now()
+
+		// When only email is enabled, filter to email-enabled users for efficiency.
+		// When webhooks are enabled, we need all users so the event system can
+		// look up matching webhooks.
+		var cond builder.Cond
+		if emailEnabled && !webhookEnabled {
+			cond = builder.Eq{"users.email_reminders_enabled": true}
+		}
+
+		reminders, err := getTasksWithRemindersDueAndTheirUsers(s, now, cond)
+		if err != nil {
+			log.Errorf("[Task Reminder Cron] Could not get tasks with reminders in the next minute: %s", err)
 			return
+		}
+
+		if len(reminders) == 0 {
+			return
+		}
+
+		log.Debugf("[Task Reminder Cron] Sending %d reminders", len(reminders))
+
+		for _, n := range reminders {
+			if emailEnabled && n.User.EmailRemindersEnabled {
+				err = notifications.Notify(n.User, n, s)
+				if err != nil {
+					log.Errorf("[Task Reminder Cron] Could not notify user %d: %s", n.User.ID, err)
+					return
+				}
+			}
+
+			if webhookEnabled {
+				err = events.Dispatch(&TaskReminderFiredEvent{
+					Task:     n.Task,
+					User:     n.User,
+					Project:  n.Project,
+					Reminder: n.TaskReminder,
+				})
+				if err != nil {
+					log.Errorf("[Task Reminder Cron] Could not dispatch reminder event for task %d: %s", n.Task.ID, err)
+				}
+			}
+
+			log.Debugf("[Task Reminder Cron] Sent reminder for task %d to user %d", n.Task.ID, n.User.ID)
 		}
 
 		if err := s.Commit(); err != nil {

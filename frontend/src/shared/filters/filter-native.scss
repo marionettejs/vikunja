@@ -1,0 +1,310 @@
+// project/partials/FilterPopup.vue
+.native-list-surface {
+
+.card.filter-popup {
+	margin: 0;
+
+	&.is-open {
+		margin: 2rem 0 1rem;
+	}
+}
+
+$filter-bubble-size: .75rem;
+.has-filters {
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		inset-block-start: math.div($filter-bubble-size, -2);
+		inset-inline-end: math.div($filter-bubble-size, -2);
+
+		inline-size: $filter-bubble-size;
+		block-size: $filter-bubble-size;
+		border-radius: 100%;
+		background: var(--primary);
+	}
+}
+
+}
+
+// input/filter/FilterInput.vue
+.native-list-surface {
+
+.filter-input {
+	border: 1px solid var(--input-border-color);
+	border-radius: var(--input-radius);
+	background: var(--white);
+	transition: border-color 0.2s ease;
+
+	&:focus-within {
+		border-color: var(--primary);
+	}
+
+	.filter-datepicker {
+		position: absolute;
+	}
+
+	.ProseMirror {
+		outline: none;
+		white-space: pre-wrap;
+		padding: 0 !important;
+
+		.field {
+			color: var(--code-literal);
+		}
+
+		.operator {
+			color: var(--code-keyword);
+		}
+
+		.value {
+			border-radius: $radius;
+			padding: .125rem .25rem;
+			background: var(--grey-100);
+		}
+
+		.label-value {
+			border-radius: $radius;
+			padding: .125rem .25rem;
+		}
+
+		.date-value {
+			background-color: var(--primary);
+			color: var(--white);
+			border-radius: $radius;
+			padding: 0.125em 0.25em;
+			cursor: pointer;
+			transition: background-color var(--transition);
+
+			&:hover {
+				background-color: var(--primary-dark);
+			}
+		}
+
+		.grouping, .logical {
+			color: var(--code-section);
+		}
+
+		.user-value {
+			position: relative;
+			padding-inline-start: 1.5em;
+
+			&::before {
+				content: attr(data-user);
+				position: absolute;
+				inset-inline-start: 0;
+				inset-block-start: 50%;
+				transform: translateY(-50%);
+				inline-size: 1.2em;
+				block-size: 1.2em;
+				background-color: #3b82f6;
+				color: white;
+				border-radius: 50%;
+				font-size: 0.8em;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				text-transform: uppercase;
+			}
+		}
+
+		p.is-editor-empty:first-child::before {
+			color: var(--grey-500);
+			content: attr(data-placeholder);
+			float: inline-start;
+			block-size: 0;
+			pointer-events: none;
+		}
+	}
+}
+
+.editor-wrapper {
+	position: relative;
+}
+
+.editor-content {
+	line-height: 1.5;
+	padding: .5rem .75rem;
+}
+
+}
+
+// input/filter/FilterCommandsList.vue
+.native-list-surface {
+
+.filter-autocompletes {
+	position: relative;
+	border-radius: $radius;
+	background: var(--white);
+	color: var(--grey-900);
+	overflow: hidden;
+	font-size: 0.875rem;
+	box-shadow: var(--shadow-md);
+	border: 1px solid var(--grey-200);
+	max-block-size: 12rem;
+	overflow-y: auto;
+}
+
+.filter-autocomplete {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	inline-size: 100%;
+	text-align: start;
+	background: transparent;
+	color: inherit;
+	border-radius: $radius;
+	border: 0;
+	padding: 0.375rem 0.5rem;
+	transition: background-color var(--transition);
+	cursor: pointer;
+
+	&.is-selected,
+	&:hover {
+		background: var(--grey-100);
+	}
+
+	&.no-results {
+		color: var(--grey-500);
+		cursor: default;
+
+		&:hover {
+			background: transparent;
+		}
+	}
+}
+
+.filter-autocomplete__content {
+	display: flex;
+	align-items: center;
+	inline-size: 100%;
+}
+
+.filter-autocomplete__label {
+	font-size: 0.75rem;
+}
+
+.filter-autocomplete__user {
+	font-size: 0.875rem;
+}
+
+.filter-autocomplete__project {
+	color: var(--grey-800);
+	font-weight: 500;
+}
+
+}
+
+// date/DatepickerWithValues.vue
+.native-list-surface .datepicker-with-range-container {
+
+position: relative;
+
+.popup {
+	z-index: 10;
+	margin-block-start: 1rem;
+	border-radius: $radius;
+	border: 1px solid var(--grey-200);
+	background-color: var(--white);
+	box-shadow: $shadow;
+
+	&.is-open {
+		inline-size: 500px;
+		block-size: 320px;
+	}
+}
+
+.datepicker-with-range {
+	display: flex;
+	inline-size: 100%;
+	block-size: 100%;
+	position: absolute;
+}
+
+.flatpickr-calendar {
+	margin: 0 auto 8px;
+	box-shadow: none;
+}
+
+.flatpickr-container {
+	inline-size: 70%;
+	border-inline-start: 1px solid var(--grey-200);
+	padding: 1rem;
+	font-size: .9rem;
+
+	// Flatpickr has no option to use it without an input field so we're hiding it instead
+	input.form-control.input {
+		block-size: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.field .control .button {
+		border: 1px solid var(--input-border-color);
+		block-size: 2.25rem;
+
+		&:hover {
+			border: 1px solid var(--input-hover-border-color);
+		}
+	}
+
+	.label, .input, .button {
+		font-size: .9rem;
+	}
+}
+
+.selections {
+	inline-size: 30%;
+	display: flex;
+	flex-direction: column;
+	padding-block-start: .5rem;
+	overflow-y: scroll;
+
+	button {
+		display: block;
+		inline-size: 100%;
+		text-align: start;
+		padding: .5rem 1rem;
+		transition: $transition;
+		font-size: .9rem;
+		color: var(--text);
+		background: transparent;
+		border: 0;
+		cursor: pointer;
+
+		&.is-active {
+			color: var(--primary);
+		}
+
+		&:hover, &.is-active {
+			background-color: var(--grey-100);
+		}
+	}
+}
+
+}
+
+// date/DatemathHelp.vue
+.native-list-surface .how-it-works-modal {
+
+// FIXME: Remove style overwrites
+.how-it-works-modal {
+	font-size: 1rem;
+}
+
+p {
+	display: inline-block !important;
+}
+
+.base-button {
+	display: inline;
+}
+
+}
+
+// Modal's scoped button margins do not apply to the original slotted card footer.
+.native-list-surface .card.filter-popup .card-footer > .button {
+	margin-inline: 0;
+	&:first-child { margin-inline-end: .5rem; }
+}

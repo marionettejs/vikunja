@@ -1,0 +1,118 @@
+.native-navigation {
+
+.list-menu {
+	transition: background-color $transition;
+}
+
+.project-is-collapsed {
+	transform: rotate(-90deg);
+}
+
+.favorite {
+	transition: opacity $transition, color $transition;
+	opacity: 0;
+
+	&:hover,
+	&.is-favorite {
+		opacity: 1;
+		color: var(--warning);
+	}
+}
+
+.list-menu:hover > div > .favorite {
+	opacity: 1;
+}
+
+.list-menu:hover .color-bubble-wrapper > .drag-handle {
+	opacity: 1;
+}
+
+.list-menu:hover .color-bubble-wrapper > .color-bubble {
+	opacity: 0;
+}
+
+.color-bubble-wrapper {
+	position: relative;
+	inline-size: 1rem;
+	block-size: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	margin-inline-end: .25rem;
+	flex-shrink: 0;
+
+	.color-bubble, .icon {
+		transition: all $transition;
+		position: absolute;
+		inline-size: 12px;
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+}
+
+.drag-handle {
+	opacity: 0;
+	cursor: grab;
+	transition: opacity $transition;
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&:active {
+		cursor: grabbing;
+	}
+}
+
+.project-menu-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.saved-filter-icon {
+	color: var(--grey-300) !important;
+	font-size: .75rem;
+}
+
+@media (pointer: coarse) {
+	.drag-handle {
+		display: none !important;
+	}
+
+	.color-bubble {
+		opacity: 1 !important;
+	}
+}
+
+.navigation-item {
+	position: relative;
+	transition: background-color $transition, box-shadow $transition;
+}
+
+.navigation-item:has(*:focus-visible) {
+	box-shadow: 0 0 0 2px hsla(var(--primary-hsl), 0.5);
+	background-color: var(--white);
+
+	.favorite, .menu-list-dropdown {
+		opacity: 1;
+	}
+}
+
+.navigation-item a:focus-visible {
+	// The focus ring is already added to the navigation-item, so we don't need to add it again.
+	box-shadow: none;
+}
+
+.is-drop-target {
+	background-color: hsla(var(--primary-hsl), 0.15);
+	border-radius: $radius;
+
+	.navigation-item {
+		background-color: hsla(var(--primary-hsl), 0.1);
+		box-shadow: inset 0 0 0 2px var(--primary);
+		border-radius: $radius;
+	}
+}
+
+}

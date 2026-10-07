@@ -25,7 +25,6 @@ import (
 	"code.vikunja.io/api/pkg/models"
 	"code.vikunja.io/api/pkg/modules/auth"
 	"code.vikunja.io/api/pkg/modules/auth/openid"
-	"code.vikunja.io/api/pkg/modules/humabridge"
 
 	"github.com/danielgtaylor/huma/v2"
 )
@@ -68,7 +67,7 @@ func authOpenIDCallback(ctx context.Context, in *struct {
 		return nil, translateDomainError(err)
 	}
 
-	if ec := humabridge.EchoContextFrom(ctx); ec != nil {
+	if ec := echoContextFromCtx(ctx); ec != nil {
 		auth.WriteUserAuthCookies(ec, token)
 	}
 

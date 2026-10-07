@@ -1,6 +1,7 @@
 import {describe, it, expect} from 'vitest'
+import {AxiosError} from 'axios'
 
-import {isReportableResourceUrl, redactSensitiveParams, shouldDropEvent, stripNavigationFragment} from './sentryFilters'
+import {shouldDropEvent} from './sentryFilters'
 
 // Object.assign instead of `new Error(msg, {cause})`: the vitest tsconfig
 // targets a lib without the two-argument Error constructor.
@@ -8,54 +9,23 @@ function errorWithCause(message: string, cause: unknown): Error {
 	return Object.assign(new Error(message), {cause})
 }
 
-// happy-dom's DOMException lacks the legacy numeric `code` that browsers set.
-function browserDomException(message: string, name: string, code: number): DOMException {
-	return Object.assign(new DOMException(message, name), {code})
-}
-
 describe('shouldDropEvent', () => {
-	it('drops a plain fetch error', () => {
-		expect(shouldDropEvent(new TypeError('Failed to fetch'))).toBe(true)
+	it('drops a plain AxiosError', () => {
+		expect(shouldDropEvent(new AxiosError('Request failed'))).toBe(true)
 	})
 
-	it('drops an error wrapping a fetch error as cause', () => {
-		expect(shouldDropEvent(errorWithCause('Error renewing token: ', new TypeError('Failed to fetch')))).toBe(true)
+	it('drops an error wrapping an AxiosError as cause', () => {
+		expect(shouldDropEvent(errorWithCause('Error renewing token: ', new AxiosError('Request failed')))).toBe(true)
 	})
 
-	it('drops an error with a fetch error two levels deep', () => {
-		const inner = errorWithCause('inner', new TypeError('Failed to fetch'))
+	it('drops an error with an AxiosError two levels deep', () => {
+		const inner = errorWithCause('inner', new AxiosError('Request failed'))
 
 		expect(shouldDropEvent(errorWithCause('outer', inner))).toBe(true)
 	})
 
 	it('drops an error-like object with code and message', () => {
 		expect(shouldDropEvent({code: 'ECONNABORTED', message: 'timeout'})).toBe(true)
-	})
-
-	it('drops a v1 api error body', () => {
-		expect(shouldDropEvent({code: 1001, message: 'The user does not exist.'})).toBe(true)
-	})
-
-	it('drops a v2 problem body with its detail copied to message', () => {
-		const problem = {status: 400, code: 2002, detail: 'invalid data'}
-
-		expect(shouldDropEvent({...problem, message: problem.detail})).toBe(true)
-	})
-
-	it('drops an error wrapping an api error body as cause', () => {
-		expect(shouldDropEvent(errorWithCause('outer', {code: 1001, message: 'The user does not exist.'}))).toBe(true)
-	})
-
-	it('keeps a DOMException', () => {
-		expect(shouldDropEvent(browserDomException('Failed to execute \'insertBefore\' on \'Node\'', 'NotFoundError', 8))).toBe(false)
-	})
-
-	it('keeps an error wrapping a DOMException as cause', () => {
-		expect(shouldDropEvent(errorWithCause('outer', browserDomException('The operation was aborted.', 'AbortError', 20)))).toBe(false)
-	})
-
-	it('keeps an error with a node-style code', () => {
-		expect(shouldDropEvent(Object.assign(new Error('boom'), {code: 'ERR_SOMETHING'}))).toBe(false)
 	})
 
 	it('keeps a plain error', () => {
@@ -221,131 +191,5 @@ describe('shouldDropEvent with empty events', () => {
 
 	it('keeps an event when no event was passed at all', () => {
 		expect(shouldDropEvent(new Error('something actually broke'))).toBe(false)
-	})
-
-	it('drops a promise rejected with an empty object', () => {
-		expect(shouldDropEvent({}, {
-			exception: {
-				values: [{
-					type: 'UnhandledRejection',
-					value: 'Object captured as promise rejection with keys: [object has no keys]',
-				}],
-			},
-		})).toBe(true)
-	})
-
-	it('keeps a promise rejected with an object that has keys', () => {
-		expect(shouldDropEvent({reason: 'boom'}, {
-			exception: {
-				values: [{
-					type: 'UnhandledRejection',
-					value: 'Object captured as promise rejection with keys: reason',
-				}],
-			},
-		})).toBe(false)
-	})
-})
-
-
-describe('stripNavigationFragment', () => {
-	it.each(['browser.request', 'browser.domContentLoadedEvent', 'navigation.navigate', 'navigation.reload', 'navigation.back_forward'])('removes the original fragment from %s while preserving timing data', op => {
-		const span = {op, description: 'https://example.com/register?lang=en#invite-link=secret', startTimestamp: 1, endTimestamp: 2}
-		expect(stripNavigationFragment(span)).toEqual({...span, description: 'https://example.com/register?lang=en'})
-		expect(span.description).toContain('#invite-link=secret')
-	})
-
-	it.each([null, undefined, {op: 'navigation.navigate'}, {op: 'resource.script', description: 'https://example.com/app.js#hash'}])('preserves other recording data: %j', span => {
-		expect(stripNavigationFragment(span)).toBe(span)
-	})
-})
-
-describe('generated transport errors', () => {
-	it('drops 4xx v2 problems without legacy message fields', () => {
-		expect(shouldDropEvent({status: 404, detail: 'Not found'})).toBe(true)
-	})
-
-	it('drops a rate-limited Echo body once its status is stamped on', () => {
-		expect(shouldDropEvent({
-			message: 'rate limit exceeded',
-			status: 429,
-			detail: 'rate limit exceeded',
-		})).toBe(true)
-	})
-
-	it('reports 5xx v2 problems', () => {
-		expect(shouldDropEvent({status: 500, detail: 'Unavailable'})).toBe(false)
-	})
-
-	it('reports a 5xx Echo body once its status is stamped on', () => {
-		expect(shouldDropEvent({
-			message: 'Internal Server Error',
-			status: 500,
-			detail: 'Internal Server Error',
-		})).toBe(false)
-	})
-
-	it('drops fetch network failures', () => {
-		expect(shouldDropEvent(new TypeError('Failed to fetch'))).toBe(true)
-	})
-})
-
-describe('redactSensitiveParams', () => {
-	it.each([
-		['https://vikunja.example/?userPasswordReset=abc123', 'https://vikunja.example/?userPasswordReset=[Filtered]'],
-		['/login?foo=1&accountDeletionConfirm=abc123&bar=2', '/login?foo=1&accountDeletionConfirm=[Filtered]&bar=2'],
-		['/?userEmailConfirm=abc123#hash', '/?userEmailConfirm=[Filtered]#hash'],
-		['userPasswordReset=abc123', 'userPasswordReset=[Filtered]'],
-		['/login%3FuserPasswordReset%3Dabc123', '/login%3FuserPasswordReset%3D[Filtered]'],
-		['/tasks/1?view=list', '/tasks/1?view=list'],
-	])('redacts %s', (input, expected) => {
-		expect(redactSensitiveParams(input)).toBe(expected)
-	})
-
-	it('redacts nested strings in an event', () => {
-		const event = {
-			request: {url: 'https://vikunja.example/?userPasswordReset=abc123'},
-			breadcrumbs: [{category: 'navigation', data: {from: '/', to: '/?accountDeletionConfirm=abc123'}}],
-			urls: ['https://vikunja.example/?userEmailConfirm=abc123'],
-			level: 'error',
-			count: 1,
-		}
-
-		expect(redactSensitiveParams(event)).toEqual({
-			request: {url: 'https://vikunja.example/?userPasswordReset=[Filtered]'},
-			breadcrumbs: [{category: 'navigation', data: {from: '/', to: '/?accountDeletionConfirm=[Filtered]'}}],
-			urls: ['https://vikunja.example/?userEmailConfirm=[Filtered]'],
-			level: 'error',
-			count: 1,
-		})
-	})
-})
-
-describe('isReportableResourceUrl', () => {
-	const page = 'https://app.vikunja.cloud/tasks/395132'
-
-	it.each([
-		'https://app.vikunja.cloud/assets/logo.png',
-		'http://127.0.0.1:8080/assets/logo.png',
-		'https://app.vikunja.cloud/tasks/395132/cover.png',
-	])('reports %s, which the browser fetched over the network', url => {
-		expect(isReportableResourceUrl(url, page)).toBe(true)
-	})
-
-	it.each([
-		'data:image/svg+xml;base64,PHN2ZyAvPg==',
-		'blob:https://app.vikunja.cloud/47479b89-bed9-427b-a859-a447f21d5034',
-		'cid:part1.abcdef@example.com',
-		'filesystem:https://app.vikunja.cloud/temporary/avatar.png',
-		'about:blank',
-	])('skips %s, whose bytes never went over the network', url => {
-		expect(isReportableResourceUrl(url, page)).toBe(false)
-	})
-
-	it.each(['', ' ', 'not a url'])('skips an unresolvable src: %j', url => {
-		expect(isReportableResourceUrl(url, page)).toBe(false)
-	})
-
-	it.each([page, `${page}#`, `${page}#section`])('skips %s, which is the page itself', url => {
-		expect(isReportableResourceUrl(url, `${page}#other`)).toBe(false)
 	})
 })

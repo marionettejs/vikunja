@@ -901,6 +901,7 @@
 			"from": "Van",
 			"fromto": "{from} naar {to}",
 			"date": "Datum",
+			"openCalendar": "Kalender openen",
 			"ranges": {
 				"today": "Vandaag",
 				"tomorrow": "Morgen",
@@ -1415,6 +1416,10 @@
 			"newProject": "Nieuw project",
 			"newTeam": "Nieuw team"
 		}
+	},
+	"date": {
+		"altFormatLong": "j M Y, H:i",
+		"altFormatShort": "j M Y"
 	},
 	"reaction": {
 		"reactedWith": "{user} reageerde met {value}",

@@ -81,19 +81,24 @@ func getRefreshTokenCookiePaths() []string {
 // path-scoped so the browser only sends it on refresh requests. A single
 // cookie at Path=/api would ship the long-lived token on every API request.
 // Browsers match cookie paths by prefix, so each endpoint needs its own.
-//
-// SameSite=Lax, not None: CORS allows localhost origins by default.
 func SetRefreshTokenCookie(c *echo.Context, token string, maxAge int) {
 	secure := strings.HasPrefix(config.ServicePublicURL.GetString(), "https")
+	// SameSite=None so the cookie survives split-origin deployments where the
+	// frontend and API are on different hosts, but browsers only accept that
+	// with Secure=true; fall back to Lax on plain HTTP (local dev, E2E tests).
+	sameSite := http.SameSiteLaxMode
+	if secure {
+		sameSite = http.SameSiteNoneMode
+	}
 	for _, path := range getRefreshTokenCookiePaths() {
-		c.SetCookie(&http.Cookie{ //nolint:gosec // G124: plain-http instances need the cookie too.
+		c.SetCookie(&http.Cookie{ //nolint:gosec // G124: Secure/SameSite are intentionally conditional on the https scheme (see above); HttpOnly is always set.
 			Name:     RefreshTokenCookieName,
 			Value:    token,
 			Path:     path,
 			MaxAge:   maxAge,
 			HttpOnly: true,
 			Secure:   secure,
-			SameSite: http.SameSiteLaxMode,
+			SameSite: sameSite,
 		})
 	}
 }
@@ -184,16 +189,14 @@ func NewUserJWTAuthtoken(u *user.User, sessionID string) (token string, err erro
 	t := jwt.New(jwt.SigningMethodHS256)
 
 	var ttl = time.Duration(config.ServiceJWTTTLShort.GetInt64())
-	now := time.Now()
+	var exp = time.Now().Add(time.Second * ttl).Unix()
 
 	claims := t.Claims.(jwt.MapClaims)
 	claims["type"] = AuthTypeUser
 	claims["id"] = u.ID
 	claims["username"] = u.Username
 	claims["is_admin"] = u.IsAdmin
-	// The frontend derives its clock offset from iat, so exp is judged by server time.
-	claims["iat"] = now.Unix()
-	claims["exp"] = now.Add(time.Second * ttl).Unix()
+	claims["exp"] = exp
 	claims["sid"] = sessionID
 	claims["jti"] = uuid.New().String()
 
@@ -205,7 +208,7 @@ func NewLinkShareJWTAuthtoken(share *models.LinkSharing) (token string, err erro
 	t := jwt.New(jwt.SigningMethodHS256)
 
 	var ttl = time.Duration(config.ServiceJWTTTL.GetInt64())
-	now := time.Now()
+	var exp = time.Now().Add(time.Second * ttl).Unix()
 
 	// Set claims
 	claims := t.Claims.(jwt.MapClaims)
@@ -215,8 +218,7 @@ func NewLinkShareJWTAuthtoken(share *models.LinkSharing) (token string, err erro
 	claims["project_id"] = share.ProjectID
 	claims["permission"] = share.Permission
 	claims["sharedByID"] = share.SharedByID
-	claims["iat"] = now.Unix()
-	claims["exp"] = now.Add(time.Second * ttl).Unix()
+	claims["exp"] = exp
 
 	// Generate encoded token and send it as response.
 	return t.SignedString([]byte(config.ServiceSecret.GetString()))
@@ -297,72 +299,33 @@ func ValidateAPITokenString(tokenString string) (*models.APIToken, *user.User, e
 	return token, u, nil
 }
 
-type UserTokenClaims struct {
-	UserID    int64
-	SessionID string
-	ExpiresAt time.Time
-}
-
-// ErrUserTokenRejected marks errors that retrying cannot fix.
-var ErrUserTokenRejected = errors.New("user token rejected")
-
-// ParseUserToken skips the session check: a valid result may belong to a revoked session.
-func ParseUserToken(tokenString string) (*UserTokenClaims, error) {
+// GetUserIDFromToken parses a raw JWT token string and returns the user ID.
+// Only regular user tokens are accepted (not link shares).
+// Returns 0 and an error if the token is invalid.
+func GetUserIDFromToken(tokenString string) (int64, error) {
 	token, err := jwt.Parse(tokenString, func(_ *jwt.Token) (any, error) {
 		return []byte(config.ServiceSecret.GetString()), nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", ErrUserTokenRejected, err)
+		return 0, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return nil, fmt.Errorf("%w: %w", ErrUserTokenRejected, jwt.ErrTokenInvalidClaims)
+		return 0, jwt.ErrTokenInvalidClaims
 	}
 
 	typ, ok := claims["type"].(float64)
 	if !ok || int(typ) != AuthTypeUser {
-		return nil, fmt.Errorf("%w: %w", ErrUserTokenRejected, jwt.ErrTokenInvalidClaims)
+		return 0, jwt.ErrTokenInvalidClaims
 	}
 
-	userID, ok := claims["id"].(float64)
+	userIDFloat, ok := claims["id"].(float64)
 	if !ok {
-		return nil, fmt.Errorf("%w: %w", ErrUserTokenRejected, jwt.ErrTokenInvalidClaims)
+		return 0, jwt.ErrTokenInvalidClaims
 	}
 
-	sid, _ := claims["sid"].(string)
-	exp, err := claims.GetExpirationTime()
-	if err != nil || exp == nil || sid == "" {
-		return nil, fmt.Errorf("%w: %w", ErrUserTokenRejected, jwt.ErrTokenInvalidClaims)
-	}
-
-	return &UserTokenClaims{
-		UserID:    int64(userID),
-		SessionID: sid,
-		ExpiresAt: exp.Time,
-	}, nil
-}
-
-func CheckUserTokenSession(claims *UserTokenClaims) error {
-	s := db.NewSession()
-	defer s.Close()
-
-	session, err := models.GetSessionByID(s, claims.SessionID)
-	if err == nil && session.UserID != claims.UserID {
-		err = &models.ErrSessionNotFound{}
-	}
-	if models.IsErrSessionNotFound(err) {
-		return fmt.Errorf("%w: %w", ErrUserTokenRejected, err)
-	}
-	if err != nil {
-		return err
-	}
-
-	_, err = user.GetUserByID(s, claims.UserID)
-	if user.IsErrUserDoesNotExist(err) || user.IsErrUserStatusError(err) {
-		return fmt.Errorf("%w: %w", ErrUserTokenRejected, err)
-	}
-	return err
+	return int64(userIDFloat), nil
 }
 
 func CreateUserWithRandomUsername(s *xorm.Session, uu *user.User) (u *user.User, err error) {
@@ -510,31 +473,13 @@ func SessionIDFromContext(c *echo.Context) string {
 	return sid
 }
 
-// SessionUserIDFromContext returns the user id of a user JWT, or 0 for link
-// shares, API tokens and unauthenticated requests.
-func SessionUserIDFromContext(c *echo.Context) int64 {
-	jwtinf, ok := c.Get("user").(*jwt.Token)
-	if !ok {
-		return 0
-	}
-	claims, ok := jwtinf.Claims.(jwt.MapClaims)
-	if !ok {
-		return 0
-	}
-	if typ, ok := claims["type"].(float64); !ok || int(typ) != AuthTypeUser {
-		return 0
-	}
-	id, _ := claims["id"].(float64)
-	return int64(id)
-}
-
 // GetAuthFromContext retrieves the authenticated web.Auth from a plain
 // context.Context, bridging Huma handlers to Vikunja's echo JWT flow. The
 // humabridge group middleware stashes the *echo.Context under EchoContextKey
 // first.
 func GetAuthFromContext(ctx context.Context) (web.Auth, error) {
-	ec := humabridge.EchoContextFrom(ctx)
-	if ec == nil {
+	ec, ok := ctx.Value(humabridge.EchoContextKey).(*echo.Context)
+	if !ok {
 		return nil, fmt.Errorf("no echo.Context on request context; are you calling GetAuthFromContext from a Huma handler mounted via humabridge?")
 	}
 	return GetAuthFromClaims(ec)

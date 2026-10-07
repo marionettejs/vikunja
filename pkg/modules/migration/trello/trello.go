@@ -24,7 +24,6 @@ import (
 	"code.vikunja.io/api/pkg/modules/migration"
 	"code.vikunja.io/api/pkg/richtext"
 	"code.vikunja.io/api/pkg/user"
-	"code.vikunja.io/api/pkg/utils"
 
 	"github.com/adlio/trello"
 )
@@ -467,7 +466,6 @@ func (m *Migration) Migrate(u *user.User) (err error) {
 
 	client := trello.NewClient(config.MigrationTrelloKey.GetString(), m.Token)
 	client.Logger = log.GetLogger()
-	client.Client = utils.NewSSRFSafeHTTPClient()
 
 	boards, err := getTrelloBoards(client)
 	if err != nil {
