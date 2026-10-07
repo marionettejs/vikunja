@@ -61,6 +61,14 @@ Measured source `3581ed1a672a1c56df8bf78ca2b56dca14e3c67b`; frontend tree `50662
 
 Full results, slower observations, raw profiles, protocol and limits are in [the final measurement report](rc2-publication-measurements-20261007.md) and `benchmark/results-2026-10-07-publication/`. The24paired six-surface comparison is pinned to8de771eab with the same frontend tree;48unmasked screenshot pairs have no pass threshold. Historical failed harness runs and larger raw evidence remain in Cloud. All59route families remain partial, zero fully certified. Actual licensed backend, external delivery/providers, Electron and OS IME access remain blockers to those acceptance areas; broader available variants remain work.
 
-## Publication gate — current result
+## Publication gate — initial blocked attempts
 
 The frozen source validation and matched benchmark completed. Automatic approval review rejected creating `backup/upstream-main-before-rc2-20261007` twice: it treats the original no-public-push delegation as controlling and could not accept later authorization relayed by the parent as direct user approval. No public branch was created, main was not updated, and no workaround was attempted. Current remote main remains `e7d7f173e40627eb35c913752507ba61c2b895d8`. A clean local snapshot with that sole parent is ready for review; publication still requires a verified backup followed by the exact-old-SHA guarded, non-force main update. No release, deployment, npm publish or repository setting change is part of this operation.
+
+## Verified publication — 2026-10-07
+
+Direct user approval resolved the earlier automatic approval gate. The backup branch `backup/upstream-main-before-rc2-20261007` was created at `e7d7f173e40627eb35c913752507ba61c2b895d8` and independently verified before main changed. Reviewed snapshot `e32efc1d823d8da4991c31daf8174e42cbc911b8` was published on `migration/rc2-reviewed-20261007`, verified through GitHub Git-data reads, and made main with `expected_sha` equal to the old main and `force: false`. No protection, permission, release or deployment settings changed.
+
+The snapshot's sole parent is old main; its tree is `8bd41bab0317b21984713c772a40e5abb4e22aff`, frontend `50662d98588496fcc100d19b9b0412a84ed9ab05`. The frontend, backend, license, Go inputs and acceptance sources match the frozen measured input `3581ed1a672a1c56df8bf78ca2b56dca14e3c67b`. Private migration-only commit ancestry and ignored test/dependency/data artifacts were excluded. The unfinished integration workspace remains untouched.
+
+The publication workflow was still running at verification; no hosted-CI pass is claimed. See GitHub Actions for subsequent status. This follow-up changes only publication documentation; frozen runtime validation and known parity limits remain as recorded above.
