@@ -55,7 +55,7 @@ export const TaskMoveView = View.extend({
 	events: { 'click [data-retry]': 'retry' },
 	createState() { return { life: new AbortController(), reading: undefined as AbortController | undefined, pending: 0, revision: 0, dirty: false, selected: undefined as number | undefined, error: '', readFailed: false } },
 	template: () => html `<h2 class="task-section-title"><span class="icon is-grey">${listIcon('list')}</span>${t('task.detail.move')}</h2><div data-search></div><div data-loading role="status" hidden>${t('misc.loading')}</div><div data-error class="message danger" role="alert" hidden></div><button type="button" data-retry class="button is-outlined" hidden>${t('loadingError.tryAgain')}</button>`,
-	onRender() { this.showChildView('search', new SettingsSearchView({ id: `move-task-${this.options.record.task.id}`, label: t('task.detail.move'), placeholder: t('input.projectSearch.placeholder'), items: [], selected: null, changed: id => { if (id !== null)
+	onRender() { this.showChildView('search', new SettingsSearchView({ id: `move-task-${this.options.record.task.id}`, label: t('task.detail.move'), placeholder: t('project.search'), items: [], selected: null, changed: id => { if (id !== null)
 		void this.save(Number(id)) } })); this.updateTask(this.options.record.task); void this.load() },
 	async load() { const state = this.getState(), request = new AbortController(); state.reading?.abort(); state.reading = request; state.error = ''; state.readFailed = false; this.publish(); try {
 		const projects = await loadProjects(AbortSignal.any([request.signal, state.life.signal]))

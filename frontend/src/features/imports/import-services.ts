@@ -142,7 +142,7 @@ const ServiceImportView = View.extend({
 		return html`<h1>${t('migrate.titleService', { name: m.name })}</h1>
 			<p>${t('migrate.descriptionDo')}</p>
 			<div data-error role="alert" class="message danger mbe-4" hidden></div>
-			<button data-retry class="button" hidden>${t('misc.retry')}</button>
+			<button data-retry class="button" hidden>${t('sharing.retry')}</button>
 			<div data-status></div>
 			<div data-controls>
 				${m.isFileMigrator

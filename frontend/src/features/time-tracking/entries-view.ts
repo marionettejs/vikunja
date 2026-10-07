@@ -131,7 +131,7 @@ export const TimeEntriesView = View.extend({
 			<p data-loading>${t('misc.loading')}</p>
 			<div class="message danger" data-error role="alert" hidden></div>
 			<button type="button" class="button is-outlined" data-retry hidden>
-				${t('misc.retry')}
+				${t('sharing.retry')}
 			</button>
 			<div data-results></div>
 			<div data-filters></div>`,

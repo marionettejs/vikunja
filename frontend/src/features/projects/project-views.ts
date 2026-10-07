@@ -333,7 +333,7 @@ const BucketForm = View.extend({
 				type="button"
 				class="base-button base-button--type-button is-danger"
 				data-remove
-				aria-label=${t('project.kanban.deleteBucket')}
+				aria-label=${t('project.kanban.deleteHeaderBucket')}
 			>
 				${listIcon('trash-alt')}
 			</button>`

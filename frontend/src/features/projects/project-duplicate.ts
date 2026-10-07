@@ -128,7 +128,7 @@ export const ProjectDuplicateView = View.extend({
 					request.signal,
 				)
 				request.signal.throwIfAborted()
-				if (!result.duplicatedProject) throw new Error(t('misc.error'))
+				if (!result.duplicatedProject) throw new Error(t('error.error'))
 				state.accepted = result.duplicatedProject
 			}
 			const projects = await this.options.refresh(request.signal)

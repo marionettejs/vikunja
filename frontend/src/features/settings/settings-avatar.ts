@@ -79,7 +79,7 @@ const CropView = View.extend({
 		try {
 			const blob = await new Promise<Blob>((resolve, reject) =>
 				canvas.toBlob((value) =>
-					value ? resolve(value) : reject(new Error(t('misc.error'))),
+					value ? resolve(value) : reject(new Error(t('error.error'))),
 				),
 			)
 			request.signal.throwIfAborted()

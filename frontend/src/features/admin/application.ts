@@ -161,7 +161,7 @@ const AdminOverviewView = View.extend({
 				<p data-loading>${t('misc.loading')}</p>
 				<div class="message danger" data-error role="alert" hidden></div>
 				<button type="button" data-retry class="button is-outlined" hidden>
-					${t('misc.retry')}
+					${t('sharing.retry')}
 				</button>
 				<div data-results class="admin-overview__grid"></div>
 			</div>
@@ -334,7 +334,7 @@ const AdminDirectoryView = View.extend({
 				<p data-loading>${t('misc.loading')}</p>
 				<div data-error role="alert" class="message danger" hidden></div>
 				<button data-retry class="button is-outlined" hidden>
-					${t('misc.retry')}
+					${t('sharing.retry')}
 				</button>
 				<div class="has-horizontal-overflow">
 					<table class="table has-actions is-striped is-hoverable is-fullwidth">

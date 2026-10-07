@@ -472,7 +472,6 @@ export const TaskAttachmentsView = View.extend({
 	async copy(a: IAttachment) {
 		try {
 			await navigator.clipboard.writeText(generateAttachmentUrl(a.taskId, a.id))
-			if (!this.isDestroyed()) success(t('misc.copied'))
 		} catch (error) {
 			if (!this.isDestroyed()) this.feedback(error)
 		}
