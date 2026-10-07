@@ -72,7 +72,17 @@ test('avatar canvas failure renders Error without publishing an upload', async (
 test('frontend contract admin and time error controls render Retry and recover', async ({authenticatedPage: page}, info) => {
 	const contract = await proContract(page)
 	for (const [path, endpoint] of [['/admin', '/admin/overview'], ['/admin/users', '/admin/users'], ['/time-tracking', '/time-entries']]) {
-		contract.rejectNext(endpoint)
+		if (path === '/time-tracking') {
+			// The shell also requests running timers. Reject the entries list, not that request.
+			let reject = true
+			await page.route('**/api/v2/time-entries?**', route => {
+				if (reject && new URL(route.request().url()).searchParams.get('per_page') === '250') {
+					reject = false
+					return route.fulfill({status: 503, json: {message: 'Isolated frontend contract rejection'}})
+				}
+				return route.fallback()
+			})
+		} else contract.rejectNext(endpoint)
 		await page.goto(path)
 		const retry = page.getByRole('button', {name: 'Retry', exact: true})
 		await expect(retry).toBeVisible()
@@ -107,7 +117,7 @@ test('remaining frontend contract routes render Retry and complete a successful 
 		await retry.click()
 		expect((await response).status()).toBe(200)
 		await expect(error).toBeHidden()
-		if (path === '/time-tracking') await expect(retry).toBeHidden()
+		await expect(retry).toBeHidden()
 	}
 })
 
