@@ -140,3 +140,7 @@ bash migration/audit/production-mage.sh '--config=../migration/acceptance/benchm
 Node24/pnpm11.25 is the repository requirement; this Cloud run used Node24.19.0 and installed pnpm11.19.0. Go1.27/Mage/C SQLite toolchain and Chromium are required. Preserve verified reference build manifests; the original Vue checkout dist placeholders are not a valid production reference. Archive reports/results before reruns. Do not run heavy parallel work or change runtime during measurement.
 
 Evidence root: `/workspace/vikunja-evidence/final-acceptance-20261007/frozen/benchmark/`. `inputs.json`, `run/profile-raw-0.json`, `run/profile-raw-1.json`, `summary.json`, `heap-verification-manifest.json`, build/source audits and served-build census preserve pins, samples, API requests and byte accounting. Full route ledger remains partial for all 59 families; see `rc2-supported-route-device-coverage.md`.
+
+## Subsequent runtime follow-up
+
+The six-reference UI correction changes the frontend to `c2b439e84fcfdd7864ab7189015c239b014b472a` (runtime commit `d9823e439d93cd47f10978f7cba05c2a37104f34`). **This report was not rerun for that tree**; its tables and raw samples still measure frontend `50662d98588496fcc100d19b9b0412a84ed9ab05`. See [the separate fixes and focused verification](rc2-translation-labels-20261007.md).
