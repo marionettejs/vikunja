@@ -3,6 +3,7 @@ import {View} from 'marionette'
 import {VikunjaApplication} from './application'
 import {reportError,success} from '../shared/notifications'
 let app:InstanceType<typeof VikunjaApplication>|undefined
+function finishAnimations(state){for (const row of state.notices()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
 async function setup(){
  const host=document.createElement('div');document.body.append(host)
  app=new VikunjaApplication({region:{el:host}})
@@ -17,11 +18,11 @@ it('ready root retains two notices and duplicate count across a session layout r
  app!.getChildApp('session')!.trigger('signed:out');state.root.showChildView('workspace',new View({template:()=>'<div>Anonymous layout</div>'}))
  expect(state.notices()[0]).toBe(notice)
  success('accepted public mutation');expect(state.notices()).toHaveLength(2);expect(notice.textContent).toContain('×2')
- success('third public mutation');expect(state.notices().map(el=>el.textContent)).toEqual([expect.stringContaining('public retry unavailable'),expect.stringContaining('third public mutation')])
+ success('third public mutation');finishAnimations(state);expect(state.notices().map(el=>el.textContent)).toEqual([expect.stringContaining('public retry unavailable'),expect.stringContaining('third public mutation')])
 })
 it('root notice expiry and actual App destruction remove subscription and pending timers',async()=>{
  vi.useFakeTimers();const state=await setup();success('bounded public notification');expect(state.notices()).toHaveLength(1)
- vi.advanceTimersByTime(4000);expect(state.notices()).toHaveLength(0)
+ vi.advanceTimersByTime(4000);finishAnimations(state);expect(state.notices()).toHaveLength(0)
  success('active on teardown');const notice=state.notices()[0];app!.destroy();app=undefined
  success('after teardown');vi.runAllTimers();expect(notice.isConnected).toBe(false);expect(state.host.querySelector('.vue-notification')).toBeNull()
 })

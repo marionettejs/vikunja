@@ -5,6 +5,7 @@ import {Model} from '@mnjs/data'
 import {ShareShellView} from './share-shell'
 import {reportError, success} from '../shared/notifications'
 let app: InstanceType<typeof VikunjaApplication> | undefined
+function finishAnimations(state){for (const row of state.notices()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
 async function setup() {
  const host = document.createElement('div'); document.body.append(host)
  app = new VikunjaApplication({region:{el:host}})
@@ -23,6 +24,7 @@ it('public shell uses the sole root notice owner for two messages, duplicates an
  expect(state.notices()).toHaveLength(2)
  expect(state.notices()[0].textContent).toContain('×2')
  success('third public mutation')
+ finishAnimations(state)
  expect(state.notices()).toHaveLength(2)
  expect(state.notices().map(el=>el.textContent)).toEqual([expect.stringContaining('public retry unavailable'),expect.stringContaining('third public mutation')])
 })
@@ -32,6 +34,7 @@ it('public shell teardown retains original notice expiry while root destruction 
  expect(state.notices()).toHaveLength(1)
  ;(app!.getView()! as InstanceType<typeof View>).getRegion('workspace')!.empty();expect(state.view.isDestroyed()).toBe(true);expect(state.notices()).toHaveLength(1)
  vi.advanceTimersByTime(4000)
+ finishAnimations(state)
  expect(state.notices()).toHaveLength(0)
  success('active on teardown'); expect(state.notices()).toHaveLength(1)
  const notices=state.notices()[0];app!.destroy();app=undefined
