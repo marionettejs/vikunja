@@ -175,7 +175,8 @@ const AdminOverviewView = View.extend({
 		const request = new AbortController()
 		state.request = request;
 		(this.getUI('loading')![0] as HTMLElement).hidden = false;
-		(this.getUI('error')![0] as HTMLElement).hidden = true
+		(this.getUI('error')![0] as HTMLElement).hidden = true;
+		(this.el.querySelector('[data-retry]') as HTMLElement).hidden = true
 		try {
 			const data = await new AdminOverviewService().getOverview(request.signal)
 			request.signal.throwIfAborted()
@@ -393,7 +394,8 @@ const AdminDirectoryView = View.extend({
 		const request = new AbortController()
 		state.request = request;
 		(this.getUI('loading')![0] as HTMLElement).hidden = false;
-		(this.getUI('error')![0] as HTMLElement).hidden = true
+		(this.getUI('error')![0] as HTMLElement).hidden = true;
+		(this.el.querySelector('[data-retry]') as HTMLElement).hidden = true
 		try {
 			const service =
 					this.options.kind === 'users'

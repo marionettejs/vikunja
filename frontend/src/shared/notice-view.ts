@@ -17,7 +17,6 @@ export const NoticeView = View.extend({
 		if (duplicate) {duplicate.duplicates.textContent = `×${++duplicate.count}`; duplicate.duplicates.hidden = false; return}
 		const element = document.createElement('div')
 		element.className = `vue-notification-template vue-notification ${notice.type} notification ${notice.type === 'error' ? 'is-danger' : 'is-success'}`
-		element.setAttribute('role', 'alert')
 		const title = document.createElement('div'); title.className = 'notification-title'; title.textContent = t(notice.type === 'success' ? 'error.success' : 'error.error')
 		const content = document.createElement('div'); content.className = 'notification-content'; content.textContent = notice.message
 		const duplicates = document.createElement('span'); duplicates.className = 'tw:text-xs tw:font-bold tw:ml-1'; duplicates.hidden = true; content.append(duplicates)
