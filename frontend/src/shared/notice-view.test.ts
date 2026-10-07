@@ -8,7 +8,7 @@ function setup(){
  const view=new NoticeView();region.show(view)
  return {view,home,host:view.el.querySelector('[data-notices]')!,entries:()=>Array.from(document.querySelectorAll('.vue-notification'))}
 }
-function finishAnimations(state){for (const row of state.entries()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
+function finishAnimations(state: {entries: () => Element[]}){for (const row of state.entries()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
 function modal(){const dialog=document.createElement('dialog');dialog.setAttribute('open','');const button=document.createElement('button');dialog.append(button);document.body.append(dialog);button.focus();return {dialog,button}}
 afterEach(()=>{region?.destroy();region=undefined;vi.useRealTimers();document.body.replaceChildren()})
 it('dismisses one queued entry while keeping the remaining notice reachable in its modal',()=>{

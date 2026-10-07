@@ -3,7 +3,7 @@ import {View} from 'marionette'
 import {VikunjaApplication} from './application'
 import {reportError,success} from '../shared/notifications'
 let app:InstanceType<typeof VikunjaApplication>|undefined
-function finishAnimations(state){for (const row of state.notices()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
+function finishAnimations(state: {notices: () => Element[]}){for (const row of state.notices()) for (const animation of row.getAnimations()) if (animation.playState === 'running') animation.finish()}
 async function setup(){
  const host=document.createElement('div');document.body.append(host)
  app=new VikunjaApplication({region:{el:host}})
